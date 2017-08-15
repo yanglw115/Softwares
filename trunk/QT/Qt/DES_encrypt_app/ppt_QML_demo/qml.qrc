@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ArrayGridBin.qml</file>
+        <file>ArrayGridInt.qml</file>
+        <file>KeyFirstBeforeRound16.qml</file>
+        <file>KeySecondRound16.qml</file>
+        <file>DataHandleFirst.qml</file>
+        <file>BoxSReplace.qml</file>
+        <file>DESControl.qml</file>
+        <file>TextTitle.qml</file>
+    </qresource>
+</RCC>

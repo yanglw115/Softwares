@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textview1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="280dp"
+        android:height="280dp"
+        android:layout_gravity="center"
+        android:background="#f00">
+    </TextView>
+
+    <TextView
+        android:id="@+id/textview2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="240dp"
+        android:height="240dp"
+        android:layout_gravity="center"
+        android:background="#0fe">
+    </TextView>
+
+    <TextView
+        android:id="@+id/textview3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="200dp"
+        android:height="200dp"
+        android:layout_gravity="center"
+        android:background="#100">
+    </TextView>
+
+    <TextView
+        android:id="@+id/textview4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="160dp"
+        android:height="160dp"
+        android:layout_gravity="center"
+        android:background="#30f">
+    </TextView>
+
+    <TextView
+        android:id="@+id/textview5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="120dp"
+        android:height="120dp"
+        android:layout_gravity="center"
+        android:background="#5fe">
+    </TextView>
+
+</FrameLayout>

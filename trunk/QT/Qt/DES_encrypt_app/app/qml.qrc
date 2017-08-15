@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Encrypt.qml</file>
+        <file>Decrypt.qml</file>
+        <file>DatabaseOper.qml</file>
+        <file>VersionOper.qml</file>
+    </qresource>
+</RCC>

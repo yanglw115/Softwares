@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 显示当前路径的文本框 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/idTextViewCurrentPath"
+        android:layout_alignParentTop="true"/>
+
+    <!-- 列出当前路径下的所有文件 -->
+    <ListView
+        android:id="@+id/idListAllFiles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idTextViewCurrentPath"
+        android:divider="#000"
+        android:dividerHeight="1px">
+    </ListView>
+
+    <!--返回上一级目录的按钮-->
+    <Button
+        android:id="@+id/idButtonReturn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:text="返回"/>
+
+</RelativeLayout>

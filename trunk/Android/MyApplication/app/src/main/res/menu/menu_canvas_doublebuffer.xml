@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="颜色">
+        <menu>
+            <!--定义一组单选菜单项-->
+            <group android:checkableBehavior="single">
+                <item android:title="red"
+                    android:id="@+id/idColorRed"/>
+                <item android:title="green"
+                    android:id="@+id/idColorGreen"/>
+                <item android:title="blue"
+                    android:id="@+id/idColorBlue"/>
+            </group>
+        </menu>
+    </item>
+    <item android:title="笔宽">
+        <menu>
+            <group>
+                <item android:title="1"
+                    android:id="@+id/idWidth1"/>
+                <item android:title="3"
+                    android:id="@+id/idWidth3"/>
+                <item android:title="5"
+                    android:id="@+id/idWidth5"/>
+            </group>
+        </menu>
+    </item>
+    <item android:id="@+id/idBlur"
+        android:title="blur"/>
+    <item android:id="@+id/idEmboss"
+        android:title="emboss"/>
+
+</menu>

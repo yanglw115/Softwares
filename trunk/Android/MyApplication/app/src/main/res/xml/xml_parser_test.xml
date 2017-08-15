@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<books>
+    <book price="20.5" 出版日期="2014年3月21日">冰与火</book>
+    <book price="40.0" 出版日期="2010年8月1日">美丽世界</book>
+    <book price="23.0" 出版日期="1992年3月12日">童年</book>
+</books>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/idTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:cursorVisible="false"/>
+    <EditText
+        android:id="@+id/idTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:cursorVisible="false"/>
+    <Button
+        android:id="@+id/idButtonGet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择联系人"/>
+</LinearLayout>

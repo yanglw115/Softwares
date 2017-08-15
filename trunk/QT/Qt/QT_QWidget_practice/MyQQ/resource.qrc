@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="1.png">heads/1.png</file>
+        <file alias="2.png">heads/2.png</file>
+        <file alias="3.png">heads/3.png</file>
+        <file alias="4.png">heads/4.png</file>
+        <file alias="5.png">heads/5.png</file>
+        <file alias="6.png">heads/6.png</file>
+        <file alias="7.png">heads/7.png</file>
+        <file alias="8.png">heads/8.png</file>
+        <file alias="9.png">heads/9.png</file>
+        <file alias="10.png">heads/10.png</file>
+        <file alias="11.png">heads/11.png</file>
+    </qresource>
+</RCC>

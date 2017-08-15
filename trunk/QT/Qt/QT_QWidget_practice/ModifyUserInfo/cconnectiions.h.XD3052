@@ -1,0 +1,22 @@
+#ifndef CCONNECTIIONS_H
+#define CCONNECTIIONS_H
+
+#include <QCheckBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QWidget>
+
+class CConnectiions : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit CConnectiions(QWidget *parent = 0);
+    ~CConnectiions();
+
+signals:
+
+public slots:
+    QLabel *m_pLabelEmail;
+};
+
+#endif // CCONNECTIIONS_H

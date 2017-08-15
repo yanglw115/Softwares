@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- layout_height等，可以用match_parent，也可以使用dimension尺寸大小来表示 -->
+    <TextView
+    android:id="@+id/textviewR0"
+    android:layout_height="100dp"
+    android:layout_width="100dp"
+    android:layout_centerInParent="true"
+    android:background="@mipmap/flower">
+</TextView>
+    <!-- toRightOf or toLeftOf只是说在哪一边，对齐还需要使用alignBaseLine等 -->
+    <TextView
+        android:id="@+id/textviewR1"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:layout_above="@id/textviewR0"
+        android:layout_alignLeft="@id/textviewR0"
+        android:background="@mipmap/flower">
+    </TextView>
+    <TextView
+        android:id="@+id/textviewR2"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:layout_toLeftOf="@id/textviewR0"
+        android:layout_alignBaseline="@id/textviewR0"
+        android:background="@mipmap/flower">
+    </TextView>
+    <TextView
+        android:id="@+id/textviewR3"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:layout_toRightOf="@id/textviewR0"
+        android:layout_alignBaseline="@id/textviewR0"
+        android:background="@mipmap/flower">
+    </TextView>
+    <TextView
+        android:id="@+id/textviewR4"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:layout_below="@id/textviewR0"
+        android:layout_alignLeft="@id/textviewR0"
+        android:background="@mipmap/flower">
+    </TextView>
+
+</RelativeLayout>

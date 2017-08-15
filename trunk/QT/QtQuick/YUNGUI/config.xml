@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+<Devices>
+    <Add Key="Printer">COM1:/dev/ttyS0:115200:0:1:8</Add><!--打印机串口信息，串口名称:串口：波特率:是否启用及偶校验(0否，1是):停止位:字长-->
+    <Add Key="PaperMoney">COM3:/dev/ttyS2:9600:0:2:8</Add><!--纸币串口信息，串口名称:串口：波特率:是否启用及偶校验(0否，1是):停止位:字长-->
+    <Add Key="Coin">COM1:/dev/ttyS0:9600:0:1:8</Add><!--硬币串口信息，串口名称:串口：波特率:是否启用及偶校验(0否，1是):停止位:字长-->
+    <Add Key="ReturnCoin">COM2:/dev/ttyS1:9600:1:1:8</Add><!--硬币找零串口信息，串口名称:串口：波特率:是否启用及偶校验(0否，1是):停止位:字长-->
+    <Add Key="SellCard">COM1:/dev/ttyS4:9600:0:1:8</Add><!--发卡机串口信息，串口名称:串口：波特率:是否启用及偶校验(0否，1是):停止位:字长-->
+    <Add Key="RfidCard">COM1:/dev/ttyS5:9600:0:1:8</Add><!--RFID读卡器串口信息，串口名称:串口：波特率:是否启用及偶校验(0否，1是):停止位:字长-->
+    <Add Key="TakeOut">COM7:/dev/ttyS6:9600:0:1:8</Add><!--传动串口信息，串口名称:串口：波特率:是否启用及偶校验(0否，1是):停止位:字长-->
+  </Devices>
+</Configuration>

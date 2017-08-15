@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 定义渐变填充颜色 -->
+    <gradient android:startColor="#ff0"
+        android:endColor="#00f"
+        android:angle="45"
+        android:type="sweep"/>
+    <!-- 定义内边距 -->
+    <padding android:left="7dp"
+        android:top="7dp"
+        android:right="7dp"
+        android:bottom="7dp"/>
+    <!-- 定义圆角 -->
+    <corners android:radius="8dp"/>
+</shape>

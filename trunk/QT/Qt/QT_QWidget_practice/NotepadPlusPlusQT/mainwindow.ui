@@ -1,0 +1,2717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>953</width>
+    <height>456</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>953</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文件(&amp;F)</string>
+    </property>
+    <widget class="QMenu" name="menu_9">
+     <property name="title">
+      <string>打开所在文件夹</string>
+     </property>
+     <addaction name="actionFile_manger"/>
+     <addaction name="actionCommand_line"/>
+    </widget>
+    <widget class="QMenu" name="menu_10">
+     <property name="title">
+      <string>更多关闭方式</string>
+     </property>
+     <addaction name="actionClose_all_except_current"/>
+     <addaction name="actionClose_all_the_left"/>
+     <addaction name="actionClose_all_the_right"/>
+    </widget>
+    <addaction name="actionNew_N"/>
+    <addaction name="actionOpen_O"/>
+    <addaction name="menu_9"/>
+    <addaction name="actionOpen_file_directory_in_work_area"/>
+    <addaction name="actionReopen_file"/>
+    <addaction name="actionSave_S"/>
+    <addaction name="actionSave_as"/>
+    <addaction name="actionSave_and_copy_as"/>
+    <addaction name="actionSave_all"/>
+    <addaction name="actionRename"/>
+    <addaction name="actionClose"/>
+    <addaction name="actionClose_all"/>
+    <addaction name="menu_10"/>
+    <addaction name="actionDelete_from_disk"/>
+    <addaction name="separator"/>
+    <addaction name="actionRead_session"/>
+    <addaction name="actionSave_session"/>
+    <addaction name="separator"/>
+    <addaction name="actionPrint"/>
+    <addaction name="actionPrint_now"/>
+    <addaction name="actionOpen_file_list"/>
+    <addaction name="actionClear_file_list"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit_X"/>
+   </widget>
+   <widget class="QMenu" name="menu_E">
+    <property name="title">
+     <string>编辑(&amp;E)</string>
+    </property>
+    <widget class="QMenu" name="menu_11">
+     <property name="title">
+      <string>复制到剪切板</string>
+     </property>
+     <addaction name="actionCopy_current_file_path"/>
+     <addaction name="actionCopy_current_file_name"/>
+     <addaction name="actionCopy_current_directory_path"/>
+    </widget>
+    <widget class="QMenu" name="menu_12">
+     <property name="title">
+      <string>缩进</string>
+     </property>
+     <addaction name="actionInsert_tab"/>
+     <addaction name="actionDelete_tab"/>
+    </widget>
+    <widget class="QMenu" name="menu_13">
+     <property name="title">
+      <string>转换大小写</string>
+     </property>
+     <addaction name="actionTo_upper_case"/>
+     <addaction name="actionTo_lower_case"/>
+     <addaction name="actionEach_word_first_char_upper"/>
+     <addaction name="actionEach_word_first_char_upper_2"/>
+     <addaction name="actionEach_sentence_only_first_char_upper"/>
+     <addaction name="actionEach_sentence_first_char_upper"/>
+     <addaction name="actionUpper_lower_exchage"/>
+     <addaction name="actionUpper_lower_random"/>
+    </widget>
+    <widget class="QMenu" name="menu_14">
+     <property name="title">
+      <string>行操作</string>
+     </property>
+     <addaction name="actionCopy_current_line"/>
+     <addaction name="actionSplit_row"/>
+     <addaction name="actionMerge_row"/>
+     <addaction name="actionMove_up_current_row"/>
+     <addaction name="actionMove_down_current_row"/>
+     <addaction name="actionRemove_empty_line"/>
+     <addaction name="actionRemove_empty_line_include_empty_chars"/>
+     <addaction name="actionInsert_empyt_line_up"/>
+     <addaction name="actionInsert_empty_line_down"/>
+     <addaction name="separator"/>
+     <addaction name="actionSort_lines_by_ascending_order"/>
+     <addaction name="actionSort_integer_by_ascending_order"/>
+     <addaction name="actionSort_decimals_by_ascending_order"/>
+     <addaction name="actionSort_decimals_by_ascending_order_period_as_point"/>
+     <addaction name="separator"/>
+     <addaction name="actionSort_lines_by_descending_order"/>
+     <addaction name="actionSort_integer_by_descending_order"/>
+     <addaction name="actionSort_decimals_by_descending_order_comma_as_point"/>
+     <addaction name="actionSort_decimals_by_descending_order_period_as_point"/>
+    </widget>
+    <widget class="QMenu" name="menu_15">
+     <property name="title">
+      <string>注释/取消注释</string>
+     </property>
+     <addaction name="actionAdd_del_single_line_comment"/>
+     <addaction name="actionSet_line_comment"/>
+     <addaction name="actionCancel_line_comment"/>
+     <addaction name="actionSet_block_comment"/>
+     <addaction name="actionClear_block_comment"/>
+    </widget>
+    <widget class="QMenu" name="menu_16">
+     <property name="title">
+      <string>自动完成</string>
+     </property>
+     <addaction name="actionAuto_finish_functions"/>
+     <addaction name="actionAuto_finish_word"/>
+     <addaction name="actionFunction_parameter_hint"/>
+     <addaction name="actionPath_complete"/>
+    </widget>
+    <widget class="QMenu" name="menu_17">
+     <property name="title">
+      <string>文档格式转换</string>
+     </property>
+     <addaction name="actionTranslate_to_Windows"/>
+     <addaction name="actionTranslate_to_UNIX"/>
+     <addaction name="actionTranslate_to_MAC"/>
+    </widget>
+    <widget class="QMenu" name="menu_18">
+     <property name="title">
+      <string>空白字符操作</string>
+     </property>
+     <addaction name="actionRemove_end_whitespace"/>
+     <addaction name="actionRemove_begin_whitespace"/>
+     <addaction name="actionRemove_begin_and_end_whitespace"/>
+     <addaction name="actionEOL_to_whitespace"/>
+     <addaction name="actionRemove_needless_whitespace_and_EOL"/>
+     <addaction name="separator"/>
+     <addaction name="actionTAB_to_whitespace"/>
+     <addaction name="actionWhitespace_to_TAB_all"/>
+     <addaction name="actionWhitespace_to_TAB_begin"/>
+    </widget>
+    <widget class="QMenu" name="menu_19">
+     <property name="title">
+      <string>选择性粘贴</string>
+     </property>
+     <addaction name="actionPaste_HTML"/>
+     <addaction name="actionPaste_RTF"/>
+     <addaction name="separator"/>
+     <addaction name="actionCopy_binary"/>
+     <addaction name="actionCut_binary"/>
+     <addaction name="actionPast_binary"/>
+    </widget>
+    <widget class="QMenu" name="menu_20">
+     <property name="title">
+      <string>对选中内容操作</string>
+     </property>
+     <addaction name="actionOpen_file"/>
+     <addaction name="actionOpen_file_directory_in_windown_explore"/>
+     <addaction name="actionSearch_online"/>
+     <addaction name="actionChange_search_engine"/>
+    </widget>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionCut_C"/>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
+    <addaction name="actionDelete"/>
+    <addaction name="actionSelect_all"/>
+    <addaction name="actionStart_stop_select"/>
+    <addaction name="separator"/>
+    <addaction name="menu_11"/>
+    <addaction name="menu_12"/>
+    <addaction name="menu_13"/>
+    <addaction name="menu_14"/>
+    <addaction name="menu_15"/>
+    <addaction name="menu_16"/>
+    <addaction name="menu_17"/>
+    <addaction name="menu_18"/>
+    <addaction name="menu_19"/>
+    <addaction name="menu_20"/>
+    <addaction name="actionColumn_block_mode"/>
+    <addaction name="actionColumn_block_edit"/>
+    <addaction name="actionCharactor_panel"/>
+    <addaction name="actionHistory_clipboard"/>
+    <addaction name="actionSet_to_readonly"/>
+    <addaction name="actionClear_readonly_flag"/>
+   </widget>
+   <widget class="QMenu" name="menu_S">
+    <property name="title">
+     <string>搜索(S)</string>
+    </property>
+    <widget class="QMenu" name="menu_21">
+     <property name="title">
+      <string>标记所有</string>
+     </property>
+     <addaction name="actionUse_format1"/>
+     <addaction name="actionUse_format2"/>
+     <addaction name="actionUse_format3"/>
+     <addaction name="actionUse_format4"/>
+     <addaction name="actionUse_format5"/>
+    </widget>
+    <widget class="QMenu" name="menu_22">
+     <property name="title">
+      <string>清除颜色标记</string>
+     </property>
+     <addaction name="actionClear_format1"/>
+     <addaction name="actionClear_format2"/>
+     <addaction name="actionClear_format3"/>
+     <addaction name="actionClear_format4"/>
+     <addaction name="actionClear_format5"/>
+     <addaction name="actionClear_all_formats"/>
+    </widget>
+    <widget class="QMenu" name="menu_23">
+     <property name="title">
+      <string>到上一个颜色标记</string>
+     </property>
+     <addaction name="actionFormat1"/>
+     <addaction name="actionFormat2"/>
+     <addaction name="actionFormat3"/>
+     <addaction name="actionFormat3_2"/>
+     <addaction name="actionFormat5"/>
+     <addaction name="actionFind_format"/>
+    </widget>
+    <widget class="QMenu" name="menu_24">
+     <property name="title">
+      <string>到下一个颜色标记</string>
+     </property>
+     <addaction name="actionFormat1"/>
+     <addaction name="actionFormat2"/>
+     <addaction name="actionFormat3"/>
+     <addaction name="actionFormat3_2"/>
+     <addaction name="actionFormat5"/>
+     <addaction name="actionFind_format"/>
+    </widget>
+    <widget class="QMenu" name="menu_26">
+     <property name="title">
+      <string>书签</string>
+     </property>
+     <addaction name="actionSet_cancel_bookmark"/>
+     <addaction name="actionForward_bookmark"/>
+     <addaction name="actionBackward_bookmark"/>
+     <addaction name="actionClear_all_bookmarks"/>
+     <addaction name="actionCut_line_bookmark"/>
+     <addaction name="actionCopy_line_bookmark"/>
+     <addaction name="actionPaste_replace_line_bookmark"/>
+     <addaction name="actionDel_line_bookmark"/>
+     <addaction name="actionDel_unbookmark_line"/>
+     <addaction name="actionReverse_bookmark"/>
+    </widget>
+    <addaction name="actionFind_F"/>
+    <addaction name="actionFind_in_file"/>
+    <addaction name="actionFind_next"/>
+    <addaction name="actionFind_backward"/>
+    <addaction name="actionSelect_and_find_forward"/>
+    <addaction name="actionSelect_and_find_backward"/>
+    <addaction name="actionFast_find_forward"/>
+    <addaction name="actionFast_find_backward"/>
+    <addaction name="actionReplace"/>
+    <addaction name="actionIncreasemental_search"/>
+    <addaction name="actionSearch_result"/>
+    <addaction name="actionForward_search_result"/>
+    <addaction name="actionBackward_search_result"/>
+    <addaction name="actionLine_locate"/>
+    <addaction name="actionTo_the_matched_parenteses"/>
+    <addaction name="actionSelect_all_chars_parentheses"/>
+    <addaction name="actionMark"/>
+    <addaction name="separator"/>
+    <addaction name="menu_21"/>
+    <addaction name="menu_22"/>
+    <addaction name="menu_23"/>
+    <addaction name="menu_24"/>
+    <addaction name="separator"/>
+    <addaction name="menu_26"/>
+    <addaction name="separator"/>
+    <addaction name="actionFind_chars_within_scope"/>
+   </widget>
+   <widget class="QMenu" name="menu_S_2">
+    <property name="title">
+     <string>视图(&amp;V)</string>
+    </property>
+    <widget class="QMenu" name="menu_27">
+     <property name="title">
+      <string>显示符号</string>
+     </property>
+     <addaction name="actionShow_whitespace_and_tab"/>
+     <addaction name="actionShow_line_end"/>
+     <addaction name="actionShow_all"/>
+     <addaction name="actionShow_indent_reference_line"/>
+     <addaction name="actionShow_linefeed"/>
+    </widget>
+    <widget class="QMenu" name="menu_28">
+     <property name="title">
+      <string>缩放</string>
+     </property>
+     <addaction name="actionZoom_in"/>
+     <addaction name="actionZoom_out"/>
+     <addaction name="actionReturn_default_zoom"/>
+    </widget>
+    <widget class="QMenu" name="menu_29">
+     <property name="title">
+      <string>移动/复制当前文档</string>
+     </property>
+     <addaction name="actionMove_to_another_view"/>
+     <addaction name="actionCopy_to_another_view"/>
+     <addaction name="actionMove_to_new_window"/>
+     <addaction name="actionOpen_in_new_window"/>
+    </widget>
+    <widget class="QMenu" name="menu_Tab">
+     <property name="title">
+      <string>标签页(Tab)</string>
+     </property>
+     <addaction name="actionNote_page1"/>
+     <addaction name="actionNote_page2"/>
+     <addaction name="actionNote_page3"/>
+     <addaction name="actionNote_page4"/>
+     <addaction name="actionNote_page5"/>
+     <addaction name="actionNote_page6"/>
+     <addaction name="actionNote_page7"/>
+     <addaction name="actionNote_page8"/>
+     <addaction name="actionNote_page9"/>
+     <addaction name="separator"/>
+     <addaction name="actionForward_note_page"/>
+     <addaction name="actionBackward_note_page"/>
+     <addaction name="separator"/>
+     <addaction name="actionMove_note_forward"/>
+     <addaction name="actionMove_note_backward"/>
+    </widget>
+    <widget class="QMenu" name="menu_30">
+     <property name="title">
+      <string>折叠层次</string>
+     </property>
+     <addaction name="action1"/>
+     <addaction name="action2"/>
+     <addaction name="action3"/>
+     <addaction name="action4"/>
+     <addaction name="action5"/>
+     <addaction name="action6"/>
+     <addaction name="action7"/>
+     <addaction name="action8"/>
+    </widget>
+    <widget class="QMenu" name="menu_31">
+     <property name="title">
+      <string>展开层次</string>
+     </property>
+     <addaction name="action1_2"/>
+     <addaction name="action2_2"/>
+     <addaction name="action3_2"/>
+     <addaction name="action4_2"/>
+     <addaction name="action5_2"/>
+     <addaction name="action6_2"/>
+     <addaction name="action7_2"/>
+     <addaction name="action8_2"/>
+    </widget>
+    <widget class="QMenu" name="menu_32">
+     <property name="title">
+      <string>工程</string>
+     </property>
+     <addaction name="actionProject_panel1"/>
+     <addaction name="actionProject_panel2"/>
+     <addaction name="actionProject_panel3"/>
+    </widget>
+    <addaction name="actionAlways_on_top"/>
+    <addaction name="actionExchange_fullscreen"/>
+    <addaction name="actionNote_mode"/>
+    <addaction name="separator"/>
+    <addaction name="menu_27"/>
+    <addaction name="menu_28"/>
+    <addaction name="menu_29"/>
+    <addaction name="menu_Tab"/>
+    <addaction name="actionAuto_linefeed"/>
+    <addaction name="actionActive_sub_view"/>
+    <addaction name="actionHide_line"/>
+    <addaction name="separator"/>
+    <addaction name="actionFold_all"/>
+    <addaction name="actionUnfold_all"/>
+    <addaction name="actionFold_current"/>
+    <addaction name="actionUnfold_current"/>
+    <addaction name="menu_30"/>
+    <addaction name="menu_31"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbstract"/>
+    <addaction name="separator"/>
+    <addaction name="menu_32"/>
+    <addaction name="actionFolder_workspace"/>
+    <addaction name="actionDoc_structure"/>
+    <addaction name="actionFunction_list"/>
+    <addaction name="separator"/>
+    <addaction name="actionVertical_synchronize_scroll"/>
+    <addaction name="actionHorizontal_synchronize_scroll"/>
+    <addaction name="separator"/>
+    <addaction name="actionWord_R_to_L_2"/>
+    <addaction name="actionWord_L_to_R"/>
+    <addaction name="actionMonitor_log_tail_f"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menu_V">
+    <property name="title">
+     <string>编码(&amp;N)</string>
+    </property>
+    <widget class="QMenu" name="menu_33">
+     <property name="title">
+      <string>编码字符集</string>
+     </property>
+     <widget class="QMenu" name="menu_34">
+      <property name="title">
+       <string>中文</string>
+      </property>
+      <addaction name="actionBig5_Traditional"/>
+      <addaction name="actionBG2312_Simplified"/>
+     </widget>
+     <addaction name="actionArabic"/>
+     <addaction name="actionBaltic"/>
+     <addaction name="actionSehlt"/>
+     <addaction name="actionSlaf"/>
+     <addaction name="actionMid_Europe"/>
+     <addaction name="menu_34"/>
+     <addaction name="actionEast_Europe"/>
+     <addaction name="actionGreek"/>
+     <addaction name="actionHebrew"/>
+     <addaction name="actionJapanese"/>
+     <addaction name="actionKorean"/>
+     <addaction name="actionNorth_Europe"/>
+     <addaction name="actionThai"/>
+     <addaction name="actionTurkish"/>
+     <addaction name="actionWest_Europe"/>
+     <addaction name="actionVietnamese"/>
+    </widget>
+    <addaction name="actionBy_ANSI"/>
+    <addaction name="actionBy_UTF_8_without_BOM"/>
+    <addaction name="actionBy_UTF_8"/>
+    <addaction name="actionBy_UCS_2_Big_Endian"/>
+    <addaction name="actionBy_UCS_2_Little_Endian"/>
+    <addaction name="separator"/>
+    <addaction name="menu_33"/>
+    <addaction name="separator"/>
+    <addaction name="actionTo_ANSI"/>
+    <addaction name="actionTo_UTF_8_without_BOM"/>
+    <addaction name="actionTo_UTF_8"/>
+    <addaction name="actionTo_UCS_2_Big_Endian"/>
+    <addaction name="actionTo_UCS_2_Little_Endian"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>语言(&amp;L)</string>
+    </property>
+    <addaction name="actionA"/>
+    <addaction name="actionB"/>
+    <addaction name="actionC"/>
+    <addaction name="actionD"/>
+    <addaction name="actionF"/>
+    <addaction name="actionGui4Cli"/>
+    <addaction name="actionH"/>
+    <addaction name="actionI"/>
+    <addaction name="actionJ"/>
+    <addaction name="actionKIXtart"/>
+    <addaction name="actionL"/>
+    <addaction name="actionM"/>
+    <addaction name="actionN"/>
+    <addaction name="actionObjective_C"/>
+    <addaction name="actionP"/>
+    <addaction name="actionR"/>
+    <addaction name="actionS"/>
+    <addaction name="actionT"/>
+    <addaction name="actionV"/>
+    <addaction name="actionXML"/>
+    <addaction name="actionYAML"/>
+    <addaction name="actionCostum_language_format"/>
+    <addaction name="actionUser_define"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>设置(&amp;T)</string>
+    </property>
+    <widget class="QMenu" name="menu_35">
+     <property name="title">
+      <string>导入</string>
+     </property>
+     <addaction name="actionImport_plugins"/>
+     <addaction name="actionImport_theme"/>
+    </widget>
+    <addaction name="actionPreference"/>
+    <addaction name="actionLanguage_format_set"/>
+    <addaction name="actionManage_shortcuts"/>
+    <addaction name="menu_35"/>
+    <addaction name="actionEdit_popup_menu"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>工具(&amp;O)</string>
+    </property>
+    <widget class="QMenu" name="menuMD5">
+     <property name="title">
+      <string>MD5</string>
+     </property>
+     <addaction name="actionGenerate"/>
+     <addaction name="actionGenerate_from_file"/>
+     <addaction name="actionGenerate_to_clipboard"/>
+    </widget>
+    <addaction name="menuMD5"/>
+   </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>宏(&amp;M)</string>
+    </property>
+    <addaction name="actionStart_record_S"/>
+    <addaction name="actionStop_record_S"/>
+    <addaction name="actionPlay_back"/>
+    <addaction name="actionSave_record_macro"/>
+    <addaction name="actionRepeat_run_macro"/>
+    <addaction name="separator"/>
+    <addaction name="actionTrim_Trailing_and_save"/>
+    <addaction name="separator"/>
+    <addaction name="actionManage_shortcuts_2"/>
+   </widget>
+   <widget class="QMenu" name="menu_6">
+    <property name="title">
+     <string>运行(&amp;R)</string>
+    </property>
+    <addaction name="actionRun_R"/>
+    <addaction name="actionLaunch_in_Firefox"/>
+    <addaction name="actionLaunch_in_IE"/>
+    <addaction name="actionLaunch_in_Chrome"/>
+    <addaction name="actionLaunch_in_Safari"/>
+    <addaction name="actionGet_php_help"/>
+    <addaction name="actionGoogle_Search"/>
+    <addaction name="actionWikipedia_Search"/>
+    <addaction name="actionOpen_file_2"/>
+    <addaction name="actionOpen_in_another_instance"/>
+    <addaction name="actionSend_via_Outlook"/>
+    <addaction name="separator"/>
+    <addaction name="actionManage_shortcuts_3"/>
+   </widget>
+   <widget class="QMenu" name="menu_7">
+    <property name="title">
+     <string>插件(&amp;P)</string>
+    </property>
+    <widget class="QMenu" name="menuConverter">
+     <property name="title">
+      <string>Converter</string>
+     </property>
+     <addaction name="actionASCII_HEX"/>
+     <addaction name="actionHEX_ASCII"/>
+     <addaction name="actionConversion_Panel"/>
+     <addaction name="actionEdit_Configuration_File"/>
+     <addaction name="actionAbout"/>
+    </widget>
+    <widget class="QMenu" name="menuMIME_Tools">
+     <property name="title">
+      <string>MIME Tools</string>
+     </property>
+     <addaction name="actionBase64_Encode"/>
+     <addaction name="actionBase64_Encode_with_Unix_EOL"/>
+     <addaction name="actionBase64_Decode"/>
+     <addaction name="separator"/>
+     <addaction name="actionQoted_printable_Encode"/>
+     <addaction name="actionQuoted_printable_Decode"/>
+     <addaction name="separator"/>
+     <addaction name="actionURL_Encode"/>
+     <addaction name="actionFull_URL_Encode"/>
+     <addaction name="actionURL_Decode"/>
+     <addaction name="separator"/>
+     <addaction name="actionSAML_Decode"/>
+     <addaction name="separator"/>
+     <addaction name="actionAbout_2"/>
+    </widget>
+    <widget class="QMenu" name="menuNppExport">
+     <property name="title">
+      <string>NppExport</string>
+     </property>
+     <addaction name="actionExport_to_RTF"/>
+     <addaction name="actionExport_to_HTML"/>
+     <addaction name="actionCopy_RTF_to_clipboard"/>
+     <addaction name="actionCopy_HTML_to_clipboard"/>
+     <addaction name="actionCopy_all_formats_to_clipboard"/>
+    </widget>
+    <widget class="QMenu" name="menuPlugin_Manager">
+     <property name="title">
+      <string>Plugin Manager</string>
+     </property>
+     <addaction name="actionShow_Plugin_Manager"/>
+     <addaction name="actionAbout_3"/>
+    </widget>
+    <addaction name="menuConverter"/>
+    <addaction name="menuMIME_Tools"/>
+    <addaction name="menuNppExport"/>
+    <addaction name="menuPlugin_Manager"/>
+   </widget>
+   <widget class="QMenu" name="menu_W">
+    <property name="title">
+     <string>窗口(&amp;W)</string>
+    </property>
+    <addaction name="actionWindow"/>
+   </widget>
+   <widget class="QMenu" name="menu_8">
+    <property name="title">
+     <string>&amp;?</string>
+    </property>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_E"/>
+   <addaction name="menu_S"/>
+   <addaction name="menu_S_2"/>
+   <addaction name="menu_V"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
+   <addaction name="menu_5"/>
+   <addaction name="menu_6"/>
+   <addaction name="menu_7"/>
+   <addaction name="menu_W"/>
+   <addaction name="menu_8"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(211, 218, 237);</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew_N"/>
+   <addaction name="actionSave_S"/>
+   <addaction name="actionSave_all"/>
+   <addaction name="actionClose"/>
+   <addaction name="actionClose_all"/>
+   <addaction name="actionPrint"/>
+   <addaction name="separator"/>
+   <addaction name="actionCut_C"/>
+   <addaction name="actionCopy"/>
+   <addaction name="actionPaste"/>
+   <addaction name="separator"/>
+   <addaction name="actionUndo"/>
+   <addaction name="actionRedo"/>
+   <addaction name="separator"/>
+   <addaction name="actionFind_F"/>
+   <addaction name="actionReplace"/>
+   <addaction name="separator"/>
+   <addaction name="actionZoom_in"/>
+   <addaction name="actionZoom_out"/>
+   <addaction name="separator"/>
+   <addaction name="actionVertical_synchronize_scroll"/>
+   <addaction name="actionHorizontal_synchronize_scroll"/>
+   <addaction name="separator"/>
+   <addaction name="actionAuto_linefeed"/>
+   <addaction name="actionShow_all"/>
+   <addaction name="actionShow_indent_reference_line"/>
+   <addaction name="actionCostum_language_format"/>
+   <addaction name="actionDoc_structure"/>
+   <addaction name="actionFunction_list"/>
+   <addaction name="actionFolder_workspace"/>
+   <addaction name="actionMonitor_log_tail_f"/>
+   <addaction name="separator"/>
+   <addaction name="actionStart_record_S"/>
+   <addaction name="actionStop_record_S"/>
+   <addaction name="actionPlay_back"/>
+   <addaction name="actionRepeat_run_macro"/>
+   <addaction name="actionSave_record_macro"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen_file_directory_in_work_area">
+   <property name="text">
+    <string>在工作区打开文件夹</string>
+   </property>
+  </action>
+  <action name="actionReopen_file">
+   <property name="text">
+    <string>重新读取文件</string>
+   </property>
+  </action>
+  <action name="actionSave_S">
+   <property name="icon">
+    <iconset>
+     <normalon>:/toolbars/save</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>保存(&amp;S)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>另存为(&amp;A)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+S</string>
+   </property>
+  </action>
+  <action name="actionSave_and_copy_as">
+   <property name="text">
+    <string>拷贝另存为</string>
+   </property>
+  </action>
+  <action name="actionSave_all">
+   <property name="icon">
+    <iconset>
+     <normalon>:/toolbars/Resources/icons/saveAll.bmp</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>全部保存</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionRename">
+   <property name="text">
+    <string>重命名</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="icon">
+    <iconset>
+     <activeon>:/toolbars/Resources/icons/closeFile.bmp</activeon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>关闭</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+W</string>
+   </property>
+  </action>
+  <action name="actionClose_all">
+   <property name="icon">
+    <iconset>
+     <activeon>:/toolbars/Resources/icons/closeAll.bmp</activeon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>全部关闭(&amp;L)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+  <action name="actionDelete_from_disk">
+   <property name="text">
+    <string>从磁盘删除</string>
+   </property>
+  </action>
+  <action name="actionRead_session">
+   <property name="text">
+    <string>读取会话</string>
+   </property>
+  </action>
+  <action name="actionSave_session">
+   <property name="text">
+    <string>保存会话</string>
+   </property>
+  </action>
+  <action name="actionPrint">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/print.bmp</normaloff>:/toolbars/Resources/icons/print.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>打印</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionPrint_now">
+   <property name="text">
+    <string>立即打印</string>
+   </property>
+  </action>
+  <action name="actionOpen_file_list">
+   <property name="text">
+    <string>打开文件列表</string>
+   </property>
+  </action>
+  <action name="actionClear_file_list">
+   <property name="text">
+    <string>清除文件列表</string>
+   </property>
+  </action>
+  <action name="actionExit_X">
+   <property name="text">
+    <string>退出(&amp;X)</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F4</string>
+   </property>
+  </action>
+  <action name="actionNew_N">
+   <property name="icon">
+    <iconset>
+     <normalon>:/toolbars/Resources/icons/newFile.bmp</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>新建(&amp;N)</string>
+   </property>
+  </action>
+  <action name="actionOpen_O">
+   <property name="text">
+    <string>打开(&amp;O)</string>
+   </property>
+  </action>
+  <action name="actionFile_manger">
+   <property name="text">
+    <string>文件管理器</string>
+   </property>
+  </action>
+  <action name="actionCommand_line">
+   <property name="text">
+    <string>命令行</string>
+   </property>
+  </action>
+  <action name="actionClose_all_except_current">
+   <property name="text">
+    <string>关闭当前以外所有文件</string>
+   </property>
+  </action>
+  <action name="actionClose_all_the_left">
+   <property name="text">
+    <string>关闭左侧所有文件</string>
+   </property>
+  </action>
+  <action name="actionClose_all_the_right">
+   <property name="text">
+    <string>关闭右侧所有文件</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/undo.bmp</normaloff>:/toolbars/Resources/icons/undo.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>撤销(&amp;U)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/redo.bmp</normaloff>:/toolbars/Resources/icons/redo.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>恢复(R)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionCut_C">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/cut.bmp</normaloff>:/toolbars/Resources/icons/cut.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>剪切(&amp;C)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/copy.bmp</normaloff>:/toolbars/Resources/icons/copy.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>复制(&amp;C)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/paste.bmp</normaloff>:/toolbars/Resources/icons/paste.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>粘贴(&amp;P)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>删除(&amp;D)</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="actionSelect_all">
+   <property name="text">
+    <string>全选(&amp;L)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionStart_stop_select">
+   <property name="text">
+    <string>开始/结束 选择</string>
+   </property>
+  </action>
+  <action name="actionColumn_block_mode">
+   <property name="text">
+    <string>列块模式</string>
+   </property>
+  </action>
+  <action name="actionColumn_block_edit">
+   <property name="text">
+    <string>列块编辑</string>
+   </property>
+  </action>
+  <action name="actionCharactor_panel">
+   <property name="text">
+    <string>字符面板</string>
+   </property>
+  </action>
+  <action name="actionHistory_clipboard">
+   <property name="text">
+    <string>历史剪切板</string>
+   </property>
+  </action>
+  <action name="actionSet_to_readonly">
+   <property name="text">
+    <string>设为只读</string>
+   </property>
+  </action>
+  <action name="actionClear_readonly_flag">
+   <property name="text">
+    <string>清除只读标记</string>
+   </property>
+  </action>
+  <action name="actionCopy_current_file_path">
+   <property name="text">
+    <string>复制当前文件路径</string>
+   </property>
+  </action>
+  <action name="actionCopy_current_file_name">
+   <property name="text">
+    <string>复制当前文件名</string>
+   </property>
+  </action>
+  <action name="actionCopy_current_directory_path">
+   <property name="text">
+    <string>复制当前目录路径</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+  </action>
+  <action name="actionInsert_tab">
+   <property name="text">
+    <string>插入制表符(缩进)</string>
+   </property>
+  </action>
+  <action name="actionDelete_tab">
+   <property name="text">
+    <string>删除制表符(退格)</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="actionTo_upper_case">
+   <property name="text">
+    <string>转成大写</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+U</string>
+   </property>
+  </action>
+  <action name="actionTo_lower_case">
+   <property name="text">
+    <string>转成小写</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionEach_word_first_char_upper">
+   <property name="text">
+    <string>每词转成仅首字母大写</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+U</string>
+   </property>
+  </action>
+  <action name="actionEach_word_first_char_upper_2">
+   <property name="text">
+    <string>每词的首字母转成大写</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+U</string>
+   </property>
+  </action>
+  <action name="actionEach_sentence_only_first_char_upper">
+   <property name="text">
+    <string>每句转成仅首字母大写</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+U</string>
+   </property>
+  </action>
+  <action name="actionEach_sentence_first_char_upper">
+   <property name="text">
+    <string>每句的首字母转成大写</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+U</string>
+   </property>
+  </action>
+  <action name="actionUpper_lower_exchage">
+   <property name="text">
+    <string>大小写互换</string>
+   </property>
+  </action>
+  <action name="actionUpper_lower_random">
+   <property name="text">
+    <string>随机大小写</string>
+   </property>
+  </action>
+  <action name="actionCopy_current_line">
+   <property name="text">
+    <string>复制当前行</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionSplit_row">
+   <property name="text">
+    <string>分割行</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionMerge_row">
+   <property name="text">
+    <string>合并行</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
+   </property>
+  </action>
+  <action name="actionMove_up_current_row">
+   <property name="text">
+    <string>上移当前行</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Up</string>
+   </property>
+  </action>
+  <action name="actionMove_down_current_row">
+   <property name="text">
+    <string>下移当前行</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Down</string>
+   </property>
+  </action>
+  <action name="actionRemove_empty_line">
+   <property name="text">
+    <string>移除空行</string>
+   </property>
+  </action>
+  <action name="actionRemove_empty_line_include_empty_chars">
+   <property name="text">
+    <string>移除空行(包括空白字符)</string>
+   </property>
+  </action>
+  <action name="actionInsert_empyt_line_up">
+   <property name="text">
+    <string>在当前行上方插入空行</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Enter</string>
+   </property>
+  </action>
+  <action name="actionInsert_empty_line_down">
+   <property name="text">
+    <string>在当前行下方插入空行</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+Enter</string>
+   </property>
+  </action>
+  <action name="actionSort_lines_by_ascending_order">
+   <property name="text">
+    <string>升序排列文本行</string>
+   </property>
+  </action>
+  <action name="actionSort_integer_by_ascending_order">
+   <property name="text">
+    <string>升序排列整数</string>
+   </property>
+  </action>
+  <action name="actionSort_decimals_by_ascending_order">
+   <property name="text">
+    <string>升序排列小数(逗号作为小数点)</string>
+   </property>
+  </action>
+  <action name="actionSort_decimals_by_ascending_order_period_as_point">
+   <property name="text">
+    <string>升序排列小数(句点作为小数点)</string>
+   </property>
+  </action>
+  <action name="actionSort_lines_by_descending_order">
+   <property name="text">
+    <string>降序排列文本行</string>
+   </property>
+  </action>
+  <action name="actionSort_integer_by_descending_order">
+   <property name="text">
+    <string>降序排列整数</string>
+   </property>
+  </action>
+  <action name="actionSort_decimals_by_descending_order_comma_as_point">
+   <property name="text">
+    <string>降序排列小数(逗号作为小数点)</string>
+   </property>
+  </action>
+  <action name="actionSort_decimals_by_descending_order_period_as_point">
+   <property name="text">
+    <string>降序排列小数(句点作为小数点)</string>
+   </property>
+  </action>
+  <action name="actionAdd_del_single_line_comment">
+   <property name="text">
+    <string>添加/删除单行注释</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionSet_line_comment">
+   <property name="text">
+    <string>设置行注释</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
+   </property>
+  </action>
+  <action name="actionCancel_line_comment">
+   <property name="text">
+    <string>取消行注释</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+K</string>
+   </property>
+  </action>
+  <action name="actionSet_block_comment">
+   <property name="text">
+    <string>区块注释</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Q</string>
+   </property>
+  </action>
+  <action name="actionClear_block_comment">
+   <property name="text">
+    <string>清除区块注释</string>
+   </property>
+  </action>
+  <action name="actionAuto_finish_functions">
+   <property name="text">
+    <string>函数自动完成</string>
+   </property>
+  </action>
+  <action name="actionAuto_finish_word">
+   <property name="text">
+    <string>单词自动完成</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Enter</string>
+   </property>
+  </action>
+  <action name="actionFunction_parameter_hint">
+   <property name="text">
+    <string>函数参数提示</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Space</string>
+   </property>
+  </action>
+  <action name="actionPath_complete">
+   <property name="text">
+    <string>路径补全</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Space</string>
+   </property>
+  </action>
+  <action name="actionTranslate_to_Windows">
+   <property name="text">
+    <string>转换为Windows格式</string>
+   </property>
+  </action>
+  <action name="actionTranslate_to_UNIX">
+   <property name="text">
+    <string>转换为UNIX格式</string>
+   </property>
+  </action>
+  <action name="actionTranslate_to_MAC">
+   <property name="text">
+    <string>转换为MAC格式</string>
+   </property>
+  </action>
+  <action name="actionRemove_end_whitespace">
+   <property name="text">
+    <string>移除行尾空格</string>
+   </property>
+  </action>
+  <action name="actionRemove_begin_whitespace">
+   <property name="text">
+    <string>移除行首空格</string>
+   </property>
+  </action>
+  <action name="actionRemove_begin_and_end_whitespace">
+   <property name="text">
+    <string>移除行首和行尾空格</string>
+   </property>
+  </action>
+  <action name="actionEOL_to_whitespace">
+   <property name="text">
+    <string>EOL转空格</string>
+   </property>
+  </action>
+  <action name="actionRemove_needless_whitespace_and_EOL">
+   <property name="text">
+    <string>移除非必需的空白和EOL</string>
+   </property>
+  </action>
+  <action name="actionTAB_to_whitespace">
+   <property name="text">
+    <string>TAB转空格</string>
+   </property>
+  </action>
+  <action name="actionWhitespace_to_TAB_all">
+   <property name="text">
+    <string>空格转TAB(全部)</string>
+   </property>
+  </action>
+  <action name="actionWhitespace_to_TAB_begin">
+   <property name="text">
+    <string>空格转TAB(行首)</string>
+   </property>
+  </action>
+  <action name="actionPaste_HTML">
+   <property name="text">
+    <string>粘贴HTML</string>
+   </property>
+  </action>
+  <action name="actionPaste_RTF">
+   <property name="text">
+    <string>粘贴RTF</string>
+   </property>
+  </action>
+  <action name="actionCopy_binary">
+   <property name="text">
+    <string>复制二进制</string>
+   </property>
+  </action>
+  <action name="actionCut_binary">
+   <property name="text">
+    <string>剪切二进制</string>
+   </property>
+  </action>
+  <action name="actionPast_binary">
+   <property name="text">
+    <string>粘贴二进制</string>
+   </property>
+  </action>
+  <action name="actionOpen_file">
+   <property name="text">
+    <string>打开文件</string>
+   </property>
+  </action>
+  <action name="actionOpen_file_directory_in_windown_explore">
+   <property name="text">
+    <string>在文件管理器中打开包含文件夹</string>
+   </property>
+  </action>
+  <action name="actionSearch_online">
+   <property name="text">
+    <string>在线搜索</string>
+   </property>
+  </action>
+  <action name="actionChange_search_engine">
+   <property name="text">
+    <string>更改搜索引擎</string>
+   </property>
+  </action>
+  <action name="actionFind_F">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/find.bmp</normaloff>:/toolbars/Resources/icons/find.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>查找(&amp;F)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionFind_in_file">
+   <property name="text">
+    <string>在文件中查找</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+F</string>
+   </property>
+  </action>
+  <action name="actionFind_next">
+   <property name="text">
+    <string>查找下一个(N)</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
+  </action>
+  <action name="actionFind_backward">
+   <property name="text">
+    <string>查找上一个</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F3</string>
+   </property>
+  </action>
+  <action name="actionSelect_and_find_forward">
+   <property name="text">
+    <string>选定并寻找下一个</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F3</string>
+   </property>
+  </action>
+  <action name="actionSelect_and_find_backward">
+   <property name="text">
+    <string>选定并寻找上一个</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+F3</string>
+   </property>
+  </action>
+  <action name="actionFast_find_forward">
+   <property name="text">
+    <string>快速查找下一个</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+F3</string>
+   </property>
+  </action>
+  <action name="actionFast_find_backward">
+   <property name="text">
+    <string>快速查找上一个</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+F3</string>
+   </property>
+  </action>
+  <action name="actionReplace">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/findReplace.bmp</normaloff>:/toolbars/Resources/icons/findReplace.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>替换...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionIncreasemental_search">
+   <property name="text">
+    <string>增量查找(&amp;I)...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+I</string>
+   </property>
+  </action>
+  <action name="actionSearch_result">
+   <property name="text">
+    <string>寻找结果</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
+  </action>
+  <action name="actionForward_search_result">
+   <property name="text">
+    <string>下一个寻找结果</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
+   </property>
+  </action>
+  <action name="actionBackward_search_result">
+   <property name="text">
+    <string>上一个寻找结果</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F4</string>
+   </property>
+  </action>
+  <action name="actionLine_locate">
+   <property name="text">
+    <string>行定位</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionTo_the_matched_parenteses">
+   <property name="text">
+    <string>转到匹配的括号</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionSelect_all_chars_parentheses">
+   <property name="text">
+    <string>选中所有匹配括号间字符</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="actionMark">
+   <property name="text">
+    <string>标记...</string>
+   </property>
+  </action>
+  <action name="actionFind_chars_within_scope">
+   <property name="text">
+    <string>查找范围内的字符</string>
+   </property>
+   <property name="toolTip">
+    <string>find chars within scope</string>
+   </property>
+  </action>
+  <action name="actionUse_format1">
+   <property name="text">
+    <string>使用格式1</string>
+   </property>
+  </action>
+  <action name="actionUse_format2">
+   <property name="text">
+    <string>使用格式2</string>
+   </property>
+  </action>
+  <action name="actionUse_format3">
+   <property name="text">
+    <string>使用格式3</string>
+   </property>
+  </action>
+  <action name="actionUse_format4">
+   <property name="text">
+    <string>使用格式4</string>
+   </property>
+  </action>
+  <action name="actionUse_format5">
+   <property name="text">
+    <string>使用格式5</string>
+   </property>
+  </action>
+  <action name="actionClear_format1">
+   <property name="text">
+    <string>清除格式1</string>
+   </property>
+  </action>
+  <action name="actionClear_format2">
+   <property name="text">
+    <string>清除格式2</string>
+   </property>
+  </action>
+  <action name="actionClear_format3">
+   <property name="text">
+    <string>清除格式3</string>
+   </property>
+  </action>
+  <action name="actionClear_format4">
+   <property name="text">
+    <string>清除格式4</string>
+   </property>
+  </action>
+  <action name="actionClear_format5">
+   <property name="text">
+    <string>清除格式5</string>
+   </property>
+  </action>
+  <action name="actionClear_all_formats">
+   <property name="text">
+    <string>清除所有格式</string>
+   </property>
+  </action>
+  <action name="actionFormat1">
+   <property name="text">
+    <string>格式一</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+!</string>
+   </property>
+  </action>
+  <action name="actionFormat2">
+   <property name="text">
+    <string>格式二</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+@</string>
+   </property>
+  </action>
+  <action name="actionFormat3">
+   <property name="text">
+    <string>格式三</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+#</string>
+   </property>
+  </action>
+  <action name="actionFormat3_2">
+   <property name="text">
+    <string>格式四</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+$</string>
+   </property>
+  </action>
+  <action name="actionFormat5">
+   <property name="text">
+    <string>格式五</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+%</string>
+   </property>
+  </action>
+  <action name="actionFind_format">
+   <property name="text">
+    <string>寻找格式</string>
+   </property>
+  </action>
+  <action name="actionSet_cancel_bookmark">
+   <property name="text">
+    <string>设置/取消书签</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F2</string>
+   </property>
+  </action>
+  <action name="actionForward_bookmark">
+   <property name="text">
+    <string>下一书签</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
+   </property>
+  </action>
+  <action name="actionBackward_bookmark">
+   <property name="text">
+    <string>上一书签</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F2</string>
+   </property>
+  </action>
+  <action name="actionClear_all_bookmarks">
+   <property name="text">
+    <string>清除所有书签</string>
+   </property>
+  </action>
+  <action name="actionCut_line_bookmark">
+   <property name="text">
+    <string>剪切书签行</string>
+   </property>
+  </action>
+  <action name="actionCopy_line_bookmark">
+   <property name="text">
+    <string>复制书签行</string>
+   </property>
+  </action>
+  <action name="actionPaste_replace_line_bookmark">
+   <property name="text">
+    <string>粘贴(替换)书签行</string>
+   </property>
+  </action>
+  <action name="actionDel_line_bookmark">
+   <property name="text">
+    <string>删除书签行</string>
+   </property>
+  </action>
+  <action name="actionDel_unbookmark_line">
+   <property name="text">
+    <string>删除未标记行</string>
+   </property>
+  </action>
+  <action name="actionReverse_bookmark">
+   <property name="text">
+    <string>反向标记书签</string>
+   </property>
+  </action>
+  <action name="actionAlways_on_top">
+   <property name="text">
+    <string>总在最前</string>
+   </property>
+  </action>
+  <action name="actionExchange_fullscreen">
+   <property name="text">
+    <string>切换全屏模式</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
+  <action name="actionNote_mode">
+   <property name="text">
+    <string>便签模式</string>
+   </property>
+   <property name="shortcut">
+    <string>F12</string>
+   </property>
+  </action>
+  <action name="actionAuto_linefeed">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/wrap.bmp</normaloff>:/toolbars/Resources/icons/wrap.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>自动换行</string>
+   </property>
+  </action>
+  <action name="actionActive_sub_view">
+   <property name="text">
+    <string>激活从视图</string>
+   </property>
+  </action>
+  <action name="actionHide_line">
+   <property name="text">
+    <string>隐藏行</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+H</string>
+   </property>
+  </action>
+  <action name="actionFold_all">
+   <property name="text">
+    <string>折叠所有层次</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+O</string>
+   </property>
+  </action>
+  <action name="actionUnfold_all">
+   <property name="text">
+    <string>展开所有层次</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+O</string>
+   </property>
+  </action>
+  <action name="actionFold_current">
+   <property name="text">
+    <string>折叠当前层次</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+F</string>
+   </property>
+  </action>
+  <action name="actionUnfold_current">
+   <property name="text">
+    <string>展开当前层次</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+F</string>
+   </property>
+  </action>
+  <action name="actionAbstract">
+   <property name="text">
+    <string>摘要</string>
+   </property>
+  </action>
+  <action name="actionFolder_workspace">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/fileBrowser.ico</normaloff>:/toolbars/Resources/icons/fileBrowser.ico</iconset>
+   </property>
+   <property name="text">
+    <string>文件夹工作区(&amp;W)</string>
+   </property>
+  </action>
+  <action name="actionDoc_structure">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/docMap.ico</normaloff>:/toolbars/Resources/icons/docMap.ico</iconset>
+   </property>
+   <property name="text">
+    <string>文档结构图</string>
+   </property>
+  </action>
+  <action name="actionFunction_list">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/functionList.bmp</normaloff>:/toolbars/Resources/icons/functionList.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>函数列表</string>
+   </property>
+  </action>
+  <action name="actionVertical_synchronize_scroll">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/syncV.bmp</normaloff>:/toolbars/Resources/icons/syncV.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>垂直同步滚动</string>
+   </property>
+  </action>
+  <action name="actionHorizontal_synchronize_scroll">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/syncH.bmp</normaloff>:/toolbars/Resources/icons/syncH.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>水平同步滚动</string>
+   </property>
+  </action>
+  <action name="actionWord_R_to_L_2">
+   <property name="text">
+    <string>文字方向从右到左</string>
+   </property>
+   <property name="toolTip">
+    <string>word R to L</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+R</string>
+   </property>
+  </action>
+  <action name="actionWord_L_to_R">
+   <property name="text">
+    <string>文字方向从左到右</string>
+   </property>
+   <property name="toolTip">
+    <string>word L to R</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+L</string>
+   </property>
+  </action>
+  <action name="actionMonitor_log_tail_f">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/monitoring.ico</normaloff>:/toolbars/Resources/icons/monitoring.ico</iconset>
+   </property>
+   <property name="text">
+    <string>监视日志(tail -f)</string>
+   </property>
+  </action>
+  <action name="actionShow_whitespace_and_tab">
+   <property name="text">
+    <string>显示空格与制表符</string>
+   </property>
+  </action>
+  <action name="actionShow_line_end">
+   <property name="text">
+    <string>显示行尾符</string>
+   </property>
+  </action>
+  <action name="actionShow_all">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/invisibleChar.bmp</normaloff>:/toolbars/Resources/icons/invisibleChar.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>显示所有符号</string>
+   </property>
+  </action>
+  <action name="actionShow_indent_reference_line">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/indentGuide.bmp</normaloff>:/toolbars/Resources/icons/indentGuide.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>显示缩进参考线</string>
+   </property>
+  </action>
+  <action name="actionShow_linefeed">
+   <property name="text">
+    <string>显示换行符</string>
+   </property>
+  </action>
+  <action name="actionZoom_in">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/zoomIn.bmp</normaloff>:/toolbars/Resources/icons/zoomIn.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>放大(&amp;I)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="actionZoom_out">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/zoomOut.bmp</normaloff>:/toolbars/Resources/icons/zoomOut.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>缩小(&amp;o)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionReturn_default_zoom">
+   <property name="text">
+    <string>恢复默认缩放</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+/</string>
+   </property>
+  </action>
+  <action name="actionMove_to_another_view">
+   <property name="text">
+    <string>移动到另一视图</string>
+   </property>
+  </action>
+  <action name="actionCopy_to_another_view">
+   <property name="text">
+    <string>复制到另一视图</string>
+   </property>
+  </action>
+  <action name="actionMove_to_new_window">
+   <property name="text">
+    <string>移动到新窗口</string>
+   </property>
+  </action>
+  <action name="actionOpen_in_new_window">
+   <property name="text">
+    <string>在新窗口中打开</string>
+   </property>
+  </action>
+  <action name="actionNote_page1">
+   <property name="text">
+    <string>标签页1</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="actionNote_page2">
+   <property name="text">
+    <string>标签页2</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="actionNote_page3">
+   <property name="text">
+    <string>标签页3</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="actionNote_page4">
+   <property name="text">
+    <string>标签页4</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+4</string>
+   </property>
+  </action>
+  <action name="actionNote_page5">
+   <property name="text">
+    <string>标签页5</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+5</string>
+   </property>
+  </action>
+  <action name="actionNote_page6">
+   <property name="text">
+    <string>标签页6</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+6</string>
+   </property>
+  </action>
+  <action name="actionNote_page7">
+   <property name="text">
+    <string>标签页7</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+7</string>
+   </property>
+  </action>
+  <action name="actionNote_page8">
+   <property name="text">
+    <string>标签页8</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+8</string>
+   </property>
+  </action>
+  <action name="actionNote_page9">
+   <property name="text">
+    <string>标签页9</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+9</string>
+   </property>
+  </action>
+  <action name="actionForward_note_page">
+   <property name="text">
+    <string>下个标签页</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+PgDown</string>
+   </property>
+  </action>
+  <action name="actionBackward_note_page">
+   <property name="text">
+    <string>上个标签页</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+PgUp</string>
+   </property>
+  </action>
+  <action name="actionMove_note_forward">
+   <property name="text">
+    <string>前移标签页</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+PgDown</string>
+   </property>
+  </action>
+  <action name="actionMove_note_backward">
+   <property name="text">
+    <string>后移标签页</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+PgUp</string>
+   </property>
+  </action>
+  <action name="action1">
+   <property name="text">
+    <string>1</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+1</string>
+   </property>
+  </action>
+  <action name="action2">
+   <property name="text">
+    <string>2</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+2</string>
+   </property>
+  </action>
+  <action name="action3">
+   <property name="text">
+    <string>3</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+3</string>
+   </property>
+  </action>
+  <action name="action4">
+   <property name="text">
+    <string>4</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+4</string>
+   </property>
+  </action>
+  <action name="action5">
+   <property name="text">
+    <string>5</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+5</string>
+   </property>
+  </action>
+  <action name="action6">
+   <property name="text">
+    <string>6</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+6</string>
+   </property>
+  </action>
+  <action name="action7">
+   <property name="text">
+    <string>7</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+7</string>
+   </property>
+  </action>
+  <action name="action8">
+   <property name="text">
+    <string>8</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+8</string>
+   </property>
+  </action>
+  <action name="action1_2">
+   <property name="text">
+    <string>1</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+!</string>
+   </property>
+  </action>
+  <action name="action2_2">
+   <property name="text">
+    <string>2</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+@</string>
+   </property>
+  </action>
+  <action name="action3_2">
+   <property name="text">
+    <string>3</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+#</string>
+   </property>
+  </action>
+  <action name="action4_2">
+   <property name="text">
+    <string>4</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+$</string>
+   </property>
+  </action>
+  <action name="action5_2">
+   <property name="text">
+    <string>5</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+%</string>
+   </property>
+  </action>
+  <action name="action6_2">
+   <property name="text">
+    <string>6</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+^</string>
+   </property>
+  </action>
+  <action name="action7_2">
+   <property name="text">
+    <string>7</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+&amp;</string>
+   </property>
+  </action>
+  <action name="action8_2">
+   <property name="text">
+    <string>8</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+*</string>
+   </property>
+  </action>
+  <action name="actionProject_panel1">
+   <property name="text">
+    <string>工程面板1</string>
+   </property>
+  </action>
+  <action name="actionProject_panel2">
+   <property name="text">
+    <string>工程面板2</string>
+   </property>
+  </action>
+  <action name="actionProject_panel3">
+   <property name="text">
+    <string>工程面板3</string>
+   </property>
+  </action>
+  <action name="actionBy_ANSI">
+   <property name="text">
+    <string>以ANSI格式编码</string>
+   </property>
+  </action>
+  <action name="actionBy_UTF_8_without_BOM">
+   <property name="text">
+    <string>以UTF-8无BOM格式编码</string>
+   </property>
+  </action>
+  <action name="actionBy_UTF_8">
+   <property name="text">
+    <string>以UTF-8格式编码</string>
+   </property>
+  </action>
+  <action name="actionBy_UCS_2_Big_Endian">
+   <property name="text">
+    <string>以UCS-2 Big Endian格式编码</string>
+   </property>
+  </action>
+  <action name="actionBy_UCS_2_Little_Endian">
+   <property name="text">
+    <string>以UCS-2 Little Endian格式编码</string>
+   </property>
+  </action>
+  <action name="actionTo_ANSI">
+   <property name="text">
+    <string>转为ANSI编码格式</string>
+   </property>
+  </action>
+  <action name="actionTo_UTF_8_without_BOM">
+   <property name="text">
+    <string>转为UTF-8无BOM编码格式</string>
+   </property>
+  </action>
+  <action name="actionTo_UTF_8">
+   <property name="text">
+    <string>转为UTF-8编码格式</string>
+   </property>
+  </action>
+  <action name="actionTo_UCS_2_Big_Endian">
+   <property name="text">
+    <string>转为UCS-2 Big Endian编码格式</string>
+   </property>
+  </action>
+  <action name="actionTo_UCS_2_Little_Endian">
+   <property name="text">
+    <string>转为UCS-2  Little Endian编码格式</string>
+   </property>
+  </action>
+  <action name="actionArabic">
+   <property name="text">
+    <string>阿拉伯文</string>
+   </property>
+  </action>
+  <action name="actionBaltic">
+   <property name="text">
+    <string>波罗的语</string>
+   </property>
+  </action>
+  <action name="actionSehlt">
+   <property name="text">
+    <string>塞尔特文</string>
+   </property>
+  </action>
+  <action name="actionSlaf">
+   <property name="text">
+    <string>斯拉夫语</string>
+   </property>
+  </action>
+  <action name="actionMid_Europe">
+   <property name="text">
+    <string>中欧语系</string>
+   </property>
+  </action>
+  <action name="actionEast_Europe">
+   <property name="text">
+    <string>东欧语系</string>
+   </property>
+  </action>
+  <action name="actionGreek">
+   <property name="text">
+    <string>希腊文</string>
+   </property>
+  </action>
+  <action name="actionHebrew">
+   <property name="text">
+    <string>希伯来文</string>
+   </property>
+  </action>
+  <action name="actionJapanese">
+   <property name="text">
+    <string>日文</string>
+   </property>
+  </action>
+  <action name="actionKorean">
+   <property name="text">
+    <string>韩文</string>
+   </property>
+  </action>
+  <action name="actionNorth_Europe">
+   <property name="text">
+    <string>北欧语系</string>
+   </property>
+  </action>
+  <action name="actionThai">
+   <property name="text">
+    <string>泰文</string>
+   </property>
+  </action>
+  <action name="actionTurkish">
+   <property name="text">
+    <string>土耳其语</string>
+   </property>
+  </action>
+  <action name="actionWest_Europe">
+   <property name="text">
+    <string>西欧语系</string>
+   </property>
+  </action>
+  <action name="actionVietnamese">
+   <property name="text">
+    <string>越南文</string>
+   </property>
+  </action>
+  <action name="actionBig5_Traditional">
+   <property name="text">
+    <string>Big5(Traditional)</string>
+   </property>
+  </action>
+  <action name="actionBG2312_Simplified">
+   <property name="text">
+    <string>BG2312(Simplified)</string>
+   </property>
+  </action>
+  <action name="actionA">
+   <property name="text">
+    <string>A</string>
+   </property>
+  </action>
+  <action name="actionB">
+   <property name="text">
+    <string>B</string>
+   </property>
+  </action>
+  <action name="actionC">
+   <property name="text">
+    <string>C</string>
+   </property>
+  </action>
+  <action name="actionD">
+   <property name="text">
+    <string>D</string>
+   </property>
+  </action>
+  <action name="actionF">
+   <property name="text">
+    <string>F</string>
+   </property>
+  </action>
+  <action name="actionGui4Cli">
+   <property name="text">
+    <string>Gui4Cli</string>
+   </property>
+  </action>
+  <action name="actionH">
+   <property name="text">
+    <string>H</string>
+   </property>
+  </action>
+  <action name="actionI">
+   <property name="text">
+    <string>I</string>
+   </property>
+  </action>
+  <action name="actionJ">
+   <property name="text">
+    <string>J</string>
+   </property>
+  </action>
+  <action name="actionKIXtart">
+   <property name="text">
+    <string>KIXtart</string>
+   </property>
+  </action>
+  <action name="actionL">
+   <property name="text">
+    <string>L</string>
+   </property>
+  </action>
+  <action name="actionM">
+   <property name="text">
+    <string>M</string>
+   </property>
+  </action>
+  <action name="actionN">
+   <property name="text">
+    <string>N</string>
+   </property>
+  </action>
+  <action name="actionObjective_C">
+   <property name="text">
+    <string>Objective-C</string>
+   </property>
+  </action>
+  <action name="actionP">
+   <property name="text">
+    <string>P</string>
+   </property>
+  </action>
+  <action name="actionR">
+   <property name="text">
+    <string>R</string>
+   </property>
+  </action>
+  <action name="actionS">
+   <property name="text">
+    <string>S</string>
+   </property>
+  </action>
+  <action name="actionT">
+   <property name="text">
+    <string>T</string>
+   </property>
+  </action>
+  <action name="actionV">
+   <property name="text">
+    <string>V</string>
+   </property>
+  </action>
+  <action name="actionXML">
+   <property name="text">
+    <string>XML</string>
+   </property>
+  </action>
+  <action name="actionYAML">
+   <property name="text">
+    <string>YAML</string>
+   </property>
+  </action>
+  <action name="actionCostum_language_format">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/showPannel.bmp</normaloff>:/toolbars/Resources/icons/showPannel.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>Costum language format...</string>
+   </property>
+  </action>
+  <action name="actionUser_define">
+   <property name="text">
+    <string>User define</string>
+   </property>
+  </action>
+  <action name="actionPreference">
+   <property name="text">
+    <string>首选项</string>
+   </property>
+  </action>
+  <action name="actionLanguage_format_set">
+   <property name="text">
+    <string>语言格式设置...</string>
+   </property>
+  </action>
+  <action name="actionManage_shortcuts">
+   <property name="text">
+    <string>管理快捷键...</string>
+   </property>
+  </action>
+  <action name="actionEdit_popup_menu">
+   <property name="text">
+    <string>编辑弹出菜单</string>
+   </property>
+  </action>
+  <action name="actionImport_plugins">
+   <property name="text">
+    <string>导入插件...</string>
+   </property>
+  </action>
+  <action name="actionImport_theme">
+   <property name="text">
+    <string>导入主题...</string>
+   </property>
+  </action>
+  <action name="actionGenerate">
+   <property name="text">
+    <string>生成...</string>
+   </property>
+  </action>
+  <action name="actionGenerate_from_file">
+   <property name="text">
+    <string>从文件生成</string>
+   </property>
+  </action>
+  <action name="actionGenerate_to_clipboard">
+   <property name="text">
+    <string>生成到剪切板</string>
+   </property>
+  </action>
+  <action name="actionStart_record_S">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/startRecord.bmp</normaloff>:/toolbars/Resources/icons/startRecord.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>开始录制(&amp;S)</string>
+   </property>
+  </action>
+  <action name="actionStop_record_S">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/stopRecord.bmp</normaloff>:/toolbars/Resources/icons/stopRecord.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>停止录制(&amp;S)</string>
+   </property>
+  </action>
+  <action name="actionPlay_back">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/playRecord.bmp</normaloff>:/toolbars/Resources/icons/playRecord.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>回放(&amp;P)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actionSave_record_macro">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/saveRecord.bmp</normaloff>:/toolbars/Resources/icons/saveRecord.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>保存录制宏</string>
+   </property>
+  </action>
+  <action name="actionRepeat_run_macro">
+   <property name="icon">
+    <iconset resource="toolbarimg.qrc">
+     <normaloff>:/toolbars/Resources/icons/playRecord_m.bmp</normaloff>:/toolbars/Resources/icons/playRecord_m.bmp</iconset>
+   </property>
+   <property name="text">
+    <string>重复运行宏...</string>
+   </property>
+  </action>
+  <action name="actionTrim_Trailing_and_save">
+   <property name="text">
+    <string>Trim Trailing and save</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionManage_shortcuts_2">
+   <property name="text">
+    <string>管理快捷键</string>
+   </property>
+  </action>
+  <action name="actionRun_R">
+   <property name="text">
+    <string>运行(&amp;R)...</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionLaunch_in_Firefox">
+   <property name="text">
+    <string>Launch in Firefox</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+X</string>
+   </property>
+  </action>
+  <action name="actionLaunch_in_IE">
+   <property name="text">
+    <string>Launch in IE</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+I</string>
+   </property>
+  </action>
+  <action name="actionLaunch_in_Chrome">
+   <property name="text">
+    <string>Launch in Chrome</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+R</string>
+   </property>
+  </action>
+  <action name="actionLaunch_in_Safari">
+   <property name="text">
+    <string>Launch in Safari</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+F</string>
+   </property>
+  </action>
+  <action name="actionGet_php_help">
+   <property name="text">
+    <string>Get php help</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F1</string>
+   </property>
+  </action>
+  <action name="actionGoogle_Search">
+   <property name="text">
+    <string>Google Search</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F2</string>
+   </property>
+  </action>
+  <action name="actionWikipedia_Search">
+   <property name="text">
+    <string>Wikipedia Search</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F3</string>
+   </property>
+  </action>
+  <action name="actionOpen_file_2">
+   <property name="text">
+    <string>Open file</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F5</string>
+   </property>
+  </action>
+  <action name="actionOpen_in_another_instance">
+   <property name="text">
+    <string>Open in another instance</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F6</string>
+   </property>
+  </action>
+  <action name="actionSend_via_Outlook">
+   <property name="text">
+    <string>Send via Outlook</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+Shift+O</string>
+   </property>
+  </action>
+  <action name="actionManage_shortcuts_3">
+   <property name="text">
+    <string>管理快捷键</string>
+   </property>
+  </action>
+  <action name="actionASCII_HEX">
+   <property name="text">
+    <string>ASCII-&gt;HEX</string>
+   </property>
+  </action>
+  <action name="actionHEX_ASCII">
+   <property name="text">
+    <string>HEX-&gt;ASCII</string>
+   </property>
+  </action>
+  <action name="actionConversion_Panel">
+   <property name="text">
+    <string>Conversion Panel</string>
+   </property>
+  </action>
+  <action name="actionEdit_Configuration_File">
+   <property name="text">
+    <string>Edit Configuration File</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionBase64_Encode">
+   <property name="text">
+    <string>Base64 Encode</string>
+   </property>
+  </action>
+  <action name="actionBase64_Encode_with_Unix_EOL">
+   <property name="text">
+    <string>Base64 Encode with Unix EOL</string>
+   </property>
+  </action>
+  <action name="actionBase64_Decode">
+   <property name="text">
+    <string>Base64 Decode</string>
+   </property>
+  </action>
+  <action name="actionQoted_printable_Encode">
+   <property name="text">
+    <string>Quoted-printable Encode</string>
+   </property>
+  </action>
+  <action name="actionQuoted_printable_Decode">
+   <property name="text">
+    <string>Quoted-printable Decode</string>
+   </property>
+  </action>
+  <action name="actionURL_Encode">
+   <property name="text">
+    <string>URL Encode</string>
+   </property>
+  </action>
+  <action name="actionFull_URL_Encode">
+   <property name="text">
+    <string>Full URL Encode</string>
+   </property>
+  </action>
+  <action name="actionURL_Decode">
+   <property name="text">
+    <string>URL Decode</string>
+   </property>
+  </action>
+  <action name="actionSAML_Decode">
+   <property name="text">
+    <string>SAML Decode</string>
+   </property>
+  </action>
+  <action name="actionAbout_2">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionExport_to_RTF">
+   <property name="text">
+    <string>Export to RTF</string>
+   </property>
+  </action>
+  <action name="actionExport_to_HTML">
+   <property name="text">
+    <string>Export to HTML</string>
+   </property>
+  </action>
+  <action name="actionCopy_RTF_to_clipboard">
+   <property name="text">
+    <string>Copy RTF to clipboard</string>
+   </property>
+  </action>
+  <action name="actionCopy_HTML_to_clipboard">
+   <property name="text">
+    <string>Copy HTML to clipboard</string>
+   </property>
+  </action>
+  <action name="actionCopy_all_formats_to_clipboard">
+   <property name="text">
+    <string>Copy all formats to clipboard</string>
+   </property>
+  </action>
+  <action name="actionShow_Plugin_Manager">
+   <property name="text">
+    <string>Show Plugin Manager</string>
+   </property>
+  </action>
+  <action name="actionAbout_3">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionWindow">
+   <property name="text">
+    <string>窗口(&amp;)...</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="toolbarimg.qrc"/>
+ </resources>
+ <connections/>
+</ui>
