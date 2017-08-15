@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--在文本框结尾处理绘制图片-->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="I love Android"
+        android:textSize="30sp"
+        android:drawableEnd="@mipmap/ic_launcher"
+        android:drawableRight="@mipmap/ic_launcher">
+        <!--上面drawableRight是根据提示而增加的，兼容版本号17-->
+    </TextView>
+
+    <!--设置中间省略-->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="25sp"
+        android:ellipsize="middle"
+        android:maxLines="1"
+        android:text="I love Android. I love Android. I love Android. I love Android."
+        >
+    </TextView>
+
+    <!--对邮箱和电话增加链接-->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:textSize="25sp"
+        android:text="邮箱:yanglw115@126.com,电话:027-88886666,网址:www.baidu.com"
+        android:autoLink="email|phone|web">
+    </TextView>
+
+    <!--设置字体格式及阴影效果-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试"
+        android:textSize="25sp"
+        android:shadowColor="#f00"
+        android:shadowDx="10.0"
+        android:shadowDy="8.0"
+        android:shadowRadius="3.0">
+    </TextView>
+
+    <!--设置密码输入，注意：原来使用的是passwdEnable，现在使用inputType-->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="123456"
+        android:textSize="25sp"
+        android:inputType="textPassword">
+    </TextView>
+
+    <!--设置可勾选的文本，但是由于其需要drawable实现对应功能，所以暂时跳过-->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="可勾选的文本"
+        android:textSize="25sp"
+        >
+    </TextView>
+</LinearLayout>

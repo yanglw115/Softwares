@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="butterfly.jpg">images/butterfly.jpg</file>
+    </qresource>
+</RCC>

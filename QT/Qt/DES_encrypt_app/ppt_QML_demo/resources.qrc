@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="arrowD.png">resource/arrowD.png</file>
+        <file alias="arrowL.png">resource/arrowL.png</file>
+        <file alias="arrowR.png">resource/arrowR.png</file>
+        <file alias="arrowU.png">resource/arrowU.png</file>
+    </qresource>
+</RCC>

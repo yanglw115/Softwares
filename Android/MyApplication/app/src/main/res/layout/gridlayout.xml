@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--对于root而言，其layout_height不能与父窗口匹配，否则最下面一排按钮将被拉长-->
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:rowCount="6"
+    android:columnCount="4"
+    android:id="@+id/root">
+
+    <TextView
+        android:id="@+id/TextViewG"
+        android:layout_columnSpan="4"
+        android:layout_rowSpan="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="50sp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:padding="3dp"
+        android:gravity="right"
+        android:background="#eee"
+        android:textColor="#000"
+        android:text="0">
+    </TextView>
+
+    <Button
+        android:id="@+id/buttonR0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="4"
+        android:layout_rowSpan="1"
+        android:background="#9ff"
+        android:text="清零"
+        android:textSize="25sp">
+    </Button>
+
+</GridLayout>

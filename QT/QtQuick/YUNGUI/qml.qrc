@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>SingleGoods.qml</file>
+        <file>GoodsList.qml</file>
+        <file>GoodsDetail.qml</file>
+        <file>VideoPlay.qml</file>
+        <file>ShoppingCart.qml</file>
+        <file>GoodsInCart.qml</file>
+        <file>PayStyleSelection.qml</file>
+        <file>PayDetailByCoin.qml</file>
+        <file>config.xml</file>
+        <file>GoodsListModel.qml</file>
+        <file>PayDetailByCard.qml</file>
+    </qresource>
+    <qresource prefix="/photoes">
+        <file>photoes/background.jpg</file>
+        <file>photoes/payStyleUpbackground.jpg</file>
+        <file>photoes/styleSelectBG.jpg</file>
+        <file>photoes/payUIUpBG.jpg</file>
+        <file>photoes/payUIDownBG.jpg</file>
+        <file>photoes/YiShouWan.png</file>
+        <file>photoes/insertCard.jpg</file>
+    </qresource>
+</RCC>

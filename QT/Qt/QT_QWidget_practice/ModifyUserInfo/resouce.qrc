@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="defaultHead.png">resource/defaultHead.png</file>
+    </qresource>
+</RCC>

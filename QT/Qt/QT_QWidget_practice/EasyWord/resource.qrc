@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/img">
+        <file alias="about.png">Resource/about.png</file>
+        <file alias="copy.png">Resource/copy.png</file>
+        <file alias="cut.png">Resource/cut.png</file>
+        <file alias="exit.png">Resource/exit.png</file>
+        <file alias="mirrorH.png">Resource/mirrorH.png</file>
+        <file alias="mirrorV.png">Resource/mirrorV.png</file>
+        <file alias="newFile.png">Resource/newFile.png</file>
+        <file alias="openFile.png">Resource/openFile.png</file>
+        <file alias="paste.png">Resource/paste.png</file>
+        <file alias="printImg.png">Resource/printImg.png</file>
+        <file alias="printText.png">Resource/printText.png</file>
+        <file alias="rotate90.png">Resource/rotate90.png</file>
+        <file alias="rotate180.png">Resource/rotate180.png</file>
+        <file alias="rotate270.png">Resource/rotate270.png</file>
+        <file alias="save.png">Resource/save.png</file>
+        <file alias="zoomIn.png">Resource/zoomIn.png</file>
+        <file alias="zoomOut.png">Resource/zoomOut.png</file>
+        <file alias="redo.png">Resource/redo.png</file>
+        <file alias="undo.png">Resource/undo.png</file>
+        <file alias="bold.png">Resource/bold.png</file>
+        <file alias="color.png">Resource/color.png</file>
+        <file alias="italic.png">Resource/italic.png</file>
+        <file alias="underLine.png">Resource/underLine.png</file>
+        <file alias="alignAll.png">Resource/alignAll.png</file>
+        <file alias="alignCenter.png">Resource/alignCenter.png</file>
+        <file alias="alignLeft.png">Resource/alignLeft.png</file>
+        <file alias="alignRight.png">Resource/alignRight.png</file>
+    </qresource>
+</RCC>

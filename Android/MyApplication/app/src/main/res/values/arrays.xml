@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="books">
+        <item>湖北省武汉市</item>
+        <item>湖南省长沙市</item>
+        <item>广东省深圳市</item>
+        <item>河南省郑州市</item>
+        <item>江苏省苏州市</item>
+        <item>安徽省合肥市</item>
+    </string-array>
+    <string-array name="gender_name_list">
+        <item>男</item>
+        <item>女</item>
+    </string-array>
+    <string-array name="light_strength_list">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="light_type">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+    </string-array>
+    <array name="arrayTest">
+        <item>@string/app_name</item>
+    </array>
+</resources>

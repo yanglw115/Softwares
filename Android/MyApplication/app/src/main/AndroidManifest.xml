@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.administrator.helloworld">
+
+    <uses-sdk
+        android:minSdkVersion="17"
+        android:targetSdkVersion="21" />
+
+    <!-- 应用程序权限 -->
+    <uses-permission
+        android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity android:name=".MainActivityGestureDetector">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- SQLiteOpenHelper -->
+        <!--<activity android:name=".MainActivitySQLiteOpenHelperApp">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+        <!--&lt;!&ndash; Material的主题需要Android系统版本为5.0及以上 &ndash;&gt;-->
+        <!--<activity android:name=".ActivitySQLiteOpenHelperResult"-->
+            <!--android:theme="@android:style/Theme.Material.Dialog">-->
+        <!--</activity>-->
+        <!-- SQLiteOpenHelper -->
+
+        <!-- Intent -->
+        <!--<activity android:name=".MainActivityIntentGetContact">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+        <!-- Intent -->
+
+        <!-- intent-filter -->
+        <!--<activity android:name=".MainActivityStartActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+        <!--<activity android:name=".SecondaryStartActivity">-->
+            <!--<intent-filter>-->
+                <!--&lt;!&ndash; 下面的name如果引用的是自定义的内容，则可以随便赋值，比如"TTTTTTTT" &ndash;&gt;-->
+                <!--<action android:name="administrator.intent.action.ACTION_SECONDARY"/>-->
+                <!--<category android:name="android.intent.category.DEFAULT"/>-->
+                <!--<data android:scheme="yangliwei"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>>-->
+        <!-- intent-filter -->
+
+        <!--<activity android:name=".MainActivityLauncherActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <!--<activity android:name=".ExpandableListActivityTest"-->
+            <!--android:label="查看星际兵种">-->
+        <!--</activity>-->
+        <!--<activity android:name=".PreferenceActivityTest"-->
+            <!--android:label="设置程序参数">-->
+        <!--</activity>-->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+    </application>
+
+</manifest>

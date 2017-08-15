@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/img">
+        <file alias="butterflyUp.png">images/butterfly1.PNG</file>
+        <file alias="butterflyDown.png">images/butterfly2.PNG</file>
+        <file alias="star.png">images/star.png</file>
+    </qresource>
+</RCC>
