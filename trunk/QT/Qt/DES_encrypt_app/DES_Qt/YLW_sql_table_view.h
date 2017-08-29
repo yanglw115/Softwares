@@ -11,6 +11,8 @@
 #include <QLayout>
 #include <QFileDialog>
 #include <QItemSelectionModel>
+#include <QGroupBox>
+#include <QSpinBox>
 
 #include "YLW_file_line_edit.h"
 #include "YLW_my_table_view.h"
@@ -32,6 +34,8 @@ private slots:
     void slotAddNewRowRecord();
     void slotDeleteRowRecord();
     void slotSqlModelDataChanged();
+    void slotConvertTimeToBJ();
+    void slotConvertTimeToUnix();
 
 protected:
     virtual void dragEnterEvent(QDragEnterEvent *event);
@@ -64,6 +68,19 @@ private:
     QPushButton *m_pButtonNewRecord;
     QPushButton *m_pButtonDeleteRecord;
     QVBoxLayout *m_pVLayoutSqlOper;
+
+    QGroupBox *m_pGroupBoxStampConvert;
+    QLabel *m_pLabelUnixBefore;
+    QLineEdit *m_pLineEditUnixBefore;
+    QPushButton *m_pButtonConvertToBJ;
+    QLineEdit *m_pLineEditBJAfter;
+
+    QLabel *m_pLabelBJBefore;
+    QLineEdit *m_pLineEditBJBefore;
+    QPushButton *m_pButtonConvertToUnix;
+    QLineEdit *m_pLineEditUnixAfter;
+    QPushButton *m_pButtonCopyUnix;
+
 };
 
 #endif // SQLTABLEVIEW_H

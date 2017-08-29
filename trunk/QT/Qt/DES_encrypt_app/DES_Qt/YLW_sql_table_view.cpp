@@ -5,8 +5,10 @@
 #include <QSqlRecord>
 #include <QSqlIndex>
 #include <QDateTime>
+#include <QMessageBox>
 
 #include "YLW_sql_table_view.h"
+#include "YLW_VS_char_set.h"
 
 const QString g_strSqlDriverName                    = "QSQLITE";
 const QString g_strConnectName                      = "HWAPP";
@@ -24,6 +26,40 @@ SQLOperateWidget::SQLOperateWidget(QWidget *parent)
 
     m_pTableView = new MyTableView(this);
     this->setAcceptDrops(true);
+
+
+    m_pGroupBoxStampConvert = new QGroupBox(this);
+    m_pLabelUnixBefore = new QLabel(tr("Unix时间戳:"), this);
+    m_pLineEditUnixBefore = new QLineEdit(this);
+    m_pButtonConvertToBJ = new QPushButton(tr("转换为北京时间:"), this);
+    m_pLineEditBJAfter = new QLineEdit(this);
+
+    m_pLabelBJBefore = new QLabel(tr("北京时间(年/月/日 时:分:秒)"), this);
+    m_pLineEditBJBefore = new QLineEdit(this);
+    m_pButtonConvertToUnix = new QPushButton(tr("转换为Unix时间戳:"), this);
+    m_pLineEditUnixAfter = new QLineEdit(this);
+    m_pButtonCopyUnix = new QPushButton(tr("复制"), this);
+
+    QHBoxLayout *pHBoxConvertToBJ = new QHBoxLayout;
+    pHBoxConvertToBJ->addWidget(m_pLabelUnixBefore);//, 0, Qt::AlignRight);
+    pHBoxConvertToBJ->addWidget(m_pLineEditUnixBefore);//, 0, Qt::AlignLeft);
+    pHBoxConvertToBJ->addWidget(m_pButtonConvertToBJ);//, 0, Qt::AlignLeft);
+    pHBoxConvertToBJ->addWidget(m_pLineEditBJAfter);//, 0, Qt::AlignLeft);
+    connect(m_pButtonConvertToBJ, SIGNAL(clicked(bool)), this, SLOT(slotConvertTimeToBJ()));
+
+    QHBoxLayout *pHBoxConvertToUnix = new QHBoxLayout;
+    pHBoxConvertToUnix->addWidget(m_pLabelBJBefore, 0, Qt::AlignLeft);
+    pHBoxConvertToUnix->addWidget(m_pLineEditBJBefore);
+    pHBoxConvertToUnix->addWidget(m_pButtonConvertToUnix);
+    pHBoxConvertToUnix->addWidget(m_pLineEditUnixAfter);
+    pHBoxConvertToUnix->addWidget(m_pButtonCopyUnix);
+    connect(m_pButtonConvertToUnix, SIGNAL(clicked(bool)), this, SLOT(slotConvertTimeToUnix()));
+
+    QVBoxLayout *pVBoxLayoutConvert = new QVBoxLayout;
+    pVBoxLayoutConvert->addLayout(pHBoxConvertToBJ);
+    pVBoxLayoutConvert->addLayout(pHBoxConvertToUnix);
+
+    m_pGroupBoxStampConvert->setLayout(pVBoxLayoutConvert);
 
     /* 数据库操作部分 */
     m_pLabelSqlFile = new QLabel(tr("数据库文件:"), this);
@@ -82,6 +118,7 @@ SQLOperateWidget::SQLOperateWidget(QWidget *parent)
 
     /* 该类的主Layout */
     m_pVLayoutSqlOper = new QVBoxLayout(this);
+    m_pVLayoutSqlOper->addWidget(m_pGroupBoxStampConvert);
     m_pVLayoutSqlOper->addLayout(pHLayoutSqlFile);
     m_pVLayoutSqlOper->addLayout(pHLayoutTable);
     m_pVLayoutSqlOper->addWidget(m_pTableView);
@@ -224,6 +261,28 @@ void SQLOperateWidget::slotSqlModelDataChanged()
 {
     m_pButtonSaveChanges->setEnabled(true);
     m_pButtonRefresh->setEnabled(true);
+}
+
+void SQLOperateWidget::slotConvertTimeToBJ()
+{
+    if (m_pLineEditUnixBefore->text().constData()->isDigit()) {
+        QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(m_pLineEditUnixBefore->text().toLongLong() * 1000);
+        if (dateTime.isValid()) {
+            m_pLineEditBJAfter->setText(dateTime.toString(Qt::SystemLocaleLongDate));
+        } else {
+            QMessageBox::warning(this, tr("时间戳转换"), tr("输入的时间戳无效，请核准后重新输入!"));
+        }
+    }
+}
+
+void SQLOperateWidget::slotConvertTimeToUnix()
+{
+    QDateTime dateTime = QDateTime::fromString(m_pLineEditBJBefore->text(), "yyyy/M/d h:m:s");
+    if (dateTime.isValid()) {
+        m_pLineEditUnixAfter->setText(QString("%1").arg(dateTime.toMSecsSinceEpoch() / 1000));
+    } else {
+        QMessageBox::warning(this, tr("时间戳转换"), tr("输入的北京时间无效，请核准后重新输入!"));
+    }
 }
 
 void SQLOperateWidget::dragEnterEvent(QDragEnterEvent *event)

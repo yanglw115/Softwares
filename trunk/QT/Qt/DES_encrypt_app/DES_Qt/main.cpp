@@ -1,9 +1,11 @@
-#include "YLW_main_widget.h"
+﻿#include "YLW_main_widget.h"
 #include <QApplication>
 #include <QTextCodec>
+#include "YLW_VS_char_set.h"
 
 int main(int argc, char *argv[])
 {
+
     QApplication a(argc, argv);
 
     MainWidget w;

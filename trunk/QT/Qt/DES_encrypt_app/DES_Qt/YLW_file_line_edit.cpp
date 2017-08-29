@@ -2,6 +2,7 @@
 #include <QtDebug>
 
 #include "YLW_file_line_edit.h"
+#include "YLW_VS_char_set.h"
 
 FileLineEdit::FileLineEdit(QWidget *parent)
     : QLineEdit(parent)

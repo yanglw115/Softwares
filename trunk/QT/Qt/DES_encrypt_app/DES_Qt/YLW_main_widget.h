@@ -6,6 +6,7 @@
 
 #include "YLW_des_encrypt_widget.h"
 #include "YLW_des_decrypt_widget.h"
+#include "YLW_http_reqeust_tools.h"
 
 class MainWidget : public QTabWidget
 {
@@ -19,6 +20,7 @@ private slots:
 private:
     DESEncryptWidget *m_pEncryptWidget;
     DESDecryptWidget *m_pDecryptWidget;
+    CHttpReqeustTools *m_pHttpRequestTools;
     bool m_bOpenDatabaseOper;
 };
 

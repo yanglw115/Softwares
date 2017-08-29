@@ -2,6 +2,7 @@
 
 #include "YLW_des_decrypt_widget.h"
 #include "YLW_des_source.h"
+#include "YLW_VS_char_set.h"
 
 const static QString g_strKeyDefault = "%U(^f6@R";
 
