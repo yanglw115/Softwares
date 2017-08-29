@@ -5,9 +5,7 @@
 
 #include "YLW_des_source.h"
 
-#if _MSC_VER >= 1600
-#pragma execution_character_set("utf-8")
-#endif
+#include "YLW_VS_char_set.h"
 
 #ifdef __cplusplus
 extern "C" {

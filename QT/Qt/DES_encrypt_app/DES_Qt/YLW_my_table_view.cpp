@@ -5,6 +5,7 @@
 #include <QtDebug>
 
 #include "YLW_my_table_view.h"
+#include "YLW_VS_char_set.h"
 
 MyTableView::MyTableView(QWidget *parent)
     : QTableView(parent)
