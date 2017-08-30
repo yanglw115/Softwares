@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     YLW_file_line_edit.cpp \
     YLW_sql_table_view.cpp \
     YLW_my_table_view.cpp \
-    YLW_http_reqeust_tools.cpp
+    YLW_http_reqeust_tools.cpp \
+    YLW_key_value.cpp \
+    YLW_utils.cpp
 
 HEADERS  += YLW_main_widget.h \
     YLW_des_encrypt_widget.h \
@@ -32,7 +34,9 @@ HEADERS  += YLW_main_widget.h \
     YLW_sql_table_view.h \
     YLW_my_table_view.h \
     YLW_VS_char_set.h \
-    YLW_http_reqeust_tools.h
+    YLW_http_reqeust_tools.h \
+    YLW_key_value.h \
+    YLW_utils.h
 
 RESOURCES += \
     rec.qrc

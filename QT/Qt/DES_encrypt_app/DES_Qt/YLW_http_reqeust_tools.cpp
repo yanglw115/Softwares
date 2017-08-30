@@ -1,5 +1,7 @@
-﻿#include "ylw_http_reqeust_tools.h"
-#include "ylw_vs_char_set.h"
+﻿#include "YLW_http_reqeust_tools.h"
+#include "YLW_vs_char_set.h"
+#include "YLW_key_value.h"
+#include "YLW_utils.h"
 
 #include <QtDebug>
 #include <QJsonObject>
@@ -15,6 +17,17 @@ static const QString g_strServersUpdate[2] = {"http://router.daboowifi.net/scale
                                             "http://openapi.openoo.com/forward/api/rest/router"};
 
 static const QString g_strTimeFormat = "yyyy-MM-dd hh:mm:ss";
+
+/**  JAVA相关接口 **/
+#define METHOD_AD_TASK "youle.machine.ad.publishPlan"
+#define METHOD_UPGRADE_CHECK "youle.version.update.check"
+
+#define APPKEY		"W08a1G9fxIoXR9RW808a1G9fxIoXR9Rx"
+#define HTTPVER		"1.0"
+#define FORMAT		"json"
+
+#define SECRETKEY  "dasdfasdfghjkqwertyughjkqwertyu"
+static const char ClientId[] = "sumenet_54d1c89ee30a29bfcd36cd36dd34rrs";
 
 CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     : QDialog(parent)
@@ -337,7 +350,8 @@ void CHttpReqeustTools::getRequestData(QString &strData)
         if (TYPE_SERVER_DNET == m_pComboBoxServerType->currentIndex()) {
             objJson.insert(tr("ucode"), QJsonValue(m_pLineEditMac->text()));
         } else {
-            ;
+            getADTaskRequestBody(strData);
+            return;
         }
     } else {
         if (TYPE_SERVER_DNET == m_pComboBoxServerType->currentIndex()) {
@@ -350,7 +364,8 @@ void CHttpReqeustTools::getRequestData(QString &strData)
             objJson.insert(tr("key"), QJsonValue(tr("NGYwNDMxM2FmMThmMzgwMzo1YWMxMTA1NWJjYjczYWE0")));
             objJson.insert(tr("ucode"), QJsonValue(m_pLineEditMac->text() + tr(":Route")));
         } else {
-            ;
+            getUpdateTaskRequestBody(strData);
+            return;
         }
     }
     docJson.setObject(objJson);
@@ -360,8 +375,14 @@ void CHttpReqeustTools::getRequestData(QString &strData)
 void CHttpReqeustTools::setTableWidgetDataAD(const QString &strData)
 {
     QJsonObject objRoot = QJsonDocument::fromJson(strData.toLatin1()).object();
-    QJsonObject objResult = (objRoot["result"].isUndefined()? QJsonObject(): objRoot["result"].toObject());
-    QJsonArray arrayTask = (objResult.isEmpty()? QJsonArray(): objResult["task"].toArray());
+    QJsonObject objResult;
+    QJsonArray arrayTask;
+    if (TYPE_SERVER_DNET == m_pComboBoxServerType->currentIndex()) {
+        objResult = (objRoot["result"].isUndefined()? QJsonObject(): objRoot["result"].toObject());
+        arrayTask = (objResult.isEmpty()? QJsonArray(): objResult["task"].toArray());
+    } else {
+        arrayTask = (objRoot["list"].isUndefined()? QJsonArray(): objRoot["list"].toArray());
+    }
     int nTaskCount = (arrayTask.isEmpty()? 0: arrayTask.size());
 
     m_pTableWidgetAD->clearContents();
@@ -393,7 +414,12 @@ void CHttpReqeustTools::setTableWidgetDataAD(const QString &strData)
 void CHttpReqeustTools::setTableWidgetDataUpdate(const QString &strData)
 {
     QJsonObject objRoot = QJsonDocument::fromJson(strData.toLatin1()).object();
-    QJsonObject objVersion = (objRoot["version"].isUndefined()? QJsonObject(): objRoot["version"].toObject());
+    QJsonObject objVersion;
+    if (TYPE_SERVER_DNET == m_pComboBoxServerType->currentIndex()) {
+        objVersion = (objRoot["version"].isUndefined()? QJsonObject(): objRoot["version"].toObject());
+    } else {
+        objVersion = objRoot;
+    }
     QString strVer = "NULL";
     QString strUrl = "NULL";
     if (!objVersion.isEmpty()) {
@@ -404,5 +430,50 @@ void CHttpReqeustTools::setTableWidgetDataUpdate(const QString &strData)
     m_pTableWidgetUpdate->clearContents();
     m_pTableWidgetUpdate->setItem(0, 0, new QTableWidgetItem(strVer));
     m_pTableWidgetUpdate->setItem(0, 1, new QTableWidgetItem(strUrl));
+}
+
+void CHttpReqeustTools::getADTaskRequestBody(QString &strData)
+{
+    KeyValue kv;
+    QString strSign;
+    strData.clear();
+    kv.putString("appKey", APPKEY);
+    kv.putString("method", METHOD_AD_TASK);
+    kv.putString("format", FORMAT);
+    kv.putString("ver", HTTPVER);
+    kv.putString("mac", m_pLineEditMac->text());
+    kv.putString("timestamp", QDateTime::currentDateTime().toString(g_strTimeFormat));
+
+    strSign = SECRETKEY + kv.toQString() + SECRETKEY;
+    strSign = CUtils::calculateMD5ForString(strSign);
+    kv.putString("sign", strSign);
+
+    kv.setConnector("=");
+    kv.setDelimiter("&");
+
+    strData = kv.toQString();
+}
+
+void CHttpReqeustTools::getUpdateTaskRequestBody(QString &strData)
+{
+    KeyValue kv;
+    QString strSign;
+    strData.clear();
+    kv.putString("appKey", APPKEY);
+    kv.putString("method", METHOD_UPGRADE_CHECK);
+    kv.putString("format", FORMAT);
+    kv.putString("ver", HTTPVER);
+    kv.putString("wifiid", m_pLineEditMac->text());
+    kv.putString("version", m_pLineEditSWVer->text());
+    kv.putString("timestamp", QDateTime::currentDateTime().toString(g_strTimeFormat));
+
+    strSign = SECRETKEY + kv.toQString() + SECRETKEY;
+    strSign = CUtils::calculateMD5ForString(strSign);
+    kv.putString("sign", strSign);
+
+    kv.setConnector("=");
+    kv.setDelimiter("&");
+
+    strData = kv.toQString();
 }
 

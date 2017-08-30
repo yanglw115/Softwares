@@ -85,6 +85,8 @@ private:
     void getRequestData(QString &strData);
     void setTableWidgetDataAD(const QString &strData);
     void setTableWidgetDataUpdate(const QString &strData);
+    void getADTaskRequestBody(QString &strData);
+    void getUpdateTaskRequestBody(QString &strData);
 };
 
 #endif // CHTTPREQEUSTTOOLS_H
