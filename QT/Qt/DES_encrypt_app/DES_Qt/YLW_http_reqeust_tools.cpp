@@ -40,6 +40,7 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     m_pLabelRequestResult = new QLabel(tr("请求结果:"), this);
     m_pLabelCurrentHWVersion = new QLabel(tr("硬件版本号:"), this);
     m_pLabelCurrentSWVersion = new QLabel(tr("软件版本号:"), this);
+    m_pLabelHash = new QLabel(tr("Hash: "), this);
 
     m_pButtonRequest = new QPushButton(tr("开始请求"), this);
     connect(m_pButtonRequest, SIGNAL(clicked(bool)), this, SLOT(slotStartRequest()));
@@ -61,6 +62,8 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     m_pLineEditServer->setText(g_strServersAD[0]);
     m_pLineEditMac = new QLineEdit(this);
     m_pLineEditSWVer = new QLineEdit(this);
+    m_pLineEditHash = new QLineEdit(this);
+    m_pLineEditHash->setReadOnly(true);
     connect(m_pLineEditMac, SIGNAL(textChanged(QString)), this, SLOT(slotMacChanged(QString)));
     connect(m_pLineEditSWVer, SIGNAL(textChanged(QString)), this, SLOT(slotSWVerChanged(QString)));
 
@@ -101,6 +104,9 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     m_pHLayoutResult->addWidget(m_pLabelRequestResult);
     m_pHLayoutResult->addWidget(m_pCheckBoxDisplay);
     m_pHLayoutResult->addStretch();
+    m_pHLayoutResult->addWidget(m_pLabelHash);
+    m_pHLayoutResult->addWidget(m_pLineEditHash);
+    //m_pHLayoutResult->addStretch();
 
     m_pVLayoutMain = new QVBoxLayout(this);
     m_pVLayoutMain->addSpacing(10);
@@ -142,11 +148,14 @@ void CHttpReqeustTools::slotReqestTypeChanged(int index)
 {
     if (TYPE_REQUEST_AD == index) {
         m_pLineEditServer->setText(g_strServersAD[m_pComboBoxServerType->currentIndex()]);
+        slotMacChanged(m_pLineEditMac->text());
     } else {
         m_pLineEditServer->setText(g_strServersUpdate[m_pComboBoxServerType->currentIndex()]);
         if (m_pLineEditSWVer->text().toInt() <= 0) {
             m_pButtonRequest->setEnabled(false);
         }
+        m_pLabelHash->hide();
+        m_pLineEditHash->hide();
     }
     m_pComboBoxHWVersion->setEnabled(index);//这里使用index来代替了true与false
     m_pLineEditSWVer->setEnabled(index);
@@ -175,14 +184,15 @@ void CHttpReqeustTools::slotStartRequest()
         return;
     }
 
-    if (QSslSocket::supportsSsl()) {
-        qDebug() << "SSL supported!";
-    } else {
-        qDebug() << "SSL not supported!";
-    }
+//    if (QSslSocket::supportsSsl()) {
+//        qDebug() << "SSL supported!";
+//    } else {
+//        qDebug() << "SSL not supported!";
+//    }
 
     m_pCheckBoxDisplay->setEnabled(false);
     m_pButtonRequest->setEnabled(false);
+    this->setEnabled(false);
 
     connect(m_pNetworkReply, SIGNAL(finished()), this, SLOT(slotReplyFinished()));
     connect(m_pNetworkReply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
@@ -293,7 +303,13 @@ void CHttpReqeustTools::slotSWVerChanged(const QString &strSWVer)
 
 void CHttpReqeustTools::slotReplyFinished()
 {
+    this->setEnabled(true);
     QString strReply;
+    if (TYPE_REQUEST_AD == m_pComboBoxRequestType->currentIndex()) {
+        m_pLabelHash->show();
+        m_pLineEditHash->show();
+        m_pLineEditHash->clear();
+    }
     if (m_pNetworkReply && (QNetworkReply::NoError == m_pNetworkReply->error())) {
         strReply = m_pNetworkReply->readAll();
         m_pNetworkReply->deleteLater();
@@ -340,6 +356,8 @@ void CHttpReqeustTools::initTableWigets()
 {
     m_pTableWidgetAD->setHorizontalHeaderLabels(QStringList() << tr("Gid") << tr("Type") << tr("StartTime") << tr("EndTime") << tr("Duration") << tr("MD5") << tr("Url"));
     m_pTableWidgetUpdate->setHorizontalHeaderLabels((QStringList() << tr("Version") << tr("Url")));
+    m_pLabelHash->hide();
+    m_pLineEditHash->hide();
 }
 
 void CHttpReqeustTools::getRequestData(QString &strData)
@@ -377,6 +395,10 @@ void CHttpReqeustTools::setTableWidgetDataAD(const QString &strData)
     QJsonObject objRoot = QJsonDocument::fromJson(strData.toLatin1()).object();
     QJsonObject objResult;
     QJsonArray arrayTask;
+
+    QString strHash = (objRoot["hash"].isUndefined()? "NULL": objRoot["hash"].toString());
+    m_pLineEditHash->setText(strHash);
+
     if (TYPE_SERVER_DNET == m_pComboBoxServerType->currentIndex()) {
         objResult = (objRoot["result"].isUndefined()? QJsonObject(): objRoot["result"].toObject());
         arrayTask = (objResult.isEmpty()? QJsonArray(): objResult["task"].toArray());
@@ -402,8 +424,8 @@ void CHttpReqeustTools::setTableWidgetDataAD(const QString &strData)
             int nDuration = (objTemp["duration"].isUndefined()? -1: objTemp["duration"].toInt());
             m_pTableWidgetAD->setItem(i, 0, new QTableWidgetItem(strGid));
             m_pTableWidgetAD->setItem(i, 1, new QTableWidgetItem(tr("%1").arg(nType)));
-            m_pTableWidgetAD->setItem(i, 2, new QTableWidgetItem(tr("%1").arg(QDateTime::fromTime_t(nStartTime).toString(g_strTimeFormat))));
-            m_pTableWidgetAD->setItem(i, 3, new QTableWidgetItem(tr("%1").arg(QDateTime::fromTime_t(nEndTime).toString(g_strTimeFormat))));
+            m_pTableWidgetAD->setItem(i, 2, new QTableWidgetItem(tr("%1").arg((nStartTime == -1? "NULL": QDateTime::fromTime_t(nStartTime).toString(g_strTimeFormat)))));
+            m_pTableWidgetAD->setItem(i, 3, new QTableWidgetItem(tr("%1").arg((nEndTime == -1? "NULL": QDateTime::fromTime_t(nEndTime).toString(g_strTimeFormat)))));
             m_pTableWidgetAD->setItem(i, 4, new QTableWidgetItem(tr("%1").arg(nDuration)));
             m_pTableWidgetAD->setItem(i, 5, new QTableWidgetItem(strMd5));
             m_pTableWidgetAD->setItem(i, 6, new QTableWidgetItem(strUrl));
