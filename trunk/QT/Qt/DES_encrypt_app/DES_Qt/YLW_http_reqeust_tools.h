@@ -52,6 +52,7 @@ private:
     QLabel *m_pLabelRequestResult;
     QLabel *m_pLabelCurrentHWVersion;
     QLabel *m_pLabelCurrentSWVersion;
+    QLabel *m_pLabelHash;
 
     QPushButton *m_pButtonRequest;
     QCheckBox *m_pCheckBoxDisplay;
@@ -62,6 +63,7 @@ private:
     QLineEdit *m_pLineEditServer;
     QLineEdit *m_pLineEditMac;
     QLineEdit *m_pLineEditSWVer;
+    QLineEdit *m_pLineEditHash;
     QTextEdit *m_pTextEditAD;
     QTextEdit *m_pTextEditUpdate;
     QTableWidget *m_pTableWidgetAD;
