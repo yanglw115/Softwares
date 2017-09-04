@@ -1,0 +1,6 @@
+ QPushButton[isSearchButton="true"]{
+border-image: url(:/Qss Editor/pictures/searchButton.png);
+}
+QPushButton[isSearchButton="true"]:hover{
+border-image: url(:/Qss Editor/pictures/searchButton_hover.png);
+}
