@@ -1,0 +1,12 @@
+QPushButton[isPrevButton="true"]{
+border-image: url(:/Qss Editor/pictures/prev.png);
+}
+QPushButton[isPrevButton="true"]:hover{
+border-image: url(:/Qss Editor/pictures/prev_hover.png);
+}
+QPushButton[isNextButton="true"]{
+border-image: url(:/Qss Editor/pictures/next.png);
+}
+QPushButton[isNextButton="true"]:hover{
+border-image: url(:/Qss Editor/pictures/next_hover.png);
+}

@@ -1,0 +1,127 @@
+<RCC>
+  <qresource prefix="Components">
+    <file>pictures/pushButton.png</file>
+    <file>pictures/pushButton-hover.png</file>
+    <file>pictures/chekBox.png</file>
+    <file>pictures/chekBox-cheked.png</file>
+    <file>pictures/chekBox-cheked-hover.png</file>
+    <file>pictures/chekBox-hover.png</file>
+    <file>pictures/DockBackground.png</file>
+    <file>pictures/splashScreen.png</file>
+    <file>pictures/filePushButton.png</file>
+    <file>pictures/fileButton.png</file>
+    <file>pictures/pushButton.png</file>
+    <file>pictures/button.png</file>
+    <file>pictures/BackgroundMenu.png</file>
+    <file>pictures/spinup.png</file>
+    <file>pictures/spindown.png</file>
+    <file>pictures/frame.png</file>
+    <file>pictures/ComboBoxPushButton.png</file>
+    <file>pictures/ComboBoxButton.png</file>
+    <file>pictures/ComboBoxDropDown.png</file>
+  </qresource>
+  <qresource prefix="Help">
+    <file>Documentation/Hidden possibilities.html</file>
+    <file>Documentation/Script Documentation.html</file>
+    <file>Documentation/Actions documentation.html</file>
+  </qresource>
+  <qresource prefix="ico">
+    <file>icos/Help.png</file>
+    <file>icos/script.png</file>
+    <file>icos/Zoom.png</file>
+    <file>icos/OK.png</file>
+    <file>icos/email.png</file>
+    <file>icos/Site.png</file>
+    <file>icos/Redo.png</file>
+    <file>icos/Undo.png</file>
+    <file>icos/select_all.png</file>
+    <file>icos/remove.png</file>
+    <file>icos/Copy.png</file>
+    <file>icos/Cut.png</file>
+    <file>icos/update.png</file>
+    <file>icos/Resources.png</file>
+    <file>icos/donate.png</file>
+    <file>icos/hideToTray.png</file>
+    <file>icos/quit.png</file>
+    <file>icos/View_Clear.png</file>
+    <file>icos/View_Left-Bottom.png</file>
+    <file>icos/View_Right-Bottom.png</file>
+    <file>icos/View_Standart.png</file>
+    <file>icos/Output.png</file>
+    <file>icos/view.png</file>
+    <file>icos/error.png</file>
+    <file>icos/package_editors.png</file>
+    <file>icos/font.png</file>
+    <file>icos/Documentation.png</file>
+    <file>icos/examples.png</file>
+    <file>icos/current file.png</file>
+    <file>icos/colors.png</file>
+    <file>icos/insert.png</file>
+    <file>icos/print.png</file>
+    <file>icos/settings.png</file>
+    <file>icos/recentdocuments.png</file>
+    <file>icos/document-preview.png</file>
+    <file>icos/New.png</file>
+    <file>wordlist.txt</file>
+    <file>icos/home.png</file>
+    <file>icos/textdocument.png</file>
+    <file>icos/find.png</file>
+    <file>icos/replace.png</file>
+    <file>icos/save as.png</file>
+    <file>icos/save.png</file>
+    <file>icos/open.png</file>
+  </qresource>
+  <qresource prefix="Qss Editor">
+    <file>pictures/next-no-edit.png</file>
+    <file>pictures/prev-no-edit.png</file>
+    <file>pictures/prev_hover.png</file>
+    <file>pictures/searchButton.png</file>
+    <file>pictures/next.png</file>
+    <file>pictures/next_hover.png</file>
+    <file>pictures/searchButton_hover.png</file>
+    <file>pictures/prev.png</file>
+  </qresource>
+  <qresource prefix="Other">
+    <file>qss/searchButtonStyleSheet.qss</file>
+    <file>qss/prevNextStyleSheet.qss</file>
+    <file>wordlist.txt</file>
+    <file>qss/default.qss</file>
+  </qresource>
+  <qresource prefix="MainToolBar">
+    <file>pictures/MainToolBar.png</file>
+  </qresource>
+  <qresource prefix="/">
+    <file>images/arrow.png</file>
+    <file>qss/default.qss</file>
+    <file>images/pagefold.png</file>
+    <file>images/frame.png</file>
+    <file>images/radiobutton_unchecked.png</file>
+    <file>images/radiobutton_unchecked_pressed.png</file>
+    <file>images/radiobutton_unchecked_hover.png</file>
+    <file>images/radiobutton_checked.png</file>
+    <file>images/radiobutton_checked_pressed.png</file>
+    <file>images/radiobutton_checked_hover.png</file>
+    <file>images/pushbutton.png</file>
+    <file>images/pushbutton_hover.png</file>
+    <file>images/pushbutton_pressed.png</file>
+    <file>images/checkbox_unchecked.png</file>
+    <file>images/checkbox_unchecked_pressed.png</file>
+    <file>images/checkbox_unchecked_hover.png</file>
+    <file>images/checkbox_checked.png</file>
+    <file>images/checkbox_checked_pressed.png</file>
+    <file>images/checkbox_checked_hover.png</file>
+    <file>images/down_arrow.png</file>
+    <file>images/down_arrow_disabled.png</file>
+    <file>images/up_arrow.png</file>
+    <file>images/up_arrow_disabled.png</file>
+    <file>images/sizegrip.png</file>
+    <file>images/spinup.png</file>
+    <file>images/spinup_off.png</file>
+    <file>images/spinup_hover.png</file>
+    <file>images/spinup_pressed.png</file>
+    <file>images/spindown.png</file>
+    <file>images/spindown_off.png</file>
+    <file>images/spindown_hover.png</file>
+    <file>images/spindown_pressed.png</file>
+  </qresource>
+</RCC>
