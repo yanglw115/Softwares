@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include <QLabel>
-#include <QComboBox>
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QTableWidget>
@@ -12,6 +11,8 @@
 #include <QPushButton>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+
+#include "YLW_mycombobox.h"
 
 class CHttpReqeustTools : public QDialog
 {
@@ -57,9 +58,9 @@ private:
     QPushButton *m_pButtonRequest;
     QCheckBox *m_pCheckBoxDisplay;
 
-    QComboBox *m_pComboBoxRequestType;
-    QComboBox *m_pComboBoxServerType;
-    QComboBox *m_pComboBoxHWVersion;
+    CMyComboBox *m_pComboBoxRequestType;
+    CMyComboBox *m_pComboBoxServerType;
+    CMyComboBox *m_pComboBoxHWVersion;
     QLineEdit *m_pLineEditServer;
     QLineEdit *m_pLineEditMac;
     QLineEdit *m_pLineEditSWVer;

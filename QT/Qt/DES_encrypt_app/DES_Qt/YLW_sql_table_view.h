@@ -6,7 +6,6 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QLabel>
-#include <QComboBox>
 #include <QPushButton>
 #include <QLayout>
 #include <QFileDialog>
@@ -16,6 +15,7 @@
 
 #include "YLW_file_line_edit.h"
 #include "YLW_my_table_view.h"
+#include "YLW_mycombobox.h"
 
 class SQLOperateWidget: public QWidget
 {
@@ -62,7 +62,7 @@ private:
     QPushButton *m_pButtonSqlFileBrowse;
 
     QLabel *m_pLabelDataTable;
-    QComboBox *m_pComboBoxDataTable;
+    CMyComboBox *m_pComboBoxDataTable;
     QPushButton *m_pButtonRefresh;
     QPushButton *m_pButtonSaveChanges;
     QPushButton *m_pButtonNewRecord;

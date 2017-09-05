@@ -73,7 +73,7 @@ SQLOperateWidget::SQLOperateWidget(QWidget *parent)
     connect(m_pButtonSqlFileBrowse, SIGNAL(clicked(bool)), this, SLOT(slotBrowseSqlFile()));
 
     m_pLabelDataTable = new QLabel(tr("表:"), this);
-    m_pComboBoxDataTable = new QComboBox(this);
+    m_pComboBoxDataTable = new CMyComboBox(this);
     connect(m_pComboBoxDataTable, SIGNAL(activated(QString)), this, SLOT(slotSetCurrentTable(QString)));
 
     m_pButtonRefresh = new QPushButton(QIcon(":/refresh.png"), "", this);

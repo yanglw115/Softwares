@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     YLW_http_reqeust_tools.cpp \
     YLW_key_value.cpp \
     YLW_utils.cpp \
-    norwegianwoodstyle.cpp
+    norwegianwoodstyle.cpp \
+    YLW_mycombobox.cpp
 
 HEADERS  += YLW_main_widget.h \
     YLW_des_encrypt_widget.h \
@@ -38,8 +39,11 @@ HEADERS  += YLW_main_widget.h \
     YLW_http_reqeust_tools.h \
     YLW_key_value.h \
     YLW_utils.h \
-    norwegianwoodstyle.h
+    norwegianwoodstyle.h \
+    YLW_mycombobox.h
 
 RESOURCES += \
     rec.qrc \
-    qss/darkStyle/darkStyle.qrc
+    qss/darkStyleNew/darkStyleNew.qrc
+
+DISTFILES +=

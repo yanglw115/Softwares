@@ -4,5 +4,6 @@
         <file alias="save.png">images/save.png</file>
         <file alias="woodbackground.png">images/woodbackground.png</file>
         <file alias="woodbutton.png">images/woodbutton.png</file>
+        <file>qss/darkOrange.qss</file>
     </qresource>
 </RCC>
