@@ -2,6 +2,8 @@
 #include "YLW_VS_char_set.h"
 
 #include <QLabel>
+#include <QFile>
+#include <QApplication>
 
 MainWidget::MainWidget(QWidget *parent)
     : QTabWidget(parent)
@@ -24,6 +26,17 @@ MainWidget::~MainWidget()
 
 }
 
+void MainWidget::registerFileWatcher(const QString &strFilePath)
+{
+    m_pFileWatcher = new QFileSystemWatcher(this);
+    if (m_pFileWatcher->addPath(strFilePath)) {
+        qDebug() << "添加QSS文件监控成功: " << strFilePath;
+    } else {
+        qDebug() << "添加QSS文件监控失败: " << strFilePath;
+    }
+    connect(m_pFileWatcher, SIGNAL(fileChanged(QString)), this, SLOT(slotFileChanged(QString)));
+}
+
 void MainWidget::slotChangeSize(bool bOpenDatabaseOper)
 {
     if (bOpenDatabaseOper) {
@@ -38,5 +51,18 @@ void MainWidget::slotChangeSize(bool bOpenDatabaseOper)
         if (!this->isMaximized()) {
             this->resize(700, 300);
         }
+    }
+}
+
+void MainWidget::slotFileChanged(const QString &strFilePath)
+{
+    QFile fileQss(strFilePath);
+    if (fileQss.open(QFile::ReadOnly)) {
+        QTextStream textFile(&fileQss);
+        QString strStyleSheet = textFile.readAll();
+        qApp->setStyleSheet(strStyleSheet);
+        fileQss.close();
+    } else {
+        qDebug() << "Open QSS file failed: " << strFilePath;
     }
 }

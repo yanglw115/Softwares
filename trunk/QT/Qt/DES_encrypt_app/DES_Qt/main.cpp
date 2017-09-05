@@ -3,6 +3,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QFile>
+#include <QFileInfo>
 #include <QtDebug>
 
 #include "YLW_VS_char_set.h"
@@ -12,19 +13,15 @@ int main(int argc, char *argv[])
 {
 
     QApplication a(argc, argv);
+    MainWidget w;
 
-    QFile fileQss(":/darkStyleQss/darkStyle.qss");
-    if (fileQss.open(QFile::ReadOnly)) {
-        QTextStream textFile(&fileQss);
-        QString strStyleSheet = textFile.readAll();
-        a.setStyleSheet(strStyleSheet);
-    } else {
-        qDebug() << "Open QSS file failed!";
-    }
+    QString filePath = "../DES_Qt/qss/darkStyleNew/darkStyleNew.qss";
+    QFile fileQss(filePath);
+    QFileInfo fileInfo(fileQss);
+    w.registerFileWatcher(fileInfo.absoluteFilePath());
+    w.slotFileChanged(fileInfo.absoluteFilePath());
 
     //QApplication::setStyle(new NorwegianWoodStyle);
-
-    MainWidget w;
     w.show();
 
     return a.exec();

@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QDateTime>
+#include <QListView>
 
 static const QString g_strServersAD[2] = {"http://sume.daboowifi.net/v2/api/task",
                                         "http://openapi.openoo.com/forward/api/rest/router"};
@@ -47,12 +48,12 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     m_pCheckBoxDisplay = new QCheckBox(tr("显示转换"), this);
     connect(m_pCheckBoxDisplay, SIGNAL(stateChanged(int)), this, SLOT(slotChangeDisplay()));
 
-    m_pComboBoxRequestType = new QComboBox(this);
+    m_pComboBoxRequestType = new CMyComboBox(this);
     m_pComboBoxRequestType->addItems(QStringList() << tr("广告任务") << tr("升级任务"));
     m_pComboBoxRequestType->setCurrentIndex(TYPE_REQUEST_AD);
-    m_pComboBoxServerType = new QComboBox(this);
+    m_pComboBoxServerType = new CMyComboBox(this);
     m_pComboBoxServerType->addItems(QStringList() << tr(".NET") << tr("JAVA"));
-    m_pComboBoxHWVersion = new QComboBox(this);
+    m_pComboBoxHWVersion = new CMyComboBox(this);
     m_pComboBoxHWVersion->addItems(QStringList() << tr("HealthWeighingTr1") << tr("HealthWeighingTraingle") << tr("HealthWeighingFans") << tr("HealthWeighingVS"));
     m_pComboBoxHWVersion->setCurrentIndex(0);
     connect(m_pComboBoxRequestType, SIGNAL(currentIndexChanged(int)), this, SLOT(slotReqestTypeChanged(int)));

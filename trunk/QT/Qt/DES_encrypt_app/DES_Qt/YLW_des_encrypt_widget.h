@@ -12,10 +12,10 @@
 #include <QMimeData>
 #include <QFileInfo>
 #include <QtDebug>
-#include <QCombobox>
 
 #include "YLW_file_line_edit.h"
 #include "YLW_sql_table_view.h"
+#include "YLW_mycombobox.h"
 
 class DESEncryptWidget: public QWidget
 {
