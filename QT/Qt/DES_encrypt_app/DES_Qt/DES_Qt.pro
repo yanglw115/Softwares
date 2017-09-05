@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     YLW_my_table_view.cpp \
     YLW_http_reqeust_tools.cpp \
     YLW_key_value.cpp \
-    YLW_utils.cpp
+    YLW_utils.cpp \
+    norwegianwoodstyle.cpp
 
 HEADERS  += YLW_main_widget.h \
     YLW_des_encrypt_widget.h \
@@ -36,7 +37,9 @@ HEADERS  += YLW_main_widget.h \
     YLW_VS_char_set.h \
     YLW_http_reqeust_tools.h \
     YLW_key_value.h \
-    YLW_utils.h
+    YLW_utils.h \
+    norwegianwoodstyle.h
 
 RESOURCES += \
-    rec.qrc
+    rec.qrc \
+    qss/darkStyle/darkStyle.qrc
