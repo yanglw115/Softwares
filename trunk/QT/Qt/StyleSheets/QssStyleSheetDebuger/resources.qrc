@@ -23,4 +23,7 @@
         <file>resources/icons/undo.png</file>
         <file>resources/icons/update.png</file>
     </qresource>
+    <qresource prefix="/qss">
+        <file alias="pure-black.jpg">qss/MyStyle/Icons/pure-black.jpg</file>
+    </qresource>
 </RCC>
