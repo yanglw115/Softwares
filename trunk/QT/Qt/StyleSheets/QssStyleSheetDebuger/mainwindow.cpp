@@ -1,6 +1,8 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QtDebug>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -30,6 +32,31 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::registerFileWatcher(const QString &strFilePath)
+{
+    m_pFileSystemWatcher = new QFileSystemWatcher(this);
+    connect(m_pFileSystemWatcher, SIGNAL(fileChanged(QString)), this, SLOT(slotWatchedFileChanged(QString)));
+    if (m_pFileSystemWatcher->addPath(strFilePath)) {
+        qDebug() << "File watch set success: " << strFilePath;
+    } else {
+        qWarning() << "File watch set failed: " << strFilePath;
+    }
+}
+
+void MainWindow::slotWatchedFileChanged(const QString &strFilePath)
+{
+    QFile file(strFilePath);
+    if (file.open(QIODevice::ReadOnly)) {
+        QTextStream textStream(&file);
+        QString strStyle;
+        strStyle = textStream.readAll();
+        qApp->setStyleSheet(strStyle);
+    } else {
+       qWarning() << "Open file failed, cannot set style sheet!";
+    }
+
 }
 
 void MainWindow::slotChangeStacked(const QModelIndex &index)
