@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>resources/icons/about.png</file>
+        <file>resources/icons/android.png</file>
+        <file>resources/icons/copy.png</file>
+        <file>resources/icons/cut.png</file>
+        <file>resources/icons/documents.png</file>
+        <file>resources/icons/eclipse.png</file>
+        <file>resources/icons/file_history.png</file>
+        <file>resources/icons/file_open.png</file>
+        <file>resources/icons/file-close.png</file>
+        <file>resources/icons/file-new.png</file>
+        <file>resources/icons/find.png</file>
+        <file>resources/icons/find_in_project.png</file>
+        <file>resources/icons/notepad++.png</file>
+        <file>resources/icons/paste.png</file>
+        <file>resources/icons/preferences.png</file>
+        <file>resources/icons/QT.png</file>
+        <file>resources/icons/Redo.png</file>
+        <file>resources/icons/replace.png</file>
+        <file>resources/icons/skin.png</file>
+        <file>resources/icons/surface.png</file>
+        <file>resources/icons/undo.png</file>
+        <file>resources/icons/update.png</file>
+    </qresource>
+</RCC>
