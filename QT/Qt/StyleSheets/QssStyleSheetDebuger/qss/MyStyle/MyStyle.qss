@@ -1,0 +1,4 @@
+/* QAbstractScrollArea: 所有他的子类都可以设置他的背景属性，但是一般直接设置其子类 */
+QAbstractScrollArea {
+    background-color: #FFE1FF
+}
