@@ -1,4 +1,23 @@
-/* QAbstractScrollArea: 所有他的子类都可以设置他的背景属性，但是一般直接设置其子类 */
+/* BoxModel的概念: 
+ * 每个Widget被当作一个由4个同轴的矩形组成的盒子. Margin-Border-padding-content
+ * Margin: 边距,与其他widget的边距; 
+ * Border: 边界; 
+ * Padding: 相当于内边距,与内部内容的距离,即Border与Content的距离;
+ * Content: 内部内容; 
+ * 默认以上四个矩形的大小是相同的,即margin,border-width和padding属性值默认为0; 
+ *
+ * background-image,border-image和image
+ * background-image默认只展示在border内部,但是可以通过background-clip进行改变;另外还可以通过background-repeat和background控制图像repeat及原点;
+ * border-image可以使图像根据widget的大小改变而改变,但是background-image却做不到.二者同时出现时,background-image将被border-image覆盖;
+ * image位于boder-image的上层,image一般也不能够根据widget的大小进行拉伸,但是image却可以指定使用svg格式的图像以便根据widget大小而进行拉伸.同时image属性只能用于sub controls;
+ */
+
+
+/* QAbstractScrollArea: 所有他的子类都可以设置他的背景属性，但是一般直接设置其子类
+ * QAbstractScrollArea支持BoxModel*/
 QAbstractScrollArea {
-    background-color: #FFE1FF
+    /*background-color: #000000;*/
+    /*background-image: url();*/
+    border-image: url(":/qss/pure-black.jpg");
+    /*background-attachment: scroll;*/ /* scroll: 背景图会滚动; fixed: 背景图固定 */
 }
