@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     QString strQssFile = "../QssStyleSheetDebuger/qss/MyStyle/MyStyle.qss";
+    //QString strQssFile = "../blue.qss";
     w.registerFileWatcher(strQssFile);
     w.slotWatchedFileChanged(strQssFile);
 

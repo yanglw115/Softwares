@@ -25,7 +25,11 @@ MainWindow::MainWindow(QWidget *parent) :
     for (int i = 0; i < 200; ++i) {
         strListColumn << QString("Column %1").arg(i);
     }
-    ui->columnView->setModel(new QStringListModel(strListColumn, this));
+    //ui->columnView->setModel(new QStringListModel(strListColumn, this));
+    ui->columnView->setModel(m_pFileSystemModel);
+    ui->tableWidget->setSortingEnabled(true);
+    //ui->tableWidget->horizontalHeader()->setEnabled(true);
+    //ui->tableWidget->verticalHeader()->setEnabled(true);
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotChangeStacked(QModelIndex)));
 }
 

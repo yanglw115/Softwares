@@ -25,5 +25,22 @@
     </qresource>
     <qresource prefix="/qss">
         <file alias="pure-black.jpg">qss/MyStyle/Icons/pure-black.jpg</file>
+        <file alias="checkbox_checked.png">qss/MyStyle/Icons/checkbox_checked.png</file>
+        <file alias="checkbox_checked_hover.png">qss/MyStyle/Icons/checkbox_checked_hover.png</file>
+        <file alias="checkbox_checked_pressed.png">qss/MyStyle/Icons/checkbox_checked_pressed.png</file>
+        <file alias="checkbox_unchecked.png">qss/MyStyle/Icons/checkbox_unchecked.png</file>
+        <file alias="checkbox_unchecked_hover.png">qss/MyStyle/Icons/checkbox_unchecked_hover.png</file>
+        <file alias="checkbox_unchecked_pressed.png">qss/MyStyle/Icons/checkbox_unchecked_pressed.png</file>
+        <file alias="combobox_down_arrow.png">qss/MyStyle/Icons/combobox_down_arrow.png</file>
+        <file alias="spindown.png">qss/MyStyle/Icons/spindown.png</file>
+        <file alias="spinup.png">qss/MyStyle/Icons/spinup.png</file>
+        <file alias="spindown_hover.png">qss/MyStyle/Icons/spindown_hover.png</file>
+        <file alias="spindown_pressed.png">qss/MyStyle/Icons/spindown_pressed.png</file>
+        <file alias="spinup_hover.png">qss/MyStyle/Icons/spinup_hover.png</file>
+        <file alias="spinup_pressed.png">qss/MyStyle/Icons/spinup_pressed.png</file>
+        <file alias="dock_close.png">qss/MyStyle/Icons/dock_lose.png</file>
+        <file alias="dock_undock.png">qss/MyStyle/Icons/dock_undock.png</file>
+        <file alias="header_down_arrow.png">qss/MyStyle/Icons/header_down_arrow.png</file>
+        <file alias="header_down_arrow.png">qss/MyStyle/Icons/header_up_arrow.png</file>
     </qresource>
 </RCC>
