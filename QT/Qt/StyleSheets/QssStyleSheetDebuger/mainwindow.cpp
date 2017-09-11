@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setSortingEnabled(true);
     //ui->tableWidget->horizontalHeader()->setEnabled(true);
     //ui->tableWidget->verticalHeader()->setEnabled(true);
+    ui->statusBar->showMessage("MainWidget status string...");
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotChangeStacked(QModelIndex)));
 }
 
