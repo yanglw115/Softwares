@@ -1,4 +1,15 @@
-/* BoxModel的概念: 
+
+/*###########################################################################
+ * 设计总结: 
+ * 1.每个控件最好都设置hover时的边框或背景色,便于提示用户焦点所落的位置; 可以直接设置基类; 
+ * 2.对于按钮需要设置pressed时的边框或背景色,便于提示用户按钮按下; 
+ * 3.可以借助KineticWing IDE辅助工具;
+ * 4.更多细节请参考Qt Style sheet reference
+ */
+ 
+ 
+
+/* BoxModel的概念:
  * 每个Widget被当作一个由4个同轴的矩形组成的盒子. Margin-Border-padding-content
  * Margin: 边距,与其他widget的边距; 
  * Border: 边界; 
@@ -29,15 +40,39 @@
 /* border-image: none | Url Number{4} (stretch | repeat){0,2} */
 
 
-/*---- QWidget: 设置之后其所有子类都将改变
+/*-----------------------------------------------------------------
+ * QWidget: 设置之后其所有子类都将改变
  */
 QWidget {
     background-color: qlineargradient(x1: 0, y1:0, x2: 0, y2: 1,
                                 stop: 0 #AA9BD6, stop: 1 #44467F);
-    color: #FFEC8B
+    color: #FFEC8B;
+    border: 1px solid;
+}
+QWidget:hover {
+    border-color: white;
 }
 
-/*---- QAbstractScrollArea: 所有他的子类都可以设置他的背景属性，但是一般直接设置其子类
+
+
+/*-----------------------------------------------------------------
+ * QMainWindow
+ *
+ */
+QMainWindow::separator {/* dockwidget分割线 */
+    background: black;
+    width: 2px; /* when vertical */
+    height: 2px; /* when horizontal */
+}
+
+QMainWindow::separator:hover {
+    background: white;
+}
+ 
+ 
+
+/*-----------------------------------------------------------------
+ * QAbstractScrollArea: 所有他的子类都可以设置他的背景属性，但是一般直接设置其子类
  * QAbstractScrollArea支持BoxModel*/
 QAbstractScrollArea {
     /*background-color: #000000;*/
@@ -47,7 +82,8 @@ QAbstractScrollArea {
 }
 
 
-/*---- QCheckBox: 支持BoxModel
+/*-----------------------------------------------------------------
+ * QCheckBox: 支持BoxModel
  * 支持::indicator subcontrol及spacing等额外功能
  */
 QCheckBox {
@@ -95,7 +131,8 @@ QCheckBox::indicator:indeterminate:pressed {
 }
 
 
-/*----QColumnView
+/*-----------------------------------------------------------------
+ * QColumnView
  * grip可以通过image属性进行样式设置; 指示箭头可以通过::left-arrow和::right-arrow进行样式设置
  * QColumnView的相关样式设置好像不生效,不知道是否用错了?
  */
@@ -110,7 +147,8 @@ QColumnView::right-arrow {
 }
 
 
-/*----QComboBox
+/*-----------------------------------------------------------------
+ * QComboBox
  */
 QFontComboBox, QComboBox {
     border: 1px solid white;
@@ -175,7 +213,8 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
 
 
 
-/*---- QDateEdit与QSpinBox按钮与箭头相关设置
+/*-----------------------------------------------------------------
+ * QDateEdit与QSpinBox按钮与箭头相关设置
  * 他们都满足box model
  */
 QSpinBox, QDoubleSpinBox, QDateTimeEdit {
@@ -251,12 +290,14 @@ QSpinBox::down-arrow:off { /* off state when value in min */
 
 
 
-/* QDialog: 仅支持background,background-clip和background-origin几个属性的设置
+/*-----------------------------------------------------------------
+ * QDialog: 仅支持background,background-clip和background-origin几个属性的设置
  */
  
  
  
-/* QDockWidget
+/*-----------------------------------------------------------------
+ * QDockWidget
  */
 QDockWidget {
     border: 1px solid white;
@@ -286,7 +327,8 @@ QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {
 
 
 
-/*---- QFrame
+/*-----------------------------------------------------------------
+ * QFrame
  * 直接影响QAbstractScrollArea, QLabel, QLCDNumber, QSplitter, QStackedWidget, and QToolBox及他们的子类
  */
 /*QFrame, */QLabel, QToolTip {
@@ -319,7 +361,8 @@ QGroupBox::title {
 
 
 
-/*----QHeaderView
+/*-----------------------------------------------------------------
+ * QHeaderView
  */
 QHeaderView::section {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -370,6 +413,7 @@ QLineEdit:read-only {
 
 
 /*---- QListView
+ * QListView继承于QListView,所以仅设置QListView即可
  */
 QListView {
     /* 选中某一条时是否选中整行还是仅内容 */
@@ -400,3 +444,500 @@ QListView::item:hover {
                                 stop: 0 #DCDEF1, stop: 1 #DCDEF1);
     color: green
 }
+
+
+/*-----------------------------------------------------------------
+ * QMenu
+ */
+   QMenu {
+      background-color: #ABABAB; /* sets background of the menu */
+      /* menu菜单被选中之后才显示出来的边框 */
+      border: 1px solid black;
+  }
+
+  QMenu::item {
+      /* sets background of menu item. set this to something non-transparent
+          if you want menu color and menu item color to be different */
+      background-color: gray;/*transparent;*/
+  }
+
+  QMenu::item:selected { /* when user selects item using mouse or keyboard */
+      background-color: #654321;
+  }
+  
+  /* 下面是QMenu的一些高级用法 */
+    QMenu {
+      background-color: white;
+      margin: 2px; /* some spacing around the menu */
+  }
+
+  QMenu::item {
+      padding: 2px 25px 2px 20px;
+      border: 1px solid transparent; /* reserve space for selection border */
+  }
+
+  QMenu::item:selected {
+      border-color: darkblue;
+      background: rgba(100, 100, 100, 150);
+  }
+
+  QMenu::icon:checked { /* appearance of a 'checked' icon */
+      background: gray;
+      border: 1px inset gray;
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      bottom: 1px;
+      left: 1px;
+  }
+
+  QMenu::separator {
+      height: 2px;
+      background: lightblue;
+      margin-left: 10px;
+      margin-right: 5px;
+  }
+
+  QMenu::indicator {
+      width: 13px;
+      height: 13px;
+  }
+  
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QMenuBar
+   */
+  QMenuBar {
+      background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 lightgray, stop:1 darkgray);
+  }
+
+  QMenuBar::item {
+      spacing: 3px; /* spacing between menu bar items */
+      padding: 1px 4px;
+      background: transparent;
+      border-radius: 4px;
+  }
+
+  QMenuBar::item:selected { /* when selected using mouse or keyboard */
+      background: #a8a8a8;
+  }
+
+  QMenuBar::item:pressed {
+      background: #888888;
+  }
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QProgressBar
+   * 如果QProgressBar其中一个subcontrols进行了customized,则其他所有的subcontrols都需要进行customize
+   */
+  QProgressBar {
+      border: 2px solid grey;
+      border-radius: 5px;
+      text-align: center;/* 百分比文本所在的位置 */
+  }
+
+  QProgressBar::chunk {/* 进度条块 */
+      background-color: pink;
+      width: 8px;/* 块的宽度*/
+      margin: 0.5px;/* 块与块之间的间隔 */
+  }
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QPushButton
+   */
+  QPushButton {
+      border: 1px solid #8f8f91;
+      padding: 2px 8px 2px 4px;/* top right bottom left */
+      border-radius: 6px;
+      /*background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                        stop: 0 #f6f7fa, stop: 1 #dadbde);*/
+      /*min-width: 80px;*/
+      min-height: 23px;
+  }
+
+  QPushButton:pressed {
+      /*background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                        stop: 0 #dadbde, stop: 1 #f6f7fa);*/
+      border-color: #CDC9C9 #ffffff #ffffff #CDC9C9;
+      padding-top: 3px; /* 通过改变padding来突出按下的效果 */
+      padding-left: 3px;
+  }
+  
+  QPushButton:hover:!pressed {/* 这里需要!pressed, 否则按下的时候也是hover状态会异常 */
+      border-color: #ffffff #CDC9C9 #CDC9C9 #ffffff;
+      padding-top: 1px;
+      padding-left: 1px; 
+  }
+
+  QPushButton:flat {
+      border: none; /* no border for a flat push button */
+  }
+
+  QPushButton:default {
+      border-color: navy; /* make the default button prominent */
+  }
+  
+  /* 如果QPushButton有子菜单,则还可以对子菜单进行样式设置 */
+    QPushButton:open { /* when the button has its menu open */
+      background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                        stop: 0 #dadbde, stop: 1 #f6f7fa);
+  }
+
+  QPushButton::menu-indicator {
+      image: url(menu_indicator.png);
+      subcontrol-origin: padding;
+      subcontrol-position: bottom right;
+  }
+
+  QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {
+      position: relative;
+      top: 2px; left: 2px; /* shift the arrow by 2 px */
+  }
+  
+  
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QRadioButton
+   */
+  QRadioButton::indicator {
+      width: 20px;
+      height: 20px;
+  }
+
+  QRadioButton::indicator::unchecked {
+      image: url(:/qss/radiobutton_unchecked.png);
+  }
+
+  QRadioButton::indicator:unchecked:hover {
+      image: url(:/qss/radiobutton_unchecked_hover.png);
+  }
+
+  QRadioButton::indicator:unchecked:pressed {
+      image: url(:/qss/radiobutton_unchecked_pressed.png);
+  }
+
+  QRadioButton::indicator::checked {
+      image: url(:/qss/radiobutton_checked.png);
+  }
+
+  QRadioButton::indicator:checked:hover {
+      image: url(:/qss/radiobutton_checked_hover.png);
+  }
+
+  QRadioButton::indicator:checked:pressed {
+      image: url(:/qss/radiobutton_checked_pressed.png);
+  }
+  
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QScrollBar
+   */
+  /* 水平方向的滚动条 */  
+  QScrollBar:horizontal {
+      border: 2px solid grey;
+      background: #FFE4C4;
+      height: 15px;
+      margin: 0px 20px 0 20px;
+  }
+  
+  /* 设置handle */
+  QScrollBar::handle:horizontal {
+      background: #FFD700;
+      min-width: 20px;
+  }
+  QScrollBar::add-line:horizontal {
+      border: 2px solid grey;
+      background: #32CC99;
+      width: 20px;
+      subcontrol-position: right;
+      subcontrol-origin: margin;
+  }
+
+  QScrollBar::sub-line:horizontal {
+      border: 2px solid grey;
+      background: #32CC99;
+      width: 20px;
+      subcontrol-position: left;
+      subcontrol-origin: margin;
+  }
+  
+ QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+      border: 2px solid grey;
+      width: 3px;
+      height: 3px;
+      background: white;
+  }
+
+  QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+      background: none;
+  }
+  
+  /* 下面使默认的左右/上下两个滚动按钮在同一边的设置  */
+/*  QScrollBar:horizontal {
+      border: 2px solid green;
+      background: cyan;
+      height: 15px;
+      margin: 0px 40px 0 0px;
+  }
+
+  QScrollBar::handle:horizontal {
+      background: gray;
+      min-width: 20px;
+  }
+
+  QScrollBar::add-line:horizontal {
+      background: blue;
+      width: 16px;
+      subcontrol-position: right;
+      subcontrol-origin: margin;
+      border: 2px solid black;
+  }
+
+  QScrollBar::sub-line:horizontal {
+      background: magenta;
+      width: 16px;
+      subcontrol-position: top right;
+      subcontrol-origin: margin;
+      border: 2px solid black;
+      position: absolute;
+      right: 20px;
+  }
+
+  QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+      width: 3px;
+      height: 3px;
+      background: pink;
+  }
+
+  QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+      background: none;
+  }*/
+  
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QSlider
+   */
+   QSlider::groove:horizontal {
+      border: 1px solid #999999;
+      height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+      background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
+      margin: 2px 0;
+  }
+
+  QSlider::handle:horizontal {
+      background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);
+      border: 1px solid #5c5c5c;
+      width: 18px;
+      margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+      border-radius: 3px;
+  }
+  
+  /* 下面是对handle前后/上下部分的颜色进行区分设置,比如水平QSlider */
+  QSlider::groove:horizontal {
+      background: red;
+      position: absolute; /* absolutely position 4px from the left and right of the widget. setting margins on the widget should work too... */
+      left: 4px; right: 4px;
+  }
+
+  QSlider::handle:horizontal {
+      height: 10px;
+      background: green;
+      margin: 0 -4px; /* expand outside the groove */
+  }
+
+  QSlider::add-page:horizontal {
+      background: white;
+  }
+
+  QSlider::sub-page:horizontal {
+      background: pink;
+  }
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QSplitter
+   */
+   QSplitter::handle {
+/*      image: url(:/qss/splitter.png);*/
+  }
+
+  QSplitter::handle:horizontal {
+      width: 2px;
+  }
+
+  QSplitter::handle:vertical {
+      height: 2px;
+  }
+
+  QSplitter::handle:pressed {
+/*      image: url(:/qss/splitter_pressed.png);*/
+  }
+  
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QStatusBar
+   */
+  QStatusBar {
+      background: #191970;
+  }
+
+  QStatusBar::item {
+      border: 1px solid red;
+      border-radius: 3px;
+  }
+  
+  QStatusBar QLabel {
+      border: 3px solid black;
+  }
+  
+  
+  
+  
+/*-----------------------------------------------------------------
+ * QTabWidget QTabBar
+ */
+  /* QTabWidget内容区(除了tabBar外的区域) */  
+  QTabWidget::pane { /* The tab widget frame */
+      /*border: 4px solid red;*/
+      position: absolute;
+      top: -1em; /* 结合position使边线穿过tabBar的中心 */
+  }
+
+  QTabWidget::tab-bar {
+      /*left: 25px;*/ /* move to the right by 5px */
+      alignment: center; /* 使tab-bar处于水平方向中心位置 */
+  }
+
+  /* Style the tab using the tab sub-control. Note that
+      it reads QTabBar _not_ QTabWidget */
+  QTabBar::tab {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #696969, stop: 0.4 #4F4F4F,
+                                  stop: 0.5 #4F4F4F, stop: 1.0 #363636);
+      border: 2px solid #363636;
+      border-bottom-color: #363636; /* same as the pane color */
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      min-width: 18ex;
+      padding: 2px;
+  }
+
+  QTabBar::tab:selected, QTabBar::tab:hover {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #A4D3EE, stop: 0.4 #8DB6CD,
+                                  stop: 0.5 #8DB6CD, stop: 1.0 #607B8B);
+  }
+
+  QTabBar::tab:selected {
+      border-color: white;
+      border-bottom-color: #C2C7CB; /* same as pane color */
+  }
+
+  QTabBar::tab:!selected {
+      margin-top: 2px; /* make non-selected tabs look smaller */
+  }
+  
+  
+
+
+ /*-----------------------------------------------------------------
+  * QTableView
+  */
+  QTableView {
+      selection-background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,
+                                  stop: 0 blue, stop: 1 #009ACD);
+  }
+  
+  QTableView QTableCornerButton::section {
+      background: red;
+      border: 2px outset red;
+  }
+  
+  QTableView::indicator:unchecked {
+      background-color: #d7d6d5
+  }
+  
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QToolBar 工具栏
+   */
+  QToolBar {
+/*      background: yellow;*/
+      spacing: 3px; /* spacing between items in the tool bar */
+  }
+
+  /* 拖动工具栏的那个部件,默认是3个竖点.还是默认的好看 */
+  QToolBar::handle {
+/*      image: url(handle.png);*/
+  }
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QToolBox
+   */
+  QToolBox::tab {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+      border-radius: 5px;
+      color: black;/* 上方文字的颜色 */
+  }
+
+  QToolBox::tab:selected { /* italicize selected tabs */
+      font: italic;
+      color: yellow;
+  }
+  
+  
+  
+  /*-----------------------------------------------------------------
+   * QTreeView
+   */
+  QTreeView {
+      show-decoration-selected: 1;
+  }
+
+  QTreeView::item {/* 具体内容 */
+/*      border: 1px solid #d9d9d9;*/默认不显示边线效果还好一点
+      border-top-color: transparent;
+      border-bottom-color: transparent;
+  }
+
+  QTreeView::item:hover {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #838B83, stop: 1 #C1CDC1);
+      border: 1px solid #bfcde4;
+  }
+
+  QTreeView::item:selected {
+      border: 1px solid #567dbc;
+  }
+
+  QTreeView::item:selected:active{
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
+  }
+
+  QTreeView::item:selected:!active {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
+  }
+  /* 还能够对QTreeView的branch进行更细致的格式设置,详见QT style sheet reference */
+  
+  

@@ -42,5 +42,11 @@
         <file alias="dock_undock.png">qss/MyStyle/Icons/dock_undock.png</file>
         <file alias="header_down_arrow.png">qss/MyStyle/Icons/header_down_arrow.png</file>
         <file alias="header_down_arrow.png">qss/MyStyle/Icons/header_up_arrow.png</file>
+        <file alias="radiobutton_checked.png">qss/MyStyle/Icons/radiobutton_checked.png</file>
+        <file alias="radiobutton_checked_hover.png">qss/MyStyle/Icons/radiobutton_checked_hover.png</file>
+        <file alias="radiobutton_checked_pressed.png">qss/MyStyle/Icons/radiobutton_checked_pressed.png</file>
+        <file alias="radiobutton_unchecked.png">qss/MyStyle/Icons/radiobutton_unchecked.png</file>
+        <file alias="radiobutton_unchecked_hover.png">qss/MyStyle/Icons/radiobutton_unchecked_hover.png</file>
+        <file alias="radiobutton_unchecked_pressed.png">qss/MyStyle/Icons/radiobutton_unchecked_pressed.png</file>
     </qresource>
 </RCC>
