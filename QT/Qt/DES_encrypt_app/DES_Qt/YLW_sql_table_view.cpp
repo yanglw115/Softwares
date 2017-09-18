@@ -20,7 +20,6 @@ static const QString g_strFileOpen                  = "打开";
 
 SQLOperateWidget::SQLOperateWidget(QWidget *parent)
     : QWidget(parent)
-    , m_strSqlFilePath(QString(""))
     , m_strCurrentTable(QString(""))
     , m_pSqlTableModel(NULL)
     , m_bOpenDatabase(false)
@@ -137,9 +136,8 @@ SQLOperateWidget::~SQLOperateWidget()
 
 }
 
-void SQLOperateWidget::setSqlDatabaseFile(const QString &strFilePath)
+void SQLOperateWidget::setSqlDatabaseFile()
 {
-    m_strSqlFilePath = strFilePath;
     initDatabase();
     if (openDatabase()) {
         /* 只有成功打开了数据库，才能进行初始化的显示 */
@@ -148,7 +146,6 @@ void SQLOperateWidget::setSqlDatabaseFile(const QString &strFilePath)
         m_pButtonSqlFileClose->setText(g_strFileClose);
     } else {
         QMessageBox::warning(this, tr("数据库操作"),tr("数据库文件打开失败, 请确认文件是否合法!"));
-        m_strSqlFilePath = "";
         m_pButtonSqlFileClose->setText(g_strFileOpen);
     }
 }
@@ -199,7 +196,6 @@ void SQLOperateWidget::slotBrowseSqlFile()
 #endif
     if (!strFilePath.isEmpty()) {
         qDebug() << "打开的文件为:" << strFilePath;
-        m_strSqlFilePath = "";
         m_pLineEditSqlFile->setText(strFilePath);
     }
 }
@@ -212,7 +208,7 @@ void SQLOperateWidget::slotSqlFileInputChanged(const QString &strFilePath)
                 /* 先关闭之前打开的数据库文件 */
                 slotCloseSqlFile();
             }
-            setSqlDatabaseFile(strFilePath);
+            setSqlDatabaseFile();
         } else {
             qWarning() << "Sql database file is not exist:" << strFilePath;
         }
@@ -317,7 +313,7 @@ void SQLOperateWidget::slotCloseSqlFile()
         m_pButtonDeleteRecord->setEnabled(false);
         m_pButtonSqlFileClose->setText(tr("打开"));
     } else {
-        setSqlDatabaseFile(m_strSqlFilePath);
+        setSqlDatabaseFile();
     }
 }
 
@@ -343,13 +339,13 @@ void SQLOperateWidget::dropEvent(QDropEvent *event)
 
 void SQLOperateWidget::initDatabase()
 {
-    qDebug() << "初始化数据库:" << m_strSqlFilePath;
+    qDebug() << "初始化数据库:" << m_pLineEditSqlFile->text();
 
     m_database = QSqlDatabase::addDatabase(g_strSqlDriverName, g_strConnectName);
-    m_database.setDatabaseName(m_strSqlFilePath);
+    m_database.setDatabaseName(m_pLineEditSqlFile->text());
 
     /* 检查数据库文件是否存在 */
-    if (!QFile::exists(m_strSqlFilePath)) {
+    if (!QFile::exists(m_pLineEditSqlFile->text())) {
         qCritical() << "数据库文件不存在，无法读取数据！";
     }
 }
