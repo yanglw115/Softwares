@@ -23,7 +23,7 @@ class SQLOperateWidget: public QWidget
 public:
     explicit SQLOperateWidget(QWidget *parent = 0);
     virtual ~SQLOperateWidget();
-    void setSqlDatabaseFile(const QString &strFilePath);
+    void setSqlDatabaseFile();
 
 private slots:
     void slotSetCurrentTable(const QString &strTableName);
@@ -51,7 +51,6 @@ private:
     void initTableViewShow();
     void setButtonDeleteEnable();
 private:
-    QString m_strSqlFilePath;
     QString m_strCurrentTable;
     QSqlDatabase m_database;
     QSqlTableModel *m_pSqlTableModel;
