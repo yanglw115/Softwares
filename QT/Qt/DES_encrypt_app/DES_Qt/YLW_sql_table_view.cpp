@@ -208,7 +208,8 @@ void SQLOperateWidget::slotSqlFileInputChanged(const QString &strFilePath)
 {
     if (!strFilePath.isEmpty()) {
         if (QFile::exists(strFilePath)) {
-            if (!m_strSqlFilePath.isEmpty()) {
+            if (m_pSqlTableModel) {
+                /* 先关闭之前打开的数据库文件 */
                 slotCloseSqlFile();
             }
             setSqlDatabaseFile(strFilePath);
