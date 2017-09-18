@@ -15,6 +15,9 @@ const QString g_strConnectName                      = "HWAPP";
 static const QString g_strADInfoTableName           = "advinfo";
 static const QString g_strVersionTableName          = "version";
 
+static const QString g_strFileClose                 = "关闭";
+static const QString g_strFileOpen                  = "打开";
+
 SQLOperateWidget::SQLOperateWidget(QWidget *parent)
     : QWidget(parent)
     , m_strSqlFilePath(QString(""))
@@ -65,12 +68,15 @@ SQLOperateWidget::SQLOperateWidget(QWidget *parent)
     m_pLabelSqlFile = new QLabel(tr("数据库文件:"), this);
 
     m_pLineEditSqlFile = new FileLineEdit(this);
-    connect(m_pLineEditSqlFile, SIGNAL(textChanged(QString)), this, SLOT(slotSetSqlDatabaseFile(QString)));
+    connect(m_pLineEditSqlFile, SIGNAL(textChanged(QString)), this, SLOT(slotSqlFileInputChanged(QString)));
     /* 除了QLineEdit自身接受文件拖入以外，也可以将拖入QTableView的文件设置到QLineEdit */
     connect(m_pTableView, SIGNAL(sigFileIn(QString)), m_pLineEditSqlFile, SLOT(setText(QString)));
 
     m_pButtonSqlFileBrowse = new QPushButton(tr("浏览"), this);
     connect(m_pButtonSqlFileBrowse, SIGNAL(clicked(bool)), this, SLOT(slotBrowseSqlFile()));
+    m_pButtonSqlFileClose = new QPushButton(g_strFileClose, this);
+    connect(m_pButtonSqlFileClose, SIGNAL(clicked(bool)), this, SLOT(slotCloseSqlFile()));
+    m_pButtonSqlFileClose->setEnabled(false);
 
     m_pLabelDataTable = new QLabel(tr("表:"), this);
     m_pComboBoxDataTable = new CMyComboBox(this);
@@ -103,7 +109,8 @@ SQLOperateWidget::SQLOperateWidget(QWidget *parent)
     QHBoxLayout *pHLayoutSqlFile = new QHBoxLayout;
     pHLayoutSqlFile->addWidget(m_pLabelSqlFile, 0);
     pHLayoutSqlFile->addWidget(m_pLineEditSqlFile, 2);
-    pHLayoutSqlFile->addWidget(m_pButtonSqlFileBrowse, 1, Qt::AlignLeft);
+    pHLayoutSqlFile->addWidget(m_pButtonSqlFileBrowse, 0, Qt::AlignLeft);
+    pHLayoutSqlFile->addWidget(m_pButtonSqlFileClose, 0, Qt::AlignLeft);
     pHLayoutSqlFile->addStretch(1);
 
     QHBoxLayout *pHLayoutTable = new QHBoxLayout;
@@ -132,19 +139,17 @@ SQLOperateWidget::~SQLOperateWidget()
 
 void SQLOperateWidget::setSqlDatabaseFile(const QString &strFilePath)
 {
-    if (!m_strSqlFilePath.isEmpty()) {
-        closeDatabase();
-        /* 这里需要删除代理 */
-        m_pSqlTableModel->deleteLater();
-        m_pSqlTableModel = NULL;
-        m_pButtonNewRecord->setEnabled(false);
-        m_pButtonDeleteRecord->setEnabled(false);
-    }
     m_strSqlFilePath = strFilePath;
     initDatabase();
     if (openDatabase()) {
         /* 只有成功打开了数据库，才能进行初始化的显示 */
         initTableViewShow();
+        m_pButtonSqlFileClose->setEnabled(true);
+        m_pButtonSqlFileClose->setText(g_strFileClose);
+    } else {
+        QMessageBox::warning(this, tr("数据库操作"),tr("数据库文件打开失败, 请确认文件是否合法!"));
+        m_strSqlFilePath = "";
+        m_pButtonSqlFileClose->setText(g_strFileOpen);
     }
 }
 
@@ -157,7 +162,7 @@ void SQLOperateWidget::slotSetCurrentTable(const QString &strTableName)
 
     m_strCurrentTable = strTableName;
     qDebug() << "当前所选表名:" << m_strCurrentTable;
-    if (m_pSqlTableModel) {
+    if (m_pSqlTableModel != NULL) {
         m_pSqlTableModel->clear();
         m_pSqlTableModel->deleteLater();
         m_pSqlTableModel = NULL;
@@ -194,16 +199,22 @@ void SQLOperateWidget::slotBrowseSqlFile()
 #endif
     if (!strFilePath.isEmpty()) {
         qDebug() << "打开的文件为:" << strFilePath;
+        m_strSqlFilePath = "";
         m_pLineEditSqlFile->setText(strFilePath);
     }
 }
 
-void SQLOperateWidget::slotSetSqlDatabaseFile(const QString &strFilePath)
+void SQLOperateWidget::slotSqlFileInputChanged(const QString &strFilePath)
 {
-    if (QFile::exists(strFilePath)) {
-        setSqlDatabaseFile(strFilePath);
-    } else {
-        qWarning() << "Sql database file is not exist:" << strFilePath;
+    if (!strFilePath.isEmpty()) {
+        if (QFile::exists(strFilePath)) {
+            if (!m_strSqlFilePath.isEmpty()) {
+                slotCloseSqlFile();
+            }
+            setSqlDatabaseFile(strFilePath);
+        } else {
+            qWarning() << "Sql database file is not exist:" << strFilePath;
+        }
     }
 }
 
@@ -282,6 +293,30 @@ void SQLOperateWidget::slotConvertTimeToUnix()
         m_pLineEditUnixAfter->setText(QString("%1").arg(dateTime.toMSecsSinceEpoch() / 1000));
     } else {
         QMessageBox::warning(this, tr("时间戳转换"), tr("输入的北京时间无效，请核准后重新输入!"));
+    }
+}
+
+void SQLOperateWidget::slotCloseSqlFile()
+{
+    if (m_pButtonSqlFileClose->text() == g_strFileClose) {
+        if (m_pButtonSaveChanges->isEnabled()) {
+            if (QMessageBox::Save == QMessageBox::warning(this, tr("数据库操作"), tr("当前有数据改变, 是否保存?"), QMessageBox::Save, QMessageBox::Discard)) {
+                slotSaveChanges();
+            }
+        }
+        closeDatabase();
+        /* 这里需要删除代理 */
+        if (m_pSqlTableModel) {
+            m_pSqlTableModel->deleteLater();
+            m_pSqlTableModel = NULL;
+        }
+        m_pTableView->clearSpans();
+        m_pComboBoxDataTable->clear();
+        m_pButtonNewRecord->setEnabled(false);
+        m_pButtonDeleteRecord->setEnabled(false);
+        m_pButtonSqlFileClose->setText(tr("打开"));
+    } else {
+        setSqlDatabaseFile(m_strSqlFilePath);
     }
 }
 
@@ -372,10 +407,12 @@ void SQLOperateWidget::initTableViewShow()
                 slotSetCurrentTable(strList[0]);
             }
         } else {
-            qWarning() << "数据库表异常!";
+            qWarning() << "数据库表为空!";
         }
     } else {
         qCritical() << "查询数据库所有表名失败!";
+        QString strWarning = QString("SQL查询失败，请确认: \n%1").arg(strExec);
+        QMessageBox::warning(this, tr("数据库操作"), strWarning);
     }
 }
 

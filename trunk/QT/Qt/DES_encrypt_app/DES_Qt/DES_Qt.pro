@@ -44,6 +44,7 @@ HEADERS  += YLW_main_widget.h \
 
 RESOURCES += \
     rec.qrc \
-    qss/darkStyleNew/darkStyleNew.qrc
+    qss/darkStyleNew/darkStyleNew.qrc \
+    qss/darkStyle/darkStyle.qrc
 
 DISTFILES +=

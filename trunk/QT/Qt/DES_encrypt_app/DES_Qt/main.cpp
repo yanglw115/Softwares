@@ -15,10 +15,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWidget w;
 
-    QString filePath = "../DES_Qt/qss/darkStyleNew/darkStyleNew.qss";
-    QFile fileQss(filePath);
+    //QString filePath = "../DES_Qt/qss/darkStyle/darkStyle.qss";
+    //QFile fileQss(filePath);
+    QFile fileQss(":/darkStyleQss/darkStyle.qss");
     QFileInfo fileInfo(fileQss);
-    w.registerFileWatcher(fileInfo.absoluteFilePath());
+    //w.registerFileWatcher(fileInfo.absoluteFilePath());
     w.slotFileChanged(fileInfo.absoluteFilePath());
 
     //QApplication::setStyle(new NorwegianWoodStyle);
