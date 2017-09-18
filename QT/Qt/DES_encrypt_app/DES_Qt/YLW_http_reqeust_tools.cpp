@@ -47,6 +47,8 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     connect(m_pButtonRequest, SIGNAL(clicked(bool)), this, SLOT(slotStartRequest()));
     m_pCheckBoxDisplay = new QCheckBox(tr("显示转换"), this);
     connect(m_pCheckBoxDisplay, SIGNAL(stateChanged(int)), this, SLOT(slotChangeDisplay()));
+    m_pCheckBoxModify = new QCheckBox(tr("允许修改"), this);
+    connect(m_pCheckBoxModify, SIGNAL(stateChanged(int)), this, SLOT(slotModifyEnableChanged()));
 
     m_pComboBoxRequestType = new CMyComboBox(this);
     m_pComboBoxRequestType->addItems(QStringList() << tr("广告任务") << tr("升级任务"));
@@ -72,6 +74,8 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     m_pTextEditAD->setReadOnly(true);
     m_pTextEditUpdate = new QTextEdit(this);
     m_pTextEditUpdate->setReadOnly(true);
+    connect(m_pTextEditAD, SIGNAL(textChanged()), this, SLOT(slotSetTableWidgetDataAD()));
+    connect(m_pTextEditUpdate, SIGNAL(textChanged()), this, SLOT(slotSetTableWidgetDataUpdate()));
 
     m_pTableWidgetAD = new QTableWidget(this);
     m_pTableWidgetUpdate = new QTableWidget(1, 2, this);
@@ -104,6 +108,7 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     m_pHLayoutResult = new QHBoxLayout;
     m_pHLayoutResult->addWidget(m_pLabelRequestResult);
     m_pHLayoutResult->addWidget(m_pCheckBoxDisplay);
+    m_pHLayoutResult->addWidget(m_pCheckBoxModify);
     m_pHLayoutResult->addStretch();
     m_pHLayoutResult->addWidget(m_pLabelHash);
     m_pHLayoutResult->addWidget(m_pLineEditHash);
@@ -128,6 +133,7 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
     m_pLineEditSWVer->setEnabled(false);
     m_pButtonRequest->setEnabled(false);
     m_pCheckBoxDisplay->setEnabled(false);
+    m_pCheckBoxModify->setEnabled(false);
 
     m_pTextEditAD->show();
     m_pTextEditUpdate->hide();
@@ -138,6 +144,8 @@ CHttpReqeustTools::CHttpReqeustTools(QWidget *parent)
 
     m_pAccessManager = new QNetworkAccessManager(this);
     connect(this, SIGNAL(sigRequestFinished(QString)), this, SLOT(slotHandReplyData(QString)));
+
+    m_pLineEditMac->setText(tr("00:e0:61:4c:29:8c"));
 }
 
 CHttpReqeustTools::~CHttpReqeustTools()
@@ -192,6 +200,7 @@ void CHttpReqeustTools::slotStartRequest()
 //    }
 
     m_pCheckBoxDisplay->setEnabled(false);
+    m_pCheckBoxModify->setEnabled(false);
     m_pButtonRequest->setEnabled(false);
     this->setEnabled(false);
 
@@ -204,6 +213,7 @@ void CHttpReqeustTools::slotStartRequest()
 void CHttpReqeustTools::slotChangeDisplay()
 {
     if (m_pCheckBoxDisplay->isChecked()) {
+        m_pCheckBoxModify->setEnabled(false);
         if (TYPE_REQUEST_AD == m_pComboBoxRequestType->currentIndex()) {
             m_pTextEditAD->hide();
             m_pTextEditUpdate->hide();
@@ -216,6 +226,7 @@ void CHttpReqeustTools::slotChangeDisplay()
             m_pTableWidgetAD->hide();
         }
     } else {
+        m_pCheckBoxModify->setEnabled(true);
         if (TYPE_REQUEST_AD == m_pComboBoxRequestType->currentIndex()) {
             m_pTextEditAD->show();
             m_pTextEditUpdate->hide();
@@ -238,7 +249,7 @@ void CHttpReqeustTools::slotMacChanged(const QString &strMac)
     strMacTemp.replace('-', ':');
     if (strMacTemp.length() == strlen("00:00:00:00:00:00")) {
         QByteArray byteArray = strMacTemp.toLocal8Bit();
-        qDebug() << "byteArray: " << byteArray;
+        qDebug() << "Mac: " << byteArray;
         bIsValid = true;
         for (int i = 0; i < byteArray.length(); ++i) {
             char temp = byteArray.at(i);
@@ -319,6 +330,7 @@ void CHttpReqeustTools::slotReplyFinished()
     }
     m_pButtonRequest->setEnabled(true);
     m_pCheckBoxDisplay->setEnabled(true);
+    m_pCheckBoxModify->setEnabled(true);
 }
 
 void CHttpReqeustTools::slotReadyRead()
@@ -342,15 +354,30 @@ void CHttpReqeustTools::slotSslErrors(const QList<QSslError> & errors)
 void CHttpReqeustTools::slotHandReplyData(const QString &strReply)
 {
     if (TYPE_REQUEST_AD == m_pComboBoxRequestType->currentIndex()) {
-        m_pTextEditAD->clear();
+        //m_pTextEditAD->clear();
         m_pTextEditAD->setText(strReply);
-        setTableWidgetDataAD(strReply);
     } else {
-        m_pTextEditUpdate->clear();
+        //m_pTextEditUpdate->clear();
         m_pTextEditUpdate->setText(strReply);
-        setTableWidgetDataUpdate(strReply);
     }
     slotChangeDisplay();
+}
+
+void CHttpReqeustTools::slotModifyEnableChanged()
+{
+    if (m_pCheckBoxModify->isChecked()) {
+        if (m_pComboBoxRequestType->currentIndex() == TYPE_REQUEST_AD) {
+            m_pTextEditAD->setReadOnly(false);
+        } else {
+           m_pTextEditUpdate->setReadOnly(false);
+        }
+    } else {
+        if (m_pComboBoxRequestType->currentIndex() == TYPE_REQUEST_AD) {
+            m_pTextEditAD->setReadOnly(true);
+        } else {
+           m_pTextEditUpdate->setReadOnly(true);
+        }
+    }
 }
 
 void CHttpReqeustTools::initTableWigets()
@@ -391,8 +418,12 @@ void CHttpReqeustTools::getRequestData(QString &strData)
     strData = docJson.toJson(QJsonDocument::Indented);
 }
 
-void CHttpReqeustTools::setTableWidgetDataAD(const QString &strData)
+void CHttpReqeustTools::slotSetTableWidgetDataAD()
 {
+    QString strData = m_pTextEditAD->document()->toPlainText();
+    if (strData.isEmpty()) {
+        return;
+    }
     QJsonObject objRoot = QJsonDocument::fromJson(strData.toLatin1()).object();
     QJsonObject objResult;
     QJsonArray arrayTask;
@@ -434,8 +465,12 @@ void CHttpReqeustTools::setTableWidgetDataAD(const QString &strData)
     }
 }
 
-void CHttpReqeustTools::setTableWidgetDataUpdate(const QString &strData)
+void CHttpReqeustTools::slotSetTableWidgetDataUpdate()
 {
+    QString strData = m_pTextEditUpdate->document()->toPlainText();
+    if (strData.isEmpty()) {
+        return;
+    }
     QJsonObject objRoot = QJsonDocument::fromJson(strData.toLatin1()).object();
     QJsonObject objVersion;
     if (TYPE_SERVER_DNET == m_pComboBoxServerType->currentIndex()) {

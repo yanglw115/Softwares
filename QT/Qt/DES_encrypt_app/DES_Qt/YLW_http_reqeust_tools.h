@@ -45,6 +45,9 @@ private slots:
     void slotNetError(QNetworkReply::NetworkError code);
     void slotSslErrors(const QList<QSslError> & errors);
     void slotHandReplyData(const QString &strReply);
+    void slotModifyEnableChanged();
+    void slotSetTableWidgetDataAD();
+    void slotSetTableWidgetDataUpdate();
 
 private:
     QLabel *m_pLabelRequetType;
@@ -57,6 +60,7 @@ private:
 
     QPushButton *m_pButtonRequest;
     QCheckBox *m_pCheckBoxDisplay;
+    QCheckBox *m_pCheckBoxModify;
 
     CMyComboBox *m_pComboBoxRequestType;
     CMyComboBox *m_pComboBoxServerType;
@@ -86,8 +90,6 @@ private:
 private:
     void initTableWigets();
     void getRequestData(QString &strData);
-    void setTableWidgetDataAD(const QString &strData);
-    void setTableWidgetDataUpdate(const QString &strData);
     void getADTaskRequestBody(QString &strData);
     void getUpdateTaskRequestBody(QString &strData);
 };

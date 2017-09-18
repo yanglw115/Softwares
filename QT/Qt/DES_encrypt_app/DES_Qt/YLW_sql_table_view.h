@@ -28,7 +28,7 @@ public:
 private slots:
     void slotSetCurrentTable(const QString &strTableName);
     void slotBrowseSqlFile();
-    void slotSetSqlDatabaseFile(const QString &strFilePath);
+    void slotSqlFileInputChanged(const QString &strFilePath);
     void slotRereshCurrentTable();
     void slotSaveChanges();
     void slotAddNewRowRecord();
@@ -36,6 +36,7 @@ private slots:
     void slotSqlModelDataChanged();
     void slotConvertTimeToBJ();
     void slotConvertTimeToUnix();
+    void slotCloseSqlFile();
 
 protected:
     virtual void dragEnterEvent(QDragEnterEvent *event);
@@ -60,6 +61,7 @@ private:
     QLabel *m_pLabelSqlFile;
     FileLineEdit *m_pLineEditSqlFile;
     QPushButton *m_pButtonSqlFileBrowse;
+    QPushButton *m_pButtonSqlFileClose;
 
     QLabel *m_pLabelDataTable;
     CMyComboBox *m_pComboBoxDataTable;
