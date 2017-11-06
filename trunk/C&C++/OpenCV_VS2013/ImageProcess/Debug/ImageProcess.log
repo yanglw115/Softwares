@@ -1,13 +1,16 @@
-﻿生成启动时间为 2017/11/6 20:11:32。
-     1>项目“D:\02-Daboo\01-Projects\01-AI\FaceDetect\OpenCV\opencv\programs\ImageProcess\ImageProcess.vcxproj”在节点 2 上(Rebuild 个目标)。
+﻿生成启动时间为 2017/11/6 22:37:39。
+     1>项目“D:\Qt\OpenCV_VS2013\ImageProcess\ImageProcess.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"D:\02-Daboo\01-Projects\01-AI\FaceDetect\OpenCV\opencv\programs\ImageProcess\build\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ID:\Qt\OpenCV_VS2013\ImageProcess\build\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp showImage.cpp
+         showImage.cpp
          main.cpp
+         正在生成代码...
        Link:
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\02-Daboo\01-Projects\01-AI\FaceDetect\OpenCV\opencv\programs\ImageProcess\Debug\ImageProcess.exe" /INCREMENTAL /NOLOGO /LIBPATH:"D:\02-Daboo\01-Projects\01-AI\FaceDetect\OpenCV\opencv\programs\ImageProcess\build\libs" opencv_calib3d331d.lib opencv_core331d.lib opencv_dnn331d.lib opencv_features2d331d.lib opencv_flann331d.lib opencv_highgui331d.lib opencv_imgcodecs331d.lib opencv_imgproc331d.lib opencv_ml331d.lib opencv_objdetect331d.lib opencv_shape331d.lib opencv_stitching331d.lib opencv_superres331d.lib opencv_ts331d.lib opencv_video331d.lib opencv_videoio331d.lib opencv_videostab331d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\02-Daboo\01-Projects\01-AI\FaceDetect\OpenCV\opencv\programs\ImageProcess\Debug\ImageProcess.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\02-Daboo\01-Projects\01-AI\FaceDetect\OpenCV\opencv\programs\ImageProcess\Debug\ImageProcess.lib" /MACHINE:X86 Debug\main.obj
-         ImageProcess.vcxproj -> D:\02-Daboo\01-Projects\01-AI\FaceDetect\OpenCV\opencv\programs\ImageProcess\Debug\ImageProcess.exe
-     1>已完成生成项目“D:\02-Daboo\01-Projects\01-AI\FaceDetect\OpenCV\opencv\programs\ImageProcess\ImageProcess.vcxproj”(Rebuild 个目标)的操作。
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Qt\OpenCV_VS2013\ImageProcess\Debug\ImageProcess.exe" /INCREMENTAL /NOLOGO /LIBPATH:D:\Qt\OpenCV_VS2013\ImageProcess\build\libs opencv_calib3d331d.lib opencv_core331d.lib opencv_dnn331d.lib opencv_features2d331d.lib opencv_flann331d.lib opencv_highgui331d.lib opencv_imgcodecs331d.lib opencv_imgproc331d.lib opencv_ml331d.lib opencv_objdetect331d.lib opencv_shape331d.lib opencv_stitching331d.lib opencv_superres331d.lib opencv_ts331d.lib opencv_video331d.lib opencv_videoio331d.lib opencv_videostab331d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Qt\OpenCV_VS2013\ImageProcess\Debug\ImageProcess.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Qt\OpenCV_VS2013\ImageProcess\Debug\ImageProcess.lib" /MACHINE:X86 Debug\main.obj
+         Debug\showImage.obj
+         ImageProcess.vcxproj -> D:\Qt\OpenCV_VS2013\ImageProcess\Debug\ImageProcess.exe
+     1>已完成生成项目“D:\Qt\OpenCV_VS2013\ImageProcess\ImageProcess.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:02.40
+已用时间 00:00:04.42
