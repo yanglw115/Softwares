@@ -21,9 +21,15 @@
     <ClCompile Include="showImage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="dftImage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="showImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dftImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
