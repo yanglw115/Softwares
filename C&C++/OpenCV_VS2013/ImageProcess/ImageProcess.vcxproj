@@ -126,12 +126,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="faceSpotsDetect.cpp" />
+    <ClCompile Include="imageProcess.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="showImage.cpp" />
     <ClCompile Include="dftImage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dftImage.h" />
+    <ClInclude Include="imageProcess.h" />
     <ClInclude Include="showImage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
