@@ -1,6 +1,8 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 
+#include <iostream>
+
 using namespace cv;
 using namespace std;
 
@@ -15,7 +17,9 @@ bool findPimples(Mat img)
 	/* 将只有轮廓部分的图进行split通道分离 */
 	split(img, bgr);
 	/* 这里取绿色通道 */
-	bw = bgr[1];
+	//bw = bgr[1];
+	/* 转换为灰度图的效果和上面取单一通道效果差不太多 */
+	cvtColor(img, bw, COLOR_BGR2GRAY);
 	int pimplescount = 0;
 
 	imshow("自适应阈值化之前", bw);
@@ -23,7 +27,8 @@ bool findPimples(Mat img)
 	/* bw必须是单通道的8bit图像 */
 	/* 第1个参数是输入图像，第2个参数是输出图像，第3个参数是满足条件的最大像素值，第4个参数是所用算法，
 		第6个参数是用来计算阈值的块大小(必须是奇数)，第7个参数是需要从加权平均值减去的一个常量 */
-	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5);
+	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5); //好像这里使用15是最优的，可以再调试
+	//adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 13, 5);
 	imshow("自适应阈值化之后", bw);
 
 	/* 膨胀操作：前两个参数是输入与输出；参数3：膨胀操作的核，NULL时为3*3；参数4：锚的位置，下面代表位于中心；参数5：迭代使用dilate的次数 */
@@ -34,10 +39,12 @@ bool findPimples(Mat img)
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
 	findContours(bw, g_contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
+	cout << "检测到的边界个数：" << g_contours.size() << endl;
 	for (size_t i = 0; i< g_contours.size(); i++)
 	{
-
-		if (contourArea(g_contours[i]) > 20 & contourArea(g_contours[i]) < 150)
+	    cout << "边界大小：" << contourArea(g_contours[i]) << endl;
+		/* 这里的值也需要调试 */
+		if (contourArea(g_contours[i]) > 0 && contourArea(g_contours[i]) < 150)
 		{
 			Rect minRect = boundingRect(Mat(g_contours[i]));
 			Mat imgroi(img, minRect);
@@ -46,13 +53,14 @@ bool findPimples(Mat img)
 			Scalar color = mean(imgroi);
 			cvtColor(imgroi, imgroi, COLOR_HSV2BGR);
 
-			if (color[0] < 10 & color[1] > 70 & color[2] > 50)
+			if (1)//(color[0] < 10 & color[1] > 70 & color[2] > 50)
 			{
 				Point2f center, vtx[4];
 				float radius = 0;
 				minEnclosingCircle(Mat(g_contours[i]), center, radius);
 
-				if (radius < 20)
+				/* 这里的值需要最终调试 */
+				if (radius > 2)
 				{
 					rectangle(img, minRect, Scalar(0, 255, 0));
 					pimplescount++;
@@ -119,6 +127,8 @@ void onMouse(int event, int x, int y, int flags, void* userdata)
 int main(int argc, const char** argv)
 {
 	g_imgSrc = imread("images/faceWithSpots.jpg");
+	//g_imgSrc = imread("images/IMG_4492.JPG");
+	//g_imgSrc = imread("images/heizhi.jpg");
 	if (g_imgSrc.empty())
 	{
 		return -1;
