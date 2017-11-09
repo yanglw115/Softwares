@@ -10,21 +10,21 @@ using namespace cv;
 
 /* 常用的数据结构
 点的表示：
-Point_<int>、Point2i、Point等价
-Point_<float>、Point2f互相等价
+	Point_<int>、Point2i、Point等价
+	Point_<float>、Point2f互相等价
 颜色的表示：
-Scalar(r,g,b,alpha);
+	Scalar(r,g,b,alpha);
 尺寸的表示：
-Size_<int>、Size2i、Size相互等价
-Size(width, heigth);
+	Size_<int>、Size2i、Size相互等价
+	Size(width, heigth);
 矩形的表示：
-Rect()，其常用的成员函数有：Size()返回尺寸；area()返回面积；contains(Point)判断点是否在矩形内；
-inside(rect)判断矩形是否在矩形内；tl()返回左上角坐标；br()返回右下角坐标；
-求两矩形的交集：Rect rect = rect1 & rect2; 并集：Rect rect = rect1 | rect2;
-矩形可这样进行平移：Rect rect = rect1 + point; 缩放：Rect rect = rect1 + size;
+	Rect()，其常用的成员函数有：Size()返回尺寸；area()返回面积；contains(Point)判断点是否在矩形内；
+	inside(rect)判断矩形是否在矩形内；tl()返回左上角坐标；br()返回右下角坐标；
+	求两矩形的交集：Rect rect = rect1 & rect2; 并集：Rect rect = rect1 | rect2;
+	矩形可这样进行平移：Rect rect = rect1 + point; 缩放：Rect rect = rect1 + size;
 颜色空间转换：
-cvtColor();可以实现RGB向HSV、HSI等颜色空间的转换，也可转换为灰度图像；
-例如：cvtColor(srcImage, dstImage, COLOR_GRAY2BGR);
+	cvtColor();可以实现RGB向HSV、HSI等颜色空间的转换，也可转换为灰度图像；
+	例如：cvtColor(srcImage, dstImage, COLOR_GRAY2BGR);
 */
 
 /* 基本图形的绘制
@@ -71,6 +71,12 @@ cvtColor();可以实现RGB向HSV、HSI等颜色空间的转换，也可转换为灰度图像；
 /* 显示图像 
 	imshow()
 */
+
+
+/* 文件读取操作(xml/yaml)
+	FileStorage
+*/
+
 void showImage(const string &strPath)
 {
 	Mat srcImage = imread(strPath.c_str());

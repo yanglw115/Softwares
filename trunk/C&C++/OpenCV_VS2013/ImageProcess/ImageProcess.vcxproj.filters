@@ -24,12 +24,21 @@
     <ClCompile Include="dftImage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="imageProcess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="faceSpotsDetect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="showImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="dftImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="imageProcess.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
