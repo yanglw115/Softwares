@@ -124,7 +124,7 @@ void onMouse(int event, int x, int y, int flags, void* userdata)
 }
 
 
-int main(int argc, const char** argv)
+int main3(int argc, const char** argv)
 {
 	g_imgSrc = imread("images/faceWithSpots.jpg");
 	//g_imgSrc = imread("images/IMG_4492.JPG");
