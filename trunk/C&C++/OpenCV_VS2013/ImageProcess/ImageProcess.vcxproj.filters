@@ -30,6 +30,12 @@
     <ClCompile Include="faceSpotsDetect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="faceDetect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="grabcut.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="showImage.h">
@@ -39,6 +45,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="imageProcess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="faceDetect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="grabcut.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
