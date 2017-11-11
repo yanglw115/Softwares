@@ -6,18 +6,19 @@
 static string g_strCascadeName = "./build/data/haarcascades/haarcascade_frontalface_alt.xml";
 static string g_strNestedCacadeName = "";// "./build/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
 
-void detectAndDraw(Mat& img, CascadeClassifier& cascade,
+static Rect detectAndDraw(Mat& img, CascadeClassifier& cascade,
 	CascadeClassifier& nestedCascade,
 	double scale, bool bTryFlip);
 
-bool faceDetect(const string strFile)
+Rect faceDetect(const string strFile)
 {
 	Mat frame, image;
 	CascadeClassifier cascade, nestedCascade;
 	double scale;
 	bool bTryFlip;
+	Rect rectReturn;
 
-	scale = 1.3;
+	scale = 1;
 	if (scale < 1)
 		scale = 1;
 	bTryFlip = false;
@@ -27,36 +28,37 @@ bool faceDetect(const string strFile)
 	}
 	if (!cascade.load(g_strCascadeName)) {
 		cout << "ERROR: Could not load classifier cascade" << endl;
-		return false;
+		return Rect();
 	}
 
     if (strFile.size()) {
 		image = imread(strFile, 1);
 		if (image.empty()) {
 			cout << "Could not read " << strFile << endl;
-			return false;
+			return Rect();
 		}
 	}
 
-	resize(image, image, Size(800, 700));
+	//resize(image, image, Size(800, 700));
 
 	cout << "Detecting face(s) in " << strFile << endl;
 	if (!image.empty())	{
-		detectAndDraw(image, cascade, nestedCascade, scale, bTryFlip);
+		rectReturn = detectAndDraw(image, cascade, nestedCascade, scale, bTryFlip);
 		waitKey(0);
 	} else {
 		cout << "Input image is empty!" << endl;
-		return false;
+		return Rect();
 	}
-	return true;
+	return rectReturn;
 }
 
-void detectAndDraw(Mat& img, CascadeClassifier& cascade,
+Rect detectAndDraw(Mat& img, CascadeClassifier& cascade,
 	CascadeClassifier& nestedCascade,
 	double scale, bool bTryFlip)
 {
 	double t = 0;
 	vector<Rect> faces, faces2;
+	Rect rectReturn;
 	const static Scalar colors[] =
 	{
 		Scalar(255, 0, 0),
@@ -106,14 +108,15 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
 		Scalar color = colors[i % 8];
 		int radius;
 		double aspect_ratio = (double)r.width / r.height;
-		if (0.75 < aspect_ratio && aspect_ratio < 1.3) {
+		if (0) {//(0.75 < aspect_ratio && aspect_ratio < 1.3) {
 			center.x = cvRound((r.x + r.width*0.5)*scale);
 			center.y = cvRound((r.y + r.height*0.5)*scale);
 			radius = cvRound((r.width + r.height)*0.25*scale);
 			circle(img, center, radius, color, 3, 8, 0);
 		} else {
-			rectangle(img, cvPoint(cvRound(r.x*scale), cvRound(r.y*scale)),
-				cvPoint(cvRound((r.x + r.width - 1)*scale), cvRound((r.y + r.height - 1)*scale)),
+			rectReturn =  Rect(cvPoint(cvRound(r.x*scale), cvRound(r.y*scale)),
+				cvPoint(cvRound((r.x + r.width - 1)*scale), cvRound((r.y + r.height - 1)*scale)));
+			rectangle(img, rectReturn,
 				color, 3, 8, 0);
 		}
 		if (nestedCascade.empty())
@@ -134,8 +137,10 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
 			circle(img, center, radius, color, 3, 8, 0);
 		}
 	}
+	namedWindow("result", WINDOW_NORMAL);
 	imshow("result", img);
 	waitKey();
+	return rectReturn;
 }
 
 void faceContours(const string strFile)

@@ -5,6 +5,7 @@
 #include "imageProcess.h"
 #include "faceDetect.h"
 #include "grabcut.h"
+#include "faceLandmarkDetect.h"
 
 using namespace cv;
 
@@ -20,11 +21,26 @@ void main()
 	//setContrastAndBright("images/dota_jugg.jpg");
 	//dftImage("images/dota_jugg.jpg");
 	//imageFilter("images/AC.jpg");
-	//faceDetect("images/skin_detect.jpg");
+#if 0
+	Mat image = imread("images/skin_detect.jpg", 1);
+	resize(image, image, Size(1280, 1280 * image.rows / image.cols));
+	imwrite("images/test.jpg", image);
+#endif
+
+#if 0 // 人脸轮廓提取方法1。有时会有少量的脏数据
+	Rect rect = faceDetect("images/test.jpg");
+	cout << "Get rect: " << rect;
+	grabCut("images/test.jpg", rect);
+#endif
+
+#if 1 // 人脸轮廓提取方法2。会丢失一定的数据
+	faceLandmarkDetect("images/test.jpg");
+#endif
 	//faceContours("images/skin_detect.jpg");
 	//imageContours("images/skin_detect.jpg");
-	getFaceShape("images/skin_detect.jpg");
-	//grabCut("images/faceDetest_01.jpg");
+	//getFaceShape("images/skin_detect.jpg");
+	
+	//faceSwap();
 	waitKey(0);
 }
 
