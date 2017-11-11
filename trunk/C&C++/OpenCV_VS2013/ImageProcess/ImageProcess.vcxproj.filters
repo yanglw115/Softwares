@@ -36,6 +36,9 @@
     <ClCompile Include="grabcut.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="faceLandmarkDetect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="showImage.h">
@@ -52,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="grabcut.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="faceLandmarkDetect.h">
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

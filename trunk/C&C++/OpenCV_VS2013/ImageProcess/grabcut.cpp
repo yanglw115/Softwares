@@ -52,7 +52,8 @@ public:
 	void mouseClick(int event, int x, int y, int flags, void* param);
 	int nextIter();
 	int getIterCount() const { return iterCount; }
-private:
+	void setRect(const Rect rectTemp) { rect = rectTemp; }
+public:
 	void setRectInMask();
 	void setLblsInMask(int flags, Point p, bool isPr);
 	const string* winName;
@@ -223,8 +224,9 @@ void GCApplication::mouseClick(int event, int x, int y, int flags, void*)
 }
 int GCApplication::nextIter()
 {
-	if (isInitialized)
-		grabCut(*image, mask, rect, bgdModel, fgdModel, 1);
+	if (1) //(isInitialized)
+		//grabCut(*image, mask, rect, bgdModel, fgdModel, 1);
+		grabCut(*image, mask, rect, bgdModel, fgdModel, 1, GC_INIT_WITH_MASK);
 	else
 	{
 		if (rectState != SET)
@@ -245,7 +247,7 @@ static void on_mouse(int event, int x, int y, int flags, void* param)
 {
 	gcapp.mouseClick(event, x, y, flags, param);
 }
-int grabCut(const string strFile)
+int grabCut(const string strFile, Rect rectInput)
 {
 	Mat image = imread(strFile, 1);
 	if (image.empty())
@@ -254,13 +256,18 @@ int grabCut(const string strFile)
 		return 1;
 	}
 
-	resize(image, image, Size(600, 800));
+	//resize(image, image, Size(600, 800));
 
 	const string winName = "image";
-	namedWindow(winName, WINDOW_AUTOSIZE);
+	namedWindow(winName, WINDOW_NORMAL);
 	setMouseCallback(winName, on_mouse, 0);
 	gcapp.setImageAndWinName(image, winName);
 	gcapp.showImage();
+	gcapp.setRect(rectInput);
+	gcapp.rectState = GCApplication::SET;
+	gcapp.isInitialized = true;
+	gcapp.setRectInMask();
+#if 0
 	for (;;)
 	{
 		char c = (char)waitKey(0);
@@ -288,6 +295,18 @@ int grabCut(const string strFile)
 			break;
 		}
 	}
+#else
+	int iterCount = gcapp.getIterCount();
+	int newIterCount = gcapp.nextIter();
+	if (newIterCount > iterCount)
+	{
+		gcapp.showImage();
+		cout << iterCount << ">" << endl;
+	}
+	else
+		cout << "rect must be determined>" << endl;
+	waitKey();
+#endif
 exit_main:
 	destroyWindow(winName);
 	return 0;

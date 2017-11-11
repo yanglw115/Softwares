@@ -4,5 +4,5 @@
 #include <iostream>
 using namespace std;
 
-int grabCut(const string strFile);
+int grabCut(const string strFile, Rect rect);
 #endif 

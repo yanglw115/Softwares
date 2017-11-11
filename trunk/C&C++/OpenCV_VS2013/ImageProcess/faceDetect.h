@@ -5,7 +5,7 @@
 using namespace cv;
 using namespace std;
 
-bool faceDetect(const string strFile);
+Rect faceDetect(const string strFile);
 void faceContours(const string strFile);
 int getFaceShape(const string strFile);
 
