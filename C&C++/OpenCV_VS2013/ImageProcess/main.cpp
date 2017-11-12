@@ -6,8 +6,7 @@
 #include "faceDetect.h"
 #include "grabcut.h"
 #include "faceLandmarkDetect.h"
-
-using namespace cv;
+#include "faceSpotsDetect.h"
 
 void main()
 {
@@ -34,13 +33,15 @@ void main()
 #endif
 
 #if 1 // 人脸轮廓提取方法2。会丢失一定的数据
-	faceLandmarkDetect("images/test.jpg");
+	std::vector<std::vector<cv::Point>> contours;
+	contours = faceLandmarkDetect("images/test.jpg");
+	findFaceSpots("images/test.jpg", contours);
 #endif
 	//faceContours("images/skin_detect.jpg");
 	//imageContours("images/skin_detect.jpg");
 	//getFaceShape("images/skin_detect.jpg");
 	
 	//faceSwap();
-	waitKey(0);
+	cv::waitKey(0);
 }
 

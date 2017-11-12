@@ -2,10 +2,9 @@
 #define __FACE_DETECT_H__
 
 #include <opencv2/opencv.hpp>
-using namespace cv;
 using namespace std;
 
-Rect faceDetect(const string strFile);
+cv::Rect faceDetect(const string strFile);
 void faceContours(const string strFile);
 int getFaceShape(const string strFile);
 

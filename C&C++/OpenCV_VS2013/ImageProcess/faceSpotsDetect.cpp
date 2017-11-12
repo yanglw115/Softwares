@@ -6,12 +6,7 @@
 using namespace cv;
 using namespace std;
 
-Mat g_imgSrc, g_imgClone;
-bool g_bMouseDown;
-vector<vector<Point> > g_contours;
-vector<Point> g_points;
-
-bool findPimples(Mat img)
+static bool findPimples(Mat img, std::vector<std::vector<cv::Point>> contours)
 {
 	Mat bw, bgr[3];
 	/* 将只有轮廓部分的图进行split通道分离 */
@@ -35,18 +30,18 @@ bool findPimples(Mat img)
 	dilate(bw, bw, Mat(), Point(-1, -1), 1);
 	imshow("膨胀操作之后", bw);
 
-	g_contours.clear();
+	contours.clear();
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
-	findContours(bw, g_contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
+	findContours(bw, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-	cout << "检测到的边界个数：" << g_contours.size() << endl;
-	for (size_t i = 0; i< g_contours.size(); i++)
+	cout << "检测到的边界个数：" << contours.size() << endl;
+	for (size_t i = 0; i< contours.size(); i++)
 	{
-	    cout << "边界大小：" << contourArea(g_contours[i]) << endl;
+	    cout << "边界大小：" << contourArea(contours[i]) << endl;
 		/* 这里的值也需要调试 */
-		if (contourArea(g_contours[i]) > 0 && contourArea(g_contours[i]) < 150)
+		if (contourArea(contours[i]) > 0 && contourArea(contours[i]) < 150)
 		{
-			Rect minRect = boundingRect(Mat(g_contours[i]));
+			Rect minRect = boundingRect(Mat(contours[i]));
 			Mat imgroi(img, minRect);
 
 			cvtColor(imgroi, imgroi, COLOR_BGR2HSV);
@@ -57,7 +52,7 @@ bool findPimples(Mat img)
 			{
 				Point2f center, vtx[4];
 				float radius = 0;
-				minEnclosingCircle(Mat(g_contours[i]), center, radius);
+				minEnclosingCircle(Mat(contours[i]), center, radius);
 
 				/* 这里的值需要最终调试 */
 				if (radius > 2)
@@ -71,75 +66,34 @@ bool findPimples(Mat img)
 	putText(img, format("%d", pimplescount), Point(50, 30), FONT_HERSHEY_SIMPLEX, 0.8, Scalar(255, 255, 0), 2);
 
 	imshow("pimples dedector", img);
+	waitKey();
 
 	return true;
 }
 
-
-void onMouse(int event, int x, int y, int flags, void* userdata)
+int findFaceSpots(const string &strFile, const std::vector<std::vector<cv::Point>> contours)
 {
-	/* 取原始图像 */
-	Mat img = *((Mat *)userdata);
-
-	if (event == EVENT_LBUTTONDOWN)
-	{
-		g_bMouseDown = true;
-		g_contours.clear();
-		g_points.clear();
-	}
-
-	if (event == EVENT_LBUTTONUP)
-	{
-		g_bMouseDown = false;
-		if (g_points.size() > 2)
-		{
-			/* 创建一个通道并与原图大小相等的Mat */
-			Mat mask(img.size(), CV_8UC1);
-			/* 矩阵赋值为全0，颜色表现为全黑 */
-			mask = 0;
-			g_contours.push_back(g_points);
-			/* 第一个参数是需要画轮廓的图像，第二个参数代表轮廓数组，第三个参数代表所用数组索引，第4个参数代表轮廓填充颜色，第5个参数是 */
-			drawContours(mask, g_contours, 0, Scalar(255), -1);
-			/* 创建一个三通道的mask */
-			Mat masked(img.size(), CV_8UC3);
-			masked = Scalar(255, 255, 255);
-			/* 将画了轮廓的原图按照mask拷贝到masked；这里的mask只有轮廓部分颜色值是1，即只拷贝原图这块的内容到masked */
-			img.copyTo(masked, mask);
-			/* g_imgSrc始终保持不变 */
-			g_imgClone = g_imgSrc.clone();
-			findPimples(masked);
-		}
-	}
-
-	if (g_bMouseDown)
-	{
-		if (g_points.size() > 2)
-			/* 在img中画线：参数2是起点，参数3是终点，参数4是画线颜色 */
-			line(img, Point(x, y), g_points[g_points.size() - 1], Scalar(0, 255, 0));
-
-		g_points.push_back(Point(x, y));
-		/* 鼠标按下后在原图上画轮廓，选定区域 */
-		imshow("pimples dedector", img);
-	}
-}
-
-
-int main3(int argc, const char** argv)
-{
-	g_imgSrc = imread("images/faceWithSpots.jpg");
-	//g_imgSrc = imread("images/IMG_4492.JPG");
-	//g_imgSrc = imread("images/heizhi.jpg");
-	if (g_imgSrc.empty())
-	{
+	Mat imgSrc = imread(strFile);
+	if (imgSrc.empty()) {
 		return -1;
 	}
 
-	imshow("原图：", g_imgSrc);
+	imshow("原图：", imgSrc);
+	namedWindow("pimples dedector", WINDOW_NORMAL);
 
-	namedWindow("pimples dedector", WINDOW_AUTOSIZE);
-	g_imgClone = g_imgSrc.clone();
-	setMouseCallback("pimples dedector", onMouse, &g_imgClone);
-	imshow("pimples dedector", g_imgSrc);
+	/* 创建一个通道并与原图大小相等的Mat */
+	Mat mask(imgSrc.size(), CV_8UC1);
+	/* 矩阵赋值为全0，颜色表现为全黑 */
+	mask = 0;
+	/* 第一个参数是需要画轮廓的图像，第二个参数代表轮廓数组，第三个参数代表所用数组索引，第4个参数代表轮廓填充颜色，第5个参数是 */
+	drawContours(mask, contours, 0, Scalar(255), -1);
+	/* 创建一个三通道的mask */
+	Mat masked(imgSrc.size(), CV_8UC3);
+	masked = Scalar(255, 255, 255);
+	/* 将画了轮廓的原图按照mask拷贝到masked；这里的mask只有轮廓部分颜色值是1，即只拷贝原图这块的内容到masked */
+	imgSrc.copyTo(masked, mask);
+	/* imgSrc始终保持不变 */
+	findPimples(masked, contours);
 
 	while( 'q' != waitKey(0));
 	return 0;
