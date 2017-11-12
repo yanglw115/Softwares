@@ -142,6 +142,7 @@
     <ClInclude Include="dftImage.h" />
     <ClInclude Include="faceDetect.h" />
     <ClInclude Include="faceLandmarkDetect.h" />
+    <ClInclude Include="faceSpotsDetect.h" />
     <ClInclude Include="grabcut.h" />
     <ClInclude Include="imageProcess.h" />
     <ClInclude Include="showImage.h" />

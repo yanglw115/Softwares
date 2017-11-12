@@ -3,6 +3,8 @@
 #include "opencv2/imgproc.hpp"
 
 #include "faceDetect.h"
+
+using namespace cv;
 static string g_strCascadeName = "./build/data/haarcascades/haarcascade_frontalface_alt.xml";
 static string g_strNestedCacadeName = "";// "./build/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
 

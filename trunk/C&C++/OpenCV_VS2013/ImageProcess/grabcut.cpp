@@ -3,8 +3,10 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include <iostream>
+
 using namespace std;
 using namespace cv;
+
 static void help()
 {
 	cout << "\nThis program demonstrates GrabCut segmentation -- select an object in a region\n"
