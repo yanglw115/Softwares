@@ -8,6 +8,8 @@
 #include "faceLandmarkDetect.h"
 #include "faceSpotsDetect.h"
 
+const char *g_pStrImageFile = "images/IMG_4499.JPG";
+
 void main()
 {
 	//showImage("images/3.jpg");
@@ -34,8 +36,8 @@ void main()
 
 #if 1 // 人脸轮廓提取方法2。会丢失一定的数据
 	std::vector<std::vector<cv::Point>> contours;
-	contours = faceLandmarkDetect("images/test.jpg");
-	findFaceSpots("images/test.jpg", contours);
+	contours = faceLandmarkDetect(g_pStrImageFile);
+	findFaceSpots(g_pStrImageFile, contours);
 #endif
 	//faceContours("images/skin_detect.jpg");
 	//imageContours("images/skin_detect.jpg");

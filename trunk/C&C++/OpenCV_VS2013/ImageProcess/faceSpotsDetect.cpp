@@ -6,7 +6,7 @@
 using namespace cv;
 using namespace std;
 
-static bool findPimples(Mat img, std::vector<std::vector<cv::Point>> contours)
+static bool findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>> contours)
 {
 	Mat bw, bgr[3];
 	/* 将只有轮廓部分的图进行split通道分离 */
@@ -58,18 +58,18 @@ static bool findPimples(Mat img, std::vector<std::vector<cv::Point>> contours)
 				minEnclosingCircle(Mat(contours[i]), center, radius);
 
 				/* 这里的值需要最终调试 */
-				if (radius > 2)
+				if (radius > 3)
 				{
-					rectangle(img, minRect, Scalar(0, 255, 0));
+					rectangle(srcImg, minRect, Scalar(0, 255, 0));
 					pimplescount++;
 				}
 			}
 		}
 	}
-	putText(img, format("%d", pimplescount), Point(50, 30), FONT_HERSHEY_SIMPLEX, 0.8, Scalar(255, 255, 0), 2);
+	putText(srcImg, format("%d", pimplescount), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
 
 	namedWindow("pimples dedector", WINDOW_NORMAL);
-	imshow("pimples dedector", img);
+	imshow("pimples dedector", srcImg);
 	waitKey();
 
 	return true;
@@ -90,14 +90,14 @@ int findFaceSpots(const string &strFile, const std::vector<std::vector<cv::Point
 	/* 矩阵赋值为全0，颜色表现为全黑 */
 	mask = 0;
 	/* 第一个参数是需要画轮廓的图像，第二个参数代表轮廓数组，第三个参数代表所用数组索引，第4个参数代表轮廓填充颜色，第5个参数是 */
-	drawContours(mask, contours, 0, Scalar(255), -1);
+	drawContours(mask, contours, -1, Scalar(255), -1);
 	/* 创建一个三通道的mask */
 	Mat masked(imgSrc.size(), CV_8UC3);
 	masked = Scalar(255, 255, 255);
 	/* 将画了轮廓的原图按照mask拷贝到masked；这里的mask只有轮廓部分颜色值是1，即只拷贝原图这块的内容到masked */
 	imgSrc.copyTo(masked, mask);
 	/* imgSrc始终保持不变 */
-	findPimples(masked, contours);
+	findPimples(imgSrc, masked, contours);
 
 	while( 'q' != waitKey(0));
 	return 0;
