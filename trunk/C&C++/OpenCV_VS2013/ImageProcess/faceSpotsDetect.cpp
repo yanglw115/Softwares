@@ -17,6 +17,7 @@ static bool findPimples(Mat img, std::vector<std::vector<cv::Point>> contours)
 	cvtColor(img, bw, COLOR_BGR2GRAY);
 	int pimplescount = 0;
 
+	namedWindow("自适应阈值化之前", WINDOW_NORMAL);
 	imshow("自适应阈值化之前", bw);
 	/* 自适应阈值化：图像分割，去除一定范围内的像素 */
 	/* bw必须是单通道的8bit图像 */
@@ -24,10 +25,12 @@ static bool findPimples(Mat img, std::vector<std::vector<cv::Point>> contours)
 		第6个参数是用来计算阈值的块大小(必须是奇数)，第7个参数是需要从加权平均值减去的一个常量 */
 	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5); //好像这里使用15是最优的，可以再调试
 	//adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 13, 5);
+	namedWindow("自适应阈值化之后", WINDOW_NORMAL);
 	imshow("自适应阈值化之后", bw);
 
 	/* 膨胀操作：前两个参数是输入与输出；参数3：膨胀操作的核，NULL时为3*3；参数4：锚的位置，下面代表位于中心；参数5：迭代使用dilate的次数 */
 	dilate(bw, bw, Mat(), Point(-1, -1), 1);
+	namedWindow("膨胀操作之后", WINDOW_NORMAL);
 	imshow("膨胀操作之后", bw);
 
 	contours.clear();
@@ -65,6 +68,7 @@ static bool findPimples(Mat img, std::vector<std::vector<cv::Point>> contours)
 	}
 	putText(img, format("%d", pimplescount), Point(50, 30), FONT_HERSHEY_SIMPLEX, 0.8, Scalar(255, 255, 0), 2);
 
+	namedWindow("pimples dedector", WINDOW_NORMAL);
 	imshow("pimples dedector", img);
 	waitKey();
 
@@ -78,8 +82,8 @@ int findFaceSpots(const string &strFile, const std::vector<std::vector<cv::Point
 		return -1;
 	}
 
+	namedWindow("原图：", WINDOW_NORMAL);
 	imshow("原图：", imgSrc);
-	namedWindow("pimples dedector", WINDOW_NORMAL);
 
 	/* 创建一个通道并与原图大小相等的Mat */
 	Mat mask(imgSrc.size(), CV_8UC1);

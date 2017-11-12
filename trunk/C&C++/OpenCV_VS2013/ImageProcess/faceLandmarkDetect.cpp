@@ -107,8 +107,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		// Now we will go ask the shape_predictor to tell us the pose of
 		// each face we detected.
 		std::vector<full_object_detection> shapes;
-		std::vector<cv::Point> vectShape;
-		vectShape.resize(19);
+		std::vector<cv::Point> vectorShape;
 
 		for (unsigned long j = 0; j < dets.size(); ++j)
 		{
@@ -120,22 +119,32 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 			// you want them.  Here we just store them in shapes so we can
 			// put them on the screen.
 			shapes.push_back(shape);
-			for (int i = 0; i < 17; ++i) {
-				vectShape[i].x = shape.part(i).x();
-				vectShape[i].y = shape.part(i).y();
-			}
 
-			vectShape[17].x = shape.part(24).x();
-			vectShape[17].y = shape.part(24).y() - 20;
-			vectShape[18].x = shape.part(19).x();
-			vectShape[18].y = shape.part(19).y() - 20;
+			vectorShape.resize(17);
+			vectorShape[0] = cv::Point(shape.part(36).x(), shape.part(36).y());
+			vectorShape[1] = cv::Point(shape.part(41).x(), shape.part(41).y());
+			vectorShape[2] = cv::Point(shape.part(40).x(), shape.part(40).y());
+			vectorShape[3] = cv::Point(shape.part(39).x(), shape.part(39).y());
+			vectorShape[4] = cv::Point(shape.part(27).x(), shape.part(27).y());
+			vectorShape[5] = cv::Point(shape.part(28).x(), shape.part(28).y());
+			vectorShape[6] = cv::Point(shape.part(29).x(), shape.part(29).y());
+			vectorShape[7] = cv::Point(shape.part(30).x(), shape.part(30).y());
+			vectorShape[8] = cv::Point(shape.part(39).x(), shape.part(29).y());
+			vectorShape[9] = cv::Point(shape.part(40).x(), shape.part(2).y());
+			vectorShape[10] = cv::Point(shape.part(48).x(), shape.part(48).y());
+			vectorShape[11] = cv::Point(shape.part(5).x(), shape.part(5).y());
+			vectorShape[12] = cv::Point(shape.part(4).x(), shape.part(4).y());
+			vectorShape[13] = cv::Point(shape.part(3).x(), shape.part(3).y());
+			vectorShape[14] = cv::Point(shape.part(2).x(), shape.part(2).y());
+			vectorShape[15] = cv::Point(shape.part(1).x(), shape.part(1).y());
+			vectorShape[16] = cv::Point(shape.part(0).x(), shape.part(0).y());
 
-			cout << "shape: " << vectShape << endl;
+			contours.push_back(vectorShape);
 
 		}
 
 		cv::Mat matTest = cv::imread(strFile, 1);
-		cv::imshow("orig: ", matTest);
+		//cv::imshow("orig: ", matTest);
 		t = (double)cv::getTickCount();
 		cout << "rows: " << matTest.rows << endl;
 		cout << "cols: " << matTest.cols << endl;
@@ -144,35 +153,13 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		cv::Mat test;
 		matTest.copyTo(test);
 		cv::cvtColor(test, test, cv::COLOR_RGB2GRAY);
-			
-		contours.push_back(vectShape);
 					
 		//cv::drawContours(matTest, contours, 0, cv::Scalar(0, 0, 0), 3);
-		cv::drawContours(matTest, contours, 0, cv::Scalar(0, 0, 0), CV_FILLED);
+		cv::drawContours(matTest, contours, -1, cv::Scalar(0, 0, 0), CV_FILLED);
 
 
 		t = (double)cv::getTickCount() - t;
 		cout << "Set image所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
-		//cv::namedWindow("re", cv::WINDOW_NORMAL);
-		//cv::imshow("re", matTest);
-		//cv::waitKey();
-
-#if 0
-		image_window win, win_faces;
-		// Now let's view our face poses on the screen.
-		win.clear_overlay();
-		win.set_image(img);
-		win.add_overlay(render_face_detections(shapes));
-
-		// We can also extract copies of each face that are cropped, rotated upright,
-		// and scaled to a standard size as shown here:
-		dlib::array<array2d<rgb_pixel> > face_chips;
-		extract_image_chips(img, get_face_chip_details(shapes), face_chips);
-		win_faces.set_image(tile_images(face_chips));
-
-		cout << "Hit enter to process the next image..." << endl;
-		cin.get();
-#endif
 	}
 	catch (exception& e)
 	{
