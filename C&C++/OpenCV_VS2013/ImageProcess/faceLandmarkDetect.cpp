@@ -120,46 +120,38 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 			// put them on the screen.
 			shapes.push_back(shape);
 
-			vectorShape.resize(17);
-			vectorShape[0] = cv::Point(shape.part(36).x(), shape.part(36).y());
-			vectorShape[1] = cv::Point(shape.part(41).x(), shape.part(41).y());
-			vectorShape[2] = cv::Point(shape.part(40).x(), shape.part(40).y());
-			vectorShape[3] = cv::Point(shape.part(39).x(), shape.part(39).y());
-			vectorShape[4] = cv::Point(shape.part(27).x(), shape.part(27).y());
-			vectorShape[5] = cv::Point(shape.part(28).x(), shape.part(28).y());
-			vectorShape[6] = cv::Point(shape.part(29).x(), shape.part(29).y());
-			vectorShape[7] = cv::Point(shape.part(30).x(), shape.part(30).y());
-			vectorShape[8] = cv::Point(shape.part(39).x(), shape.part(29).y());
-			vectorShape[9] = cv::Point(shape.part(40).x(), shape.part(2).y());
-			vectorShape[10] = cv::Point(shape.part(48).x(), shape.part(48).y());
-			vectorShape[11] = cv::Point(shape.part(5).x(), shape.part(5).y());
-			vectorShape[12] = cv::Point(shape.part(4).x(), shape.part(4).y());
-			vectorShape[13] = cv::Point(shape.part(3).x(), shape.part(3).y());
-			vectorShape[14] = cv::Point(shape.part(2).x(), shape.part(2).y());
-			vectorShape[15] = cv::Point(shape.part(1).x(), shape.part(1).y());
-			vectorShape[16] = cv::Point(shape.part(0).x(), shape.part(0).y());
+			vectorShape.resize(13);
+			vectorShape[0] = cv::Point(shape.part(36).x() - 20, shape.part(36).y() + 40);
+			vectorShape[1] = cv::Point(shape.part(41).x(), shape.part(41).y() + 20);
+			vectorShape[2] = cv::Point(shape.part(40).x(), shape.part(40).y() + 20);
+			vectorShape[3] = cv::Point(shape.part(39).x(), shape.part(39).y() + 20);
+			vectorShape[4] = cv::Point((shape.part(39).x() + shape.part(40).x()) / 2, shape.part(1).y());
+			vectorShape[5] = cv::Point(shape.part(40).x(), shape.part(2).y());
+			vectorShape[6] = cv::Point(shape.part(41).x(), shape.part(4).y());
+			vectorShape[7] = cv::Point(shape.part(5).x() + 20, shape.part(5).y());
+			vectorShape[8] = cv::Point(shape.part(4).x() + 20, shape.part(4).y());
+			vectorShape[9] = cv::Point(shape.part(3).x() + 20, shape.part(3).y());
+			vectorShape[10] = cv::Point(shape.part(2).x() + 20, shape.part(2).y());
+			vectorShape[11] = cv::Point(shape.part(1).x() + 20, shape.part(1).y());
+			vectorShape[12] = cv::Point(shape.part(0).x() + 20, shape.part(0).y());
 
 			contours.push_back(vectorShape);
 
 
-			vectorShape.resize(17);
-			vectorShape[0] = cv::Point(shape.part(16).x(), shape.part(16).y());
-			vectorShape[1] = cv::Point(shape.part(46).x(), shape.part(46).y());
-			vectorShape[2] = cv::Point(shape.part(28).x(), shape.part(28).y());
-			vectorShape[3] = cv::Point(shape.part(29).x(), shape.part(29).y());
-			vectorShape[4] = cv::Point(shape.part(30).x(), shape.part(30).y());
-			vectorShape[5] = cv::Point(shape.part(28).x(), shape.part(28).y());
-			vectorShape[6] = cv::Point(shape.part(29).x(), shape.part(29).y());
-			vectorShape[7] = cv::Point(shape.part(30).x(), shape.part(30).y());
-			vectorShape[8] = cv::Point(shape.part(47).x(), shape.part(29).y());
-			vectorShape[9] = cv::Point(shape.part(54).x(), shape.part(14).y());
-			vectorShape[10] = cv::Point(shape.part(54).x(), shape.part(54).y());
-			vectorShape[11] = cv::Point(shape.part(11).x(), shape.part(11).y());
-			vectorShape[12] = cv::Point(shape.part(12).x(), shape.part(12).y());
-			vectorShape[13] = cv::Point(shape.part(13).x(), shape.part(13).y());
-			vectorShape[14] = cv::Point(shape.part(14).x(), shape.part(14).y());
-			vectorShape[15] = cv::Point(shape.part(15).x(), shape.part(15).y());
-			vectorShape[16] = cv::Point(shape.part(16).x(), shape.part(16).y());
+			vectorShape.resize(13);
+			vectorShape[0] = cv::Point(shape.part(45).x() - 20, shape.part(45).y() + 40);
+			vectorShape[1] = cv::Point(shape.part(46).x(), shape.part(46).y() + 20);
+			vectorShape[2] = cv::Point(shape.part(47).x(), shape.part(47).y() + 20);
+			vectorShape[3] = cv::Point(shape.part(42).x(), shape.part(42).y() + 20);
+			vectorShape[4] = cv::Point((shape.part(42).x() + shape.part(47).x()) / 2, shape.part(15).y());
+			vectorShape[5] = cv::Point(shape.part(47).x() - 20, shape.part(14).y());
+			vectorShape[6] = cv::Point(shape.part(11).x() - 40, shape.part(12).y());
+			vectorShape[7] = cv::Point(shape.part(11).x() - 20, shape.part(11).y());
+			vectorShape[8] = cv::Point(shape.part(12).x() - 20, shape.part(12).y());
+			vectorShape[9] = cv::Point(shape.part(13).x() - 20, shape.part(13).y());
+			vectorShape[10] = cv::Point(shape.part(14).x() - 20, shape.part(14).y());
+			vectorShape[11] = cv::Point(shape.part(15).x() - 20, shape.part(15).y());
+			vectorShape[12] = cv::Point(shape.part(16).x() - 20, shape.part(16).y());
 
 			contours.push_back(vectorShape);
 

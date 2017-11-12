@@ -8,7 +8,9 @@
 #include "faceLandmarkDetect.h"
 #include "faceSpotsDetect.h"
 
-const char *g_pStrImageFile = "images/IMG_4499.JPG";
+//const char *g_pStrImageFile = "images/IMG_4492.JPG";
+//const char *g_pStrImageFile = "images/IMG_4499.JPG";
+const char *g_pStrImageFile = "images/test.jpg";
 
 void main()
 {
