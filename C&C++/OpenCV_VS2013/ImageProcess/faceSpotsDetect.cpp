@@ -60,7 +60,8 @@ static bool findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>>
 				/* 这里的值需要最终调试 */
 				if (radius > 3)
 				{
-					rectangle(srcImg, minRect, Scalar(0, 255, 0));
+					//rectangle(srcImg, minRect, Scalar(0, 255, 0));
+					circle(srcImg, center, radius + 1, Scalar(0, 255, 0), 2, 8);
 					pimplescount++;
 				}
 			}
@@ -68,8 +69,8 @@ static bool findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>>
 	}
 	putText(srcImg, format("%d", pimplescount), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
 
-	namedWindow("pimples dedector", WINDOW_NORMAL);
-	imshow("pimples dedector", srcImg);
+	namedWindow("检测结果：", WINDOW_NORMAL);
+	imshow("检测结果：", srcImg);
 	waitKey();
 
 	return true;
