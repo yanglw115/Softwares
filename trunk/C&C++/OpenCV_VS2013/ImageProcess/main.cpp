@@ -7,10 +7,11 @@
 #include "grabcut.h"
 #include "faceLandmarkDetect.h"
 #include "faceSpotsDetect.h"
+#include "faceColor.h"
 
-//const char *g_pStrImageFile = "images/IMG_4492.JPG";
+//const char *g_pStrImageFile = "images/75ace504fd66b804fdda09b04ec74261.jpg";
 //const char *g_pStrImageFile = "images/IMG_4499.JPG";
-const char *g_pStrImageFile = "images/test.jpg";
+const char *g_pStrImageFile = "images/10329771ea74d4765c6a40e981e5d925.jpg";
 
 void main()
 {
@@ -24,10 +25,14 @@ void main()
 	//setContrastAndBright("images/dota_jugg.jpg");
 	//dftImage("images/dota_jugg.jpg");
 	//imageFilter("images/AC.jpg");
+	//faceContours("images/skin_detect.jpg");
+	//imageContours("images/skin_detect.jpg");
+	//getFaceShape("images/skin_detect.jpg");
+	//faceSwap();
 #if 0
-	Mat image = imread("images/skin_detect.jpg", 1);
-	resize(image, image, Size(1280, 1280 * image.rows / image.cols));
-	imwrite("images/test.jpg", image);
+	cv::Mat image = cv::imread("images/IMG_20171113_113010.jpg", 1);
+	resize(image, image, cv::Size(1280, 1280 * image.rows / image.cols));
+	imwrite("images/zhouchen.jpg", image);
 #endif
 
 #if 0 // 人脸轮廓提取方法1。有时会有少量的脏数据
@@ -36,16 +41,18 @@ void main()
 	grabCut("images/test.jpg", rect);
 #endif
 
+//face spots detected.
 #if 1 // 人脸轮廓提取方法2。会丢失一定的数据
 	std::vector<std::vector<cv::Point>> contours;
 	contours = faceLandmarkDetect(g_pStrImageFile);
-	findFaceSpots(g_pStrImageFile, contours);
+	//findFaceSpots(g_pStrImageFile, contours);
 #endif
-	//faceContours("images/skin_detect.jpg");
-	//imageContours("images/skin_detect.jpg");
-	//getFaceShape("images/skin_detect.jpg");
-	
-	//faceSwap();
+
+// face color calc
+#if 1
+	/* 透白：232/白皙：217/自然：200/小麦：161/暗沉：120/黝黑：81 */
+	int colorValue = getFaceColorValue(g_pStrImageFile, contours);
+#endif
 	cv::waitKey(0);
 }
 
