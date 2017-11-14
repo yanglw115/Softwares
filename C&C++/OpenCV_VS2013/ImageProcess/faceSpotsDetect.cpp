@@ -58,7 +58,7 @@ static bool findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>>
 				minEnclosingCircle(Mat(contours[i]), center, radius);
 
 				/* 这里的值需要最终调试 */
-				if (radius > 3)
+				if (radius > 2)
 				{
 					//rectangle(srcImg, minRect, Scalar(0, 255, 0));
 					circle(srcImg, center, radius + 1, Scalar(0, 255, 0), 2, 8);
