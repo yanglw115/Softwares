@@ -163,6 +163,14 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 
 			contours.push_back(vectorShape);
 
+			vectorShape.resize(4);
+			vectorShape[0] = cv::Point(shape.part(4).x(), shape.part(1).y());
+			vectorShape[1] = cv::Point(shape.part(4).x(), shape.part(3).y());
+			vectorShape[2] = cv::Point(shape.part(40).x(), shape.part(3).y());
+			vectorShape[3] = cv::Point(shape.part(40).x(), shape.part(1).y());
+
+			contours.push_back(vectorShape);
+
 		}
 
 		cv::Mat matTest = cv::imread(strFile, 1);

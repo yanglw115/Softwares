@@ -9,9 +9,20 @@
 #include "faceSpotsDetect.h"
 #include "faceColor.h"
 
-//const char *g_pStrImageFile = "images/75ace504fd66b804fdda09b04ec74261.jpg";
-//const char *g_pStrImageFile = "images/IMG_4499.JPG";
-const char *g_pStrImageFile = "images/10329771ea74d4765c6a40e981e5d925.jpg";
+//const char *g_pStrImageFile = "images/baby.jpg";
+const char *g_pStrImageFile = "images/black.JPG";
+//const char *g_pStrImageFile = "images/zhuchong.jpg";
+//const char *g_pStrImageFile = "images/yangliwei.jpg";
+//const char *g_pStrImageFile = "images/zhouchen.jpg";
+//const char *g_pStrImageFile = "images/10329771ea74d4765c6a40e981e5d925.jpg";
+
+
+//const char *g_pStrImageFile = "images/透白.png";
+//const char *g_pStrImageFile = "images/白皙.png";
+//const char *g_pStrImageFile = "images/自然.png";
+//const char *g_pStrImageFile = "images/小麦.png";
+//const char *g_pStrImageFile = "images/暗沉.png";
+//const char *g_pStrImageFile = "images/黝黑.png";
 
 void main()
 {
@@ -41,16 +52,16 @@ void main()
 	grabCut("images/test.jpg", rect);
 #endif
 
+	std::vector<std::vector<cv::Point>> contours;
 //face spots detected.
 #if 1 // 人脸轮廓提取方法2。会丢失一定的数据
-	std::vector<std::vector<cv::Point>> contours;
 	contours = faceLandmarkDetect(g_pStrImageFile);
 	//findFaceSpots(g_pStrImageFile, contours);
 #endif
 
 // face color calc
 #if 1
-	/* 透白：232/白皙：217/自然：200/小麦：161/暗沉：120/黝黑：81 */
+	/* RGB 透白：232/白皙：217/自然：200/小麦：161/暗沉：120/黝黑：81 */
 	int colorValue = getFaceColorValue(g_pStrImageFile, contours);
 #endif
 	cv::waitKey(0);
