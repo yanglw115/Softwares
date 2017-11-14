@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="faceColor.cpp" />
     <ClCompile Include="faceDetect.cpp" />
     <ClCompile Include="faceLandmarkDetect.cpp" />
     <ClCompile Include="faceSpotsDetect.cpp" />
@@ -140,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dftImage.h" />
+    <ClInclude Include="faceColor.h" />
     <ClInclude Include="faceDetect.h" />
     <ClInclude Include="faceLandmarkDetect.h" />
     <ClInclude Include="faceSpotsDetect.h" />

@@ -10,8 +10,8 @@
 #include "faceColor.h"
 
 //const char *g_pStrImageFile = "images/baby.jpg";
-const char *g_pStrImageFile = "images/black.JPG";
-//const char *g_pStrImageFile = "images/zhuchong.jpg";
+//const char *g_pStrImageFile = "images/black.JPG";
+const char *g_pStrImageFile = "images/zhuchong.jpg";
 //const char *g_pStrImageFile = "images/yangliwei.jpg";
 //const char *g_pStrImageFile = "images/zhouchen.jpg";
 //const char *g_pStrImageFile = "images/10329771ea74d4765c6a40e981e5d925.jpg";
