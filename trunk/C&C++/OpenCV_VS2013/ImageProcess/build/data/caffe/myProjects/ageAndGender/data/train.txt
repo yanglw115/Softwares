@@ -1,0 +1,2 @@
+/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/0/100001.jpg 0
+/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/1/200001.jpg 1
