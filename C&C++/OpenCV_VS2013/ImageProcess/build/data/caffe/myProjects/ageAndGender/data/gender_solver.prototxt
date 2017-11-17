@@ -1,0 +1,36 @@
+# The train/test net protocol buffer definition
+#设置深度网络模型。每一个模型就是一个net，需要在一个专门的配置文件中对net进行配置，每个net由许多的layer所组成。
+#可以用一个net来表示,也可以使用train_net+test_net来表示
+#net: "myProjects/ageAndGender/data/gender_train_test.prototxt"
+train_net: "myProjects/ageAndGender/data/gender_train.prototxt"
+test_net: "myProjects/ageAndGender/data/gender.prototxt"
+
+# test_iter specifies how many forward passes the test should carry out.
+# For example, we have test batch size 100 and 100 test iterations,
+# covering the full 10,000 testing images.
+#这个要与test layer中的batch_size结合起来理解。mnist数据中测试样本总数为10000，一次性执行全部数据效率很低，因此我们将测试数据分成几个批次来执行，
+#每个批次的数量就是batch_size。假设我们设置batch_size为100，则需要迭代100次才能将10000个数据全部执行完。
+#因此test_iter设置为100。执行完一次全部数据，称之为一个epoch
+test_iter: 1
+
+# Carry out testing every 500 training iterations.
+#测试间隔。也就是每训练500次，才进行一次测试。
+test_interval: 1
+
+# The base learning rate, momentum and the weight decay of the network.
+base_lr: 0.01
+momentum: 0.9
+weight_decay: 0.0005
+# The learning rate policy
+lr_policy: "inv"
+gamma: 0.0001
+power: 0.75
+# Display every 100 iterations
+display: 4
+# The maximum number of iterations
+max_iter: 8
+# snapshot intermediate results
+snapshot: 5000
+snapshot_prefix: "myProjects/ageAndGender/data"
+# solver mode: CPU or GPU
+solver_mode: CPU
