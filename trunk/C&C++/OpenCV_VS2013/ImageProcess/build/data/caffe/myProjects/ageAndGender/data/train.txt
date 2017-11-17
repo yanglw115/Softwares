@@ -1,8 +1,0 @@
-/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/0/100001.jpg 0
-/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/0/100002.jpg 0
-/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/0/100003.jpg 0
-/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/0/100004.jpg 0
-/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/1/200001.jpg 1
-/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/1/200002.jpg 1
-/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/1/200003.jpg 1
-/home/yangliwei/caffe/caffe-master/myProjects/ageAndGender/data/train/group1/1/200004.jpg 1
