@@ -3,48 +3,40 @@
 CaffeRoot=/home/yangliwei/caffe/caffe-master
 
 ProjectDir=myProjects/ageAndGender
-Data=${CaffeRoot}/${ProjectDir}/data
+DataDir=${CaffeRoot}/${ProjectDir}/data
 
-TrainData=${Data}/train
-TestData=${Data}/test
+TrainData=train
+TestData=test
 
-TrainDataList=${Data}/train.txt
-TestDataList=${Data}/test.txt
+TrainDataList=${DataDir}/train.txt
+TestDataList=${DataDir}/test.txt
 
 
 ##--data
 ##-----|train
-##----------|group1
-##----------------|0
-##----------------|1
-##----------|group2
-##----------------|0
-##----------------|1
+##----------|0
+##----------|1
 ##----------......
 ##-----|test
 ##---------|0
 ##---------|1
+##----------......
 
 echo "Create train.txt..."
 rm -rf ${TrainDataList}
 
-for group in `ls ${TrainData}` #overview train data directory
+#这里只需要分类即可，不需要分组再分类。因为在使用convert_imageset方法的时候加上--shuffle参数会自动随机排序
+for class in `ls ${DataDir}/${TrainData}` #overview train data directory
 do
-    groupDir=${TrainData}/${group}
-    if [ -d ${groupDir} ];then
-		for class in `ls ${groupDir}` #overview group directory
+    classDir=${DataDir}/${TrainData}/${class}
+    if [ -d ${classDir} ];then
+		for element in `ls ${classDir}`
 		do
-			classDir=${groupDir}/${class}
-			if [ -d ${classDir} ];then
-				for element in `ls ${classDir}`
-				do
-					elementDir=${classDir}/${element}
-					echo ${elementDir}
-					if [ -s ${elementDir} ];then
-						echo "${elementDir} ${class}" >> ${TrainDataList}
-					fi
-				done
-			fi	
+			elementDir=${classDir}/${element}
+			echo ${elementDir}
+			if [ -s ${elementDir} ];then
+				echo "/${TrainData}/${class}/${element} ${class}" >> ${TrainDataList}
+			fi
 		done
     fi
 done
@@ -52,18 +44,16 @@ done
 echo "Create test.txt..."
 rm -rf ${TestDataList}
 
-echo "test data dir: " ${TestData}
-for class in `ls ${TestData}`
+for class in `ls ${DataDir}/${TestData}`
 do
-	classDir=${TestData}/${class}
-	echo ${classDir}
+	classDir=${DataDir}/${TestData}/${class}
 	if [ -d ${classDir} ];then
 		for element in `ls ${classDir}`
 		do
 			echo ${elementDir}
 			elementDir=${classDir}/${element}
 			if [ -s ${elementDir} ];then
-				echo "${elementDir} ${class}" >> ${TestDataList}
+				echo "/${TestData}/${class}/${element} ${class}" >> ${TestDataList}
 			fi
 		done
 	fi
