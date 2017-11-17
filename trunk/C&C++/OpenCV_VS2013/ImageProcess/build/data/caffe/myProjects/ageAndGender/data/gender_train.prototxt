@@ -1,19 +1,18 @@
 name: "VGG_ILSVRC_16_layers"
 layer {
   top: "data"
-  type: "ImageData"
+  type: "Data"
   top: "label"
   name: "data"
   transform_param {
     mirror: true
     crop_size: 224
-    mean_file: "imagenet_mean.binaryproto"
+    mean_file: "myProjects/ageAndGender/data/gender_mean.binaryproto"
   }
-  image_data_param {
-    source: "train.txt"
-    batch_size: 10
-    new_height: 256
-    new_width: 256 
+  data_param {
+    source: "myProjects/ageAndGender/data/image_train_lmdb"
+    batch_size: 8
+	backend: LMDB
   }
   include: { phase: TRAIN }
 }
@@ -21,17 +20,16 @@ layer {
   top: "data"
   top: "label"
   name: "data"
-  type: "ImageData"
-  image_data_param {
-    new_height: 256
-    new_width: 256
-    source: "train.txt"
-    batch_size: 10
+  type: "Data"
+  data_param {
+    source: "myProjects/ageAndGender/data/image_test_lmdb"
+    batch_size: 8
+	backend: LMDB
   }
   transform_param {
     crop_size: 224
     mirror: false
-    mean_file: "imagenet_mean.binaryproto"
+    mean_file: "myProjects/ageAndGender/data/gender_mean.binaryproto"
   }
   include: { 
     phase: TEST
@@ -43,17 +41,16 @@ layer {
   top: "data"
   top: "label"
   name: "data"
-  type: "ImageData"
-  image_data_param {
-    new_height: 256
-    new_width: 256
-    source: "test.txt"
-    batch_size: 10
+  type: "Data"
+  data_param {
+    source: "myProjects/ageAndGender/data/image_test_lmdb"
+    batch_size: 8
+	backend: LMDB
   }
   transform_param {
     crop_size: 224
     mirror: false
-    mean_file: "imagenet_mean.binaryproto"
+    mean_file: "myProjects/ageAndGender/data/gender_mean.binaryproto"
   }
   include: { 
     phase: TEST
@@ -572,12 +569,6 @@ layer {
     stage: "test-on-train"
   }
 }
-
-
-
-
-
-
 
 layer {
   name: "accuracy_test_top01"

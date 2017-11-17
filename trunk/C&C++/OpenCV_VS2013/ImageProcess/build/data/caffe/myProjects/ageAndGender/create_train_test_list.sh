@@ -40,6 +40,7 @@ do
 		done
     fi
 done
+echo "Done."
 
 echo "Create test.txt..."
 rm -rf ${TestDataList}
