@@ -11,11 +11,11 @@ test_net: "myProjects/ageAndGender/data/gender.prototxt"
 #这个要与test layer中的batch_size结合起来理解。mnist数据中测试样本总数为10000，一次性执行全部数据效率很低，因此我们将测试数据分成几个批次来执行，
 #每个批次的数量就是batch_size。假设我们设置batch_size为100，则需要迭代100次才能将10000个数据全部执行完。
 #因此test_iter设置为100。执行完一次全部数据，称之为一个epoch
-test_iter: 1
+test_iter: 4
 
 # Carry out testing every 500 training iterations.
 #测试间隔。也就是每训练500次，才进行一次测试。
-test_interval: 1
+test_interval: 2
 
 # The base learning rate, momentum and the weight decay of the network.
 base_lr: 0.01

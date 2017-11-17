@@ -11,7 +11,7 @@ layer {
   }
   data_param {
     source: "myProjects/ageAndGender/data/image_train_lmdb"
-    batch_size: 8
+    batch_size: 20
 	backend: LMDB
   }
   include: { phase: TRAIN }
@@ -23,7 +23,7 @@ layer {
   type: "Data"
   data_param {
     source: "myProjects/ageAndGender/data/image_test_lmdb"
-    batch_size: 8
+    batch_size: 20
 	backend: LMDB
   }
   transform_param {
@@ -44,7 +44,7 @@ layer {
   type: "Data"
   data_param {
     source: "myProjects/ageAndGender/data/image_test_lmdb"
-    batch_size: 8
+    batch_size: 20
 	backend: LMDB
   }
   transform_param {
