@@ -1,6 +1,6 @@
 
 import java.util.*;
-import pa.*;
+import subdir.*;
 
 public class test {
 	public test()
