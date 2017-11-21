@@ -1,5 +1,8 @@
 
 #include "CureFaceParser.h"
+#include "faceLandmarkDetect.h"
+#include "CureFaceParser.h"
+#include "faceSpotsDetect.h"
 
 #include <iostream>
 
