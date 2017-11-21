@@ -54,7 +54,9 @@ instructions.  Note that AVX is the fastest but requires a CPU from at least
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing/render_face_detections.h>
 #include <dlib/image_processing.h>
+#ifdef With_Debug
 #include <dlib/gui_widgets.h>
+#endif // With_Debug
 #include <dlib/image_io.h>
 #include <iostream>
 
@@ -80,7 +82,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		shape_predictor sp;
 		deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
 		t = (double)cv::getTickCount() - t;
-		cout << "��ȡmarket����ʱ�䣺" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
+		cout << "提取market所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 
 		t = (double)cv::getTickCount();
 	
@@ -90,9 +92,9 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		load_image(img, strFile);
 
 		t = (double)cv::getTickCount() - t;
-		cout << "load image����ʱ�䣺" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
+		cout << "load image所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 		// Make the image larger so we can detect small faces.
-		//pyramid_up(img); �ֶ�ȥ��
+		//pyramid_up(img); 手动去掉
 
 		// Now tell the face detector to give us a list of bounding boxes
 		// around all the faces in the image.
@@ -100,7 +102,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		std::vector<dlib::rectangle> dets = detector(img);
 
 		t = (double)cv::getTickCount() - t;
-		cout << "Detect image����ʱ�䣺" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
+		cout << "Detect image所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 
 		cout << "Number of faces detected: " << dets.size() << endl;
 
@@ -179,7 +181,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		cout << "rows: " << matTest.rows << endl;
 		cout << "cols: " << matTest.cols << endl;
 
-		/* ʹ������+mask�ķ�����ͼ�ٳ��� */
+		/* 使用轮廓+mask的方法将图抠出来 */
 		cv::Mat test;
 		matTest.copyTo(test);
 		cv::cvtColor(test, test, cv::COLOR_RGB2GRAY);
@@ -189,7 +191,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 
 
 		t = (double)cv::getTickCount() - t;
-		cout << "Set image����ʱ�䣺" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
+		cout << "Set image所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 	}
 	catch (exception& e)
 	{

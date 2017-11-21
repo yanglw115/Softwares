@@ -1,28 +1,46 @@
 
-LIBRARY_NAME = libCureFaceParser.so
-INCLUDE = -I. -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include  -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include/linux
-CFLAGS = -Wall $(INCLUDE)
-SUBDIR = subdir
+# 最终生成的动态名称
+GENERATE_LIBRARY = libCureFaceParser.so
 
-LIBS = 
+# jpeg和png图片的支持，由dlib依赖
+DEFINES = -DDLIB_JPEG_SUPPORT -DDLIB_PNG_SUPPORT
+INCLUDES = -I. -I./build/include -I/usr/lib/jvm/java-9-openjdk-amd64/include  -I/usr/lib/jvm/java-9-openjdk-amd64/include/linux
+CFLAGS = -Wall $(INCLUDES) $(DEFINES)
+
+# 在编译test.java时，test.java中import后面必须是目录？不然不成功
+JAVA_SUBDIR = subdir
+
+# 为了测试opencv库和dlib库的链接而对写的测试.c文件进行编译链接
+TEST_MAIN_EXE = test.exe
+
+# 主要是opencv和dlib相关的库，可以去掉一些不必要的（这里的libjpeg.so和libpng.so使用的是系统的）
+LIBS = -L./build/libs -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann 
+LIBS += -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo
+LIBS += -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_videoio -lopencv_video
+LIBS += -lopencv_videostab -ldlib -ljpeg -lpng
+
 OBJS = $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 
 CC = g++
 
-$(LIBRARY_NAME): $(OBJS) 
-	$(CC) -shared $(CFLAGS) $(OBJS) $(LIBS) -o $(LIBRARY_NAME)
+$(GENERATE_LIBRARY): $(OBJS) 
+	$(CC) -shared $(CFLAGS) $(OBJS) $(LIBS) -o $(GENERATE_LIBRARY)
 
 %.o: %.cpp
 	$(CC) -fPIC $(CFLAGS) -c $*.cpp
 
 clean:
 	rm -rf $(OBJS)
-	rm -rf $(LIBRARY_NAME)
+	rm -rf $(GENERATE_LIBRARY)
 	rm -rf *.class
-	rm -rf ./$(SUBDIR)/*.class
+	rm -rf ./$(JAVA_SUBDIR)/*.class
+	rm -rf $(TEST_MAIN_EXE)
 
-java: $(LIBRARY_NAME)
-	javac CureFaceParser.java -d $(SUBDIR)
+java: $(GENERATE_LIBRARY)
+	javac CureFaceParser.java -d $(JAVA_SUBDIR)
 	javac test.java
+
+test: $(GENERATE_LIBRARY)
+	$(CC) -o $(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L. -lCureFaceParser
 
 

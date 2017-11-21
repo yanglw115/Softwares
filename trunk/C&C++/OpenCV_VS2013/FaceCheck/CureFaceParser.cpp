@@ -1,8 +1,9 @@
 
 #include "CureFaceParser.h"
+
 #include "faceLandmarkDetect.h"
-#include "CureFaceParser.h"
 #include "faceSpotsDetect.h"
+#include "faceColor.h"
 
 #include <iostream>
 
@@ -13,6 +14,14 @@ JNIEXPORT jstring JNICALL Java_CureFaceParser_getFaceParseResult
 {
 	const char *pStrFilePath = env->GetStringUTFChars(strFilePath, 0);
 	cout << "Input parameter:" << pStrFilePath << endl;
+
+	int nSpots = 0;
+	double nColorValue = 0;
+
+	std::vector<std::vector<cv::Point>> vector1 = faceLandmarkDetect(pStrFilePath);
+	nSpots = findFaceSpots(pStrFilePath, vector1);
+	nColorValue = getFaceColorValue(pStrFilePath, vector1);
+	
 	env->ReleaseStringUTFChars(strFilePath, 0);
-	return env->NewStringUTF("Hello JNI.");
+	return env->NewStringUTF("\"{\"result\": \"0\", \"spots\": \"10\", \"color\": \"110.1\"}.");
 }

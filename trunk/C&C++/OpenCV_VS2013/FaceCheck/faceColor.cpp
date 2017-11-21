@@ -1,8 +1,9 @@
 
 #include "faceColor.h"
 
-
+#ifdef With_Debug
 #include "opencv2/highgui/highgui.hpp"    
+#endif // With_Debug
 #include "opencv2/imgproc/imgproc.hpp"    
 #include <iostream>    
 #include <stdio.h>
@@ -11,14 +12,14 @@
 using namespace std;
 using namespace cv;
 
-/* Í¸°×£º232/°×ğª£º217/×ÔÈ»£º200/Ğ¡Âó£º161/°µ³Á£º120/÷îºÚ£º81 */
+/* é€ç™½ï¼š232/ç™½çš™ï¼š217/è‡ªç„¶ï¼š200/å°éº¦ï¼š161/æš—æ²‰ï¼š120/é»é»‘ï¼š81 */
 typedef enum {
-	Í¸°× = 234,
-	°×ğª = 220,
-	×ÔÈ» = 205,
-	Ğ¡Âó = 164,
-	°µ³Á = 122,
-	÷îºÚ = 81
+	TouBai = 234,
+	BaiXi = 220,
+	ZiRan = 205,
+	XiaoMai = 164,
+	AnChen = 122,
+	YouHei = 81
 } enumFaceColorType;
 
 static const char *g_colorString[] = {
@@ -52,7 +53,7 @@ Mat getHistogramImage(Mat &image, double *pColorValue)
 	double maxValue = 0;
 	Point maxPoint;
 	minMaxLoc(hist, 0, &maxValue, 0, &maxPoint);
-	cout << "×î´óÖµµã£º" << maxPoint << ", ×î´óÖµ£º" << maxValue;
+	cout << "æœ€å¤§å€¼ç‚¹ï¼š" << maxPoint << ", æœ€å¤§å€¼ï¼š" << maxValue << endl;
 	*pColorValue = maxPoint.y;
 	for (i = 0; i < 256; i++) {
 		float value = hist.at<float>(i);
@@ -74,27 +75,26 @@ double getFaceColorValue(const std::string &strFile, std::vector<std::vector<cv:
 	drawContours(mask, contours, 2, Scalar(255), -1);
 
 	imageSrc.copyTo(imageFace, mask);
-	/* Ö»È¡Á³²¿´ú±íÑÕÉ«µÄ¹Ø¼üÇøÓò */
+	/* åªå–è„¸éƒ¨ä»£è¡¨é¢œè‰²çš„å…³é”®åŒºåŸŸ */
 	Mat imageColor(imageFace, Rect(contours.at(2).at(0), contours.at(2).at(2)));
 	if (!imageColor.data) {
 		cout << "fail to load the image" << endl;
 		return 0;
 	}
-	//imshow("Face image: ", imageColor);
-	//waitKey();
 
 	Mat imageResult = getHistogramImage(imageColor, &maxColorValue);
 
+#ifdef With_Debug
 	const char *strColorString = NULL;
-	if (maxColorValue > Í¸°×) {
+	if (maxColorValue > TouBai) {
 		strColorString = g_colorString[0];
-	} else if (maxColorValue > °×ğª) {
+	} else if (maxColorValue > BaiXi) {
 		strColorString = g_colorString[1];
-	} else if (maxColorValue > ×ÔÈ») {
+	} else if (maxColorValue > ZiRan) {
 		strColorString = g_colorString[2];
-	} else if (maxColorValue > Ğ¡Âó) {
+	} else if (maxColorValue > XiaoMai) {
 		strColorString = g_colorString[3];
-	} else if (maxColorValue > °µ³Á) {
+	} else if (maxColorValue > AnChen) {
 		strColorString = g_colorString[4];
 	} else {
 		strColorString = g_colorString[5];
@@ -103,10 +103,11 @@ double getFaceColorValue(const std::string &strFile, std::vector<std::vector<cv:
 	namedWindow("image original:", WINDOW_NORMAL);
 	putText(imageSrc, format("%s", strColorString), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
 	imshow("image original:", imageSrc);
-	//namedWindow("image face pre:", WINDOW_NORMAL);
-	//imshow("image face pre:", imageColor);
+	namedWindow("image face pre:", WINDOW_NORMAL);
+	imshow("image face pre:", imageColor);
 	namedWindow("showImage", WINDOW_NORMAL);
 	imshow("showImage", imageResult);
 	waitKey(0);
+#endif // With_Debug
 	return maxColorValue;
 }
