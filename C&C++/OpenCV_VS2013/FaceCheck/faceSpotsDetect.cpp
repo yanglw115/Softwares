@@ -1,47 +1,59 @@
+
 #include "opencv2/imgproc.hpp"
+#include "opencv2/imgcodecs.hpp"
+#ifdef With_Debug
 #include "opencv2/highgui.hpp"
+#endif // With_Debug
 
 #include <iostream>
 
 using namespace cv;
 using namespace std;
 
-static bool findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>> contours)
+static int findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>> contours)
 {
 	Mat bw, bgr[3];
-	/* ½«Ö»ÓĞÂÖÀª²¿·ÖµÄÍ¼½øĞĞsplitÍ¨µÀ·ÖÀë */
+	/* å°†åªæœ‰è½®å»“éƒ¨åˆ†çš„å›¾è¿›è¡Œsplité€šé“åˆ†ç¦» */
 	split(img, bgr);
-	/* ÕâÀïÈ¡ÂÌÉ«Í¨µÀ */
+	/* è¿™é‡Œå–ç»¿è‰²é€šé“ */
 	//bw = bgr[1];
-	/* ×ª»»Îª»Ò¶ÈÍ¼µÄĞ§¹ûºÍÉÏÃæÈ¡µ¥Ò»Í¨µÀĞ§¹û²î²»Ì«¶à */
+	/* è½¬æ¢ä¸ºç°åº¦å›¾çš„æ•ˆæœå’Œä¸Šé¢å–å•ä¸€é€šé“æ•ˆæœå·®ä¸å¤ªå¤š */
 	cvtColor(img, bw, COLOR_BGR2GRAY);
 	int pimplescount = 0;
 
-	namedWindow("×ÔÊÊÓ¦ãĞÖµ»¯Ö®Ç°", WINDOW_NORMAL);
-	imshow("×ÔÊÊÓ¦ãĞÖµ»¯Ö®Ç°", bw);
-	/* ×ÔÊÊÓ¦ãĞÖµ»¯£ºÍ¼Ïñ·Ö¸î£¬È¥³ıÒ»¶¨·¶Î§ÄÚµÄÏñËØ */
-	/* bw±ØĞëÊÇµ¥Í¨µÀµÄ8bitÍ¼Ïñ */
-	/* µÚ1¸ö²ÎÊıÊÇÊäÈëÍ¼Ïñ£¬µÚ2¸ö²ÎÊıÊÇÊä³öÍ¼Ïñ£¬µÚ3¸ö²ÎÊıÊÇÂú×ãÌõ¼şµÄ×î´óÏñËØÖµ£¬µÚ4¸ö²ÎÊıÊÇËùÓÃËã·¨£¬
-		µÚ6¸ö²ÎÊıÊÇÓÃÀ´¼ÆËããĞÖµµÄ¿é´óĞ¡(±ØĞëÊÇÆæÊı)£¬µÚ7¸ö²ÎÊıÊÇĞèÒª´Ó¼ÓÈ¨Æ½¾ùÖµ¼õÈ¥µÄÒ»¸ö³£Á¿ */
-	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5); //ºÃÏñÕâÀïÊ¹ÓÃ15ÊÇ×îÓÅµÄ£¬¿ÉÒÔÔÙµ÷ÊÔ
-	//adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 13, 5);
-	namedWindow("×ÔÊÊÓ¦ãĞÖµ»¯Ö®ºó", WINDOW_NORMAL);
-	imshow("×ÔÊÊÓ¦ãĞÖµ»¯Ö®ºó", bw);
+#ifdef With_Debug
+	namedWindow("è‡ªé€‚åº”é˜ˆå€¼åŒ–ä¹‹å‰", WINDOW_NORMAL);
+	imshow("è‡ªé€‚åº”é˜ˆå€¼åŒ–ä¹‹å‰", bw);
+#endif // With_Debug
 
-	/* ÅòÕÍ²Ù×÷£ºÇ°Á½¸ö²ÎÊıÊÇÊäÈëÓëÊä³ö£»²ÎÊı3£ºÅòÕÍ²Ù×÷µÄºË£¬NULLÊ±Îª3*3£»²ÎÊı4£ºÃªµÄÎ»ÖÃ£¬ÏÂÃæ´ú±íÎ»ÓÚÖĞĞÄ£»²ÎÊı5£ºµü´úÊ¹ÓÃdilateµÄ´ÎÊı */
+	/* è‡ªé€‚åº”é˜ˆå€¼åŒ–ï¼šå›¾åƒåˆ†å‰²ï¼Œå»é™¤ä¸€å®šèŒƒå›´å†…çš„åƒç´  */
+	/* bwå¿…é¡»æ˜¯å•é€šé“çš„8bitå›¾åƒ */
+	/* ç¬¬1ä¸ªå‚æ•°æ˜¯è¾“å…¥å›¾åƒï¼Œç¬¬2ä¸ªå‚æ•°æ˜¯è¾“å‡ºå›¾åƒï¼Œç¬¬3ä¸ªå‚æ•°æ˜¯æ»¡è¶³æ¡ä»¶çš„æœ€å¤§åƒç´ å€¼ï¼Œç¬¬4ä¸ªå‚æ•°æ˜¯æ‰€ç”¨ç®—æ³•ï¼Œ
+		ç¬¬6ä¸ªå‚æ•°æ˜¯ç”¨æ¥è®¡ç®—é˜ˆå€¼çš„å—å¤§å°(å¿…é¡»æ˜¯å¥‡æ•°)ï¼Œç¬¬7ä¸ªå‚æ•°æ˜¯éœ€è¦ä»åŠ æƒå¹³å‡å€¼å‡å»çš„ä¸€ä¸ªå¸¸é‡ */
+	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5); //å¥½åƒè¿™é‡Œä½¿ç”¨15æ˜¯æœ€ä¼˜çš„ï¼Œå¯ä»¥å†è°ƒè¯•
+	//adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 13, 5);
+
+#ifdef With_Debug
+	namedWindow("è‡ªé€‚åº”é˜ˆå€¼åŒ–ä¹‹å", WINDOW_NORMAL);
+	imshow("è‡ªé€‚åº”é˜ˆå€¼åŒ–ä¹‹å", bw);
+#endif // With_Debug
+
+	/* è†¨èƒ€æ“ä½œï¼šå‰ä¸¤ä¸ªå‚æ•°æ˜¯è¾“å…¥ä¸è¾“å‡ºï¼›å‚æ•°3ï¼šè†¨èƒ€æ“ä½œçš„æ ¸ï¼ŒNULLæ—¶ä¸º3*3ï¼›å‚æ•°4ï¼šé”šçš„ä½ç½®ï¼Œä¸‹é¢ä»£è¡¨ä½äºä¸­å¿ƒï¼›å‚æ•°5ï¼šè¿­ä»£ä½¿ç”¨dilateçš„æ¬¡æ•° */
 	dilate(bw, bw, Mat(), Point(-1, -1), 1);
-	namedWindow("ÅòÕÍ²Ù×÷Ö®ºó", WINDOW_NORMAL);
-	imshow("ÅòÕÍ²Ù×÷Ö®ºó", bw);
+#ifdef With_Debug
+	namedWindow("è†¨èƒ€æ“ä½œä¹‹å", WINDOW_NORMAL);
+	imshow("è†¨èƒ€æ“ä½œä¹‹å", bw);
+#endif // With_Debug
 
 	contours.clear();
-	/* ²éÕÒÂÖÀª:±ØĞëÊÇ8Î»µ¥Í¨µÀÍ¼Ïñ£¬²ÎÊı4£º¿ÉÒÔÌáÈ¡×îÍâ²ã¼°ËùÓĞÂÖÀª */
+	/* æŸ¥æ‰¾è½®å»“:å¿…é¡»æ˜¯8ä½å•é€šé“å›¾åƒï¼Œå‚æ•°4ï¼šå¯ä»¥æå–æœ€å¤–å±‚åŠæ‰€æœ‰è½®å»“ */
 	findContours(bw, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-	cout << "¼ì²âµ½µÄ±ß½ç¸öÊı£º" << contours.size() << endl;
+	cout << "æ£€æµ‹åˆ°çš„è¾¹ç•Œä¸ªæ•°ï¼š" << contours.size() << endl;
 	for (size_t i = 0; i< contours.size(); i++)
 	{
-	    cout << "±ß½ç´óĞ¡£º" << contourArea(contours[i]) << endl;
-		/* ÕâÀïµÄÖµÒ²ĞèÒªµ÷ÊÔ */
+	    cout << "è¾¹ç•Œå¤§å°ï¼š" << contourArea(contours[i]) << endl;
+		/* è¿™é‡Œçš„å€¼ä¹Ÿéœ€è¦è°ƒè¯• */
 		if (contourArea(contours[i]) > 0 && contourArea(contours[i]) < 150)
 		{
 			Rect minRect = boundingRect(Mat(contours[i]));
@@ -57,7 +69,7 @@ static bool findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>>
 				float radius = 0;
 				minEnclosingCircle(Mat(contours[i]), center, radius);
 
-				/* ÕâÀïµÄÖµĞèÒª×îÖÕµ÷ÊÔ */
+				/* è¿™é‡Œçš„å€¼éœ€è¦æœ€ç»ˆè°ƒè¯• */
 				if (radius > 2)
 				{
 					//rectangle(srcImg, minRect, Scalar(0, 255, 0));
@@ -69,37 +81,42 @@ static bool findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>>
 	}
 	putText(srcImg, format("%d", pimplescount), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
 
-	namedWindow("¼ì²â½á¹û£º", WINDOW_NORMAL);
-	imshow("¼ì²â½á¹û£º", srcImg);
+#ifdef With_Debug
+	namedWindow("æ£€æµ‹ç»“æœï¼š", WINDOW_NORMAL);
+	imshow("æ£€æµ‹ç»“æœï¼š", srcImg);
 	waitKey();
+#endif // With_Debug
 
-	return true;
+	return pimplescount;
 }
 
 int findFaceSpots(const string &strFile, const std::vector<std::vector<cv::Point>> contours)
 {
+	int nResult = 0;
 	Mat imgSrc = imread(strFile);
 	if (imgSrc.empty()) {
 		return -1;
 	}
 
-	namedWindow("Ô­Í¼£º", WINDOW_NORMAL);
-	imshow("Ô­Í¼£º", imgSrc);
+	//namedWindow("åŸå›¾ï¼š", WINDOW_NORMAL);
+	//imshow("åŸå›¾ï¼š", imgSrc);
 
-	/* ´´½¨Ò»¸öÍ¨µÀ²¢ÓëÔ­Í¼´óĞ¡ÏàµÈµÄMat */
+	/* åˆ›å»ºä¸€ä¸ªé€šé“å¹¶ä¸åŸå›¾å¤§å°ç›¸ç­‰çš„Mat */
 	Mat mask(imgSrc.size(), CV_8UC1);
-	/* ¾ØÕó¸³ÖµÎªÈ«0£¬ÑÕÉ«±íÏÖÎªÈ«ºÚ */
+	/* çŸ©é˜µèµ‹å€¼ä¸ºå…¨0ï¼Œé¢œè‰²è¡¨ç°ä¸ºå…¨é»‘ */
 	mask = 0;
-	/* µÚÒ»¸ö²ÎÊıÊÇĞèÒª»­ÂÖÀªµÄÍ¼Ïñ£¬µÚ¶ş¸ö²ÎÊı´ú±íÂÖÀªÊı×é£¬µÚÈı¸ö²ÎÊı´ú±íËùÓÃÊı×éË÷Òı£¬µÚ4¸ö²ÎÊı´ú±íÂÖÀªÌî³äÑÕÉ«£¬µÚ5¸ö²ÎÊıÊÇ */
+	/* ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯éœ€è¦ç”»è½®å»“çš„å›¾åƒï¼Œç¬¬äºŒä¸ªå‚æ•°ä»£è¡¨è½®å»“æ•°ç»„ï¼Œç¬¬ä¸‰ä¸ªå‚æ•°ä»£è¡¨æ‰€ç”¨æ•°ç»„ç´¢å¼•ï¼Œç¬¬4ä¸ªå‚æ•°ä»£è¡¨è½®å»“å¡«å……é¢œè‰²ï¼Œç¬¬5ä¸ªå‚æ•°æ˜¯ */
 	drawContours(mask, contours, -1, Scalar(255), -1);
-	/* ´´½¨Ò»¸öÈıÍ¨µÀµÄmask */
+	/* åˆ›å»ºä¸€ä¸ªä¸‰é€šé“çš„mask */
 	Mat masked(imgSrc.size(), CV_8UC3);
 	masked = Scalar(255, 255, 255);
-	/* ½«»­ÁËÂÖÀªµÄÔ­Í¼°´ÕÕmask¿½±´µ½masked£»ÕâÀïµÄmaskÖ»ÓĞÂÖÀª²¿·ÖÑÕÉ«ÖµÊÇ1£¬¼´Ö»¿½±´Ô­Í¼Õâ¿éµÄÄÚÈİµ½masked */
+	/* å°†ç”»äº†è½®å»“çš„åŸå›¾æŒ‰ç…§maskæ‹·è´åˆ°maskedï¼›è¿™é‡Œçš„maskåªæœ‰è½®å»“éƒ¨åˆ†é¢œè‰²å€¼æ˜¯1ï¼Œå³åªæ‹·è´åŸå›¾è¿™å—çš„å†…å®¹åˆ°masked */
 	imgSrc.copyTo(masked, mask);
-	/* imgSrcÊ¼ÖÕ±£³Ö²»±ä */
-	findPimples(imgSrc, masked, contours);
+	/* imgSrcå§‹ç»ˆä¿æŒä¸å˜ */
+	nResult = findPimples(imgSrc, masked, contours);
 
+#ifdef With_Debug
 	while( 'q' != waitKey(0));
-	return 0;
+#endif // With_Debug
+	return nResult;
 }
