@@ -8,6 +8,8 @@ NamePackage=package.tar.gz
 NameStdcpp=libstdc++.so.6.0.24
 NameJNILib=libCureFaceParser.so
 NameFaceLandmarks=shape_predictor_68_face_landmarks.dat
+NameInstallShell=install.sh
+NameInstallBin=FaceParserInstall.bin
 DirLibs=${PWD}/../libs
 DirLibStdcpp=${PWD}/../${NameStdcpp}
 DirLibJNILib=${PWD}/../../${NameJNILib}
@@ -22,7 +24,7 @@ else
 	echo "Failed!"
 	exit
 fi
-
+rm -rf ${PWD}/${NamePackage}
 cp -f ${DirLibStdcpp} ${DirLibs}
 cp -f ${DirLibJNILib} ${DirLibs}
 cp -f ${DirFaceLandmarks} ${DirLibs}
@@ -32,6 +34,9 @@ tar czvf ${NamePackage} ${DirLibs}/*
 rm ${DirLibs}/${NameStdcpp}
 rm ${DirLibs}/${NameJNILib}
 rm ${DirLibs}/${NameFaceLandmarks}
+
+cat ${PWD}/${NameInstallShell} ${PWD}/${NamePackage} > ${PWD}/${NameInstallBin}
+chmod a+x ${PWD}/${NameInstallBin}
 
 echo "Package success!"
 
