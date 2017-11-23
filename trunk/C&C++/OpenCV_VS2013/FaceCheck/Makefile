@@ -4,7 +4,7 @@ GENERATE_LIBRARY = libCureFaceParser.so
 
 # jpeg和png图片的支持，由dlib依赖
 DEFINES = -DDLIB_JPEG_SUPPORT -DDLIB_PNG_SUPPORT
-INCLUDES = -I. -I./build/include -I/usr/lib/jvm/java-9-openjdk-amd64/include  -I/usr/lib/jvm/java-9-openjdk-amd64/include/linux
+INCLUDES = -I. -I./build/include -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include  -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include/linux
 CFLAGS = -Wall $(INCLUDES) $(DEFINES)
 
 # 在编译test.java时，test.java中import后面必须是目录？不然不成功
@@ -14,7 +14,7 @@ JAVA_SUBDIR = subdir
 TEST_MAIN_EXE = test.exe
 
 # 主要是opencv和dlib相关的库，可以去掉一些不必要的（这里的libjpeg.so和libpng.so使用的是系统的）
-LIBS = -L./build/libs -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -ldlib -ljpeg -lpng
+LIBS = -L./build/libs -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -ldlib -ljpeg -lpng16
 #LIBS = -L./build/libs -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann 
 #LIBS += -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo
 #LIBS += -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_videoio -lopencv_video

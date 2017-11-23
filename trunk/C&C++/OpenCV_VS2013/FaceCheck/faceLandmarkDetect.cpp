@@ -80,7 +80,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		
 		frontal_face_detector detector = get_frontal_face_detector();
 		shape_predictor sp;
-		deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
+		deserialize("/usr/local/FaceParser/shape_predictor_68_face_landmarks.dat") >> sp;
 		t = (double)cv::getTickCount() - t;
 		cout << "提取market所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 
