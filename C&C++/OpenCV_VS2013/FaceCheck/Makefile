@@ -37,7 +37,7 @@ clean:
 	rm -rf ./$(JAVA_SUBDIR)/*.class
 	rm -rf $(TEST_MAIN_EXE)
 
-java: $(GENERATE_LIBRARY)
+java:
 	javac CureFaceParser.java -d $(JAVA_SUBDIR)
 	javac test.java
 
