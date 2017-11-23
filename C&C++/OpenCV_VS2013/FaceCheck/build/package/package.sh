@@ -9,12 +9,15 @@ NameStdcpp=libstdc++.so.6.0.24
 NameJNILib=libCureFaceParser.so
 NameFaceLandmarks=shape_predictor_68_face_landmarks.dat
 NameInstallShell=install.sh
-NameInstallBin=FaceParserInstall.bin
+NameInstallBin=FaceParserInstall
+
 DirLibs=${PWD}/../libs
 DirLibStdcpp=${PWD}/../${NameStdcpp}
 DirLibJNILib=${PWD}/../../${NameJNILib}
 DirFaceLandmarks=${PWD}/../../${NameFaceLandmarks}
 
+echo "\n"
+# 提示判断opencv和dlib库是否都已经准备好并放在预定目录
 read -p "Do you have copyed opencv and dlibs libraries to their directory? [Y/N]: " REPLY
 
 if [ -z ${REPLY} ] || [ ${REPLY}x = "Y"x ] || [ ${REPLY}x = "y"x ]
@@ -24,22 +27,20 @@ else
 	echo "Failed!"
 	exit
 fi
+
 rm -rf ${PWD}/${NamePackage}
-cp -f ${DirLibStdcpp} ${DirLibs}
+rm -rf ${PWD}/${NameInstallBin}*
+
+# 创建压缩包，压缩打包除安装脚本以外的所有文件
 cp -f ${DirLibJNILib} ${DirLibs}
-cp -f ${DirFaceLandmarks} ${DirLibs}
+tar czvf ${NamePackage} ${DirLibs}/* ${DirLibStdcpp} ${DirLibJNILib} ${DirFaceLandmarks}
 
-tar czvf ${NamePackage} ${DirLibs}/*
+# 将安装脚本和安装包cat到一起，生成.bin安装文件
+cat ${NameInstallShell} ${NamePackage} > ${NameInstallBin}
+chmod a+x ${NameInstallBin}
+mv ${NameInstallBin} ${NameInstallBin}.$(date "+%Y%m%d_%H.%M.%S").bin
 
-rm ${DirLibs}/${NameStdcpp}
-rm ${DirLibs}/${NameJNILib}
-rm ${DirLibs}/${NameFaceLandmarks}
+rm -rf ${NamePackage}
+rm -rf ${DirLibs}/${NameJNILib}
 
-cat ${PWD}/${NameInstallShell} ${PWD}/${NamePackage} > ${PWD}/${NameInstallBin}
-chmod a+x ${PWD}/${NameInstallBin}
-
-echo "Package success!"
-
-
-
-
+echo "Package success!\n\n"
