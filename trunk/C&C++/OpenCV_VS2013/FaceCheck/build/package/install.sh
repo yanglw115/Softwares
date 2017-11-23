@@ -3,7 +3,7 @@
 set -o nounset  #脚本中禁止使用未定义的变量。或使用set -u
 set -o errexit  #脚本中任意一行执行错误时则退出。或使用set -e
 
-echo "\n"
+echo -e "\n"
 # 需要用root权限
 if [ `id -u` -ne 0 ]; then
     echo "Please use 'root' user, or run by 'sudo $0'"
@@ -49,10 +49,10 @@ rm -rf ${DirInstall}/${NamePackage}
 rm -rf ${DirInstall}/${NameStdcppFull}
 
 # 添加系统动态库链接路径
-cat ${DirInstallLibs} > ${DirLDConfig}/${NameProject}
+echo ${DirInstallLibs} > ${DirLDConfig}/${NameProject}
 ldconfig
 
-echo "Congratulations! Install face parser success!\n\n"
+echo -e "\nCongratulations! Install face parser success!\n\n"
 
 exit 0
 #注意下面一行必须有且只能有一个换行符号

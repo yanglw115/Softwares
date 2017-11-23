@@ -16,7 +16,7 @@ DirLibStdcpp=${PWD}/../${NameStdcpp}
 DirLibJNILib=${PWD}/../../${NameJNILib}
 DirFaceLandmarks=${PWD}/../../${NameFaceLandmarks}
 
-echo "\n"
+echo -e "\n"
 # 提示判断opencv和dlib库是否都已经准备好并放在预定目录
 read -p "Do you have copyed opencv and dlibs libraries to their directory? [Y/N]: " REPLY
 
@@ -33,7 +33,7 @@ rm -rf ${PWD}/${NameInstallBin}*
 
 # 创建压缩包，压缩打包除安装脚本以外的所有文件
 cp -f ${DirLibJNILib} ${DirLibs}
-tar czvf ${NamePackage} ${DirLibs}/* ${DirLibStdcpp} ${DirLibJNILib} ${DirFaceLandmarks}
+tar czvf ${NamePackage} ${DirLibs}/* ${DirLibStdcpp} ${DirFaceLandmarks}
 
 # 将安装脚本和安装包cat到一起，生成.bin安装文件
 cat ${NameInstallShell} ${NamePackage} > ${NameInstallBin}
@@ -43,4 +43,4 @@ mv ${NameInstallBin} ${NameInstallBin}.$(date "+%Y%m%d_%H.%M.%S").bin
 rm -rf ${NamePackage}
 rm -rf ${DirLibs}/${NameJNILib}
 
-echo "Package success!\n\n"
+echo -e "Package success!\n\n"
