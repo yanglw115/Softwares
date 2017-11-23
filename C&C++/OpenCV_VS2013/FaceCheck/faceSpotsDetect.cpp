@@ -1,4 +1,4 @@
-
+﻿
 #include "opencv2/imgproc.hpp"
 #include "opencv2/imgcodecs.hpp"
 #ifdef With_Debug
@@ -52,7 +52,7 @@ static int findPimples(Mat srcImg, Mat img, std::vector<std::vector<cv::Point>> 
 	cout << "检测到的边界个数：" << contours.size() << endl;
 	for (size_t i = 0; i< contours.size(); i++)
 	{
-	    cout << "边界大小：" << contourArea(contours[i]) << endl;
+	    cout << "边界大小: " << contourArea(contours[i]) << endl;
 		/* 这里的值也需要调试 */
 		if (contourArea(contours[i]) > 0 && contourArea(contours[i]) < 150)
 		{
