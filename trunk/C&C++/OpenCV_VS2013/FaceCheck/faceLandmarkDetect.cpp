@@ -1,4 +1,4 @@
-
+﻿
 #include "faceLandmarkDetect.h"
 
 // The contents of this file are in the public domain. See LICENSE_FOR_EXAMPLE_PROGRAMS.txt
@@ -80,9 +80,9 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		
 		frontal_face_detector detector = get_frontal_face_detector();
 		shape_predictor sp;
-		deserialize("/usr/local/FaceParser/shape_predictor_68_face_landmarks.dat") >> sp;
+		deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
 		t = (double)cv::getTickCount() - t;
-		cout << "提取market所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
+		cout << "Get face landmarks use time：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 
 		t = (double)cv::getTickCount();
 	
@@ -92,7 +92,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		load_image(img, strFile);
 
 		t = (double)cv::getTickCount() - t;
-		cout << "load image所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
+		cout << "load image use time：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 		// Make the image larger so we can detect small faces.
 		//pyramid_up(img); 手动去掉
 
@@ -102,7 +102,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 		std::vector<dlib::rectangle> dets = detector(img);
 
 		t = (double)cv::getTickCount() - t;
-		cout << "Detect image所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
+		cout << "Detect image use time：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 
 		cout << "Number of faces detected: " << dets.size() << endl;
 
@@ -122,6 +122,8 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 			// put them on the screen.
 			shapes.push_back(shape);
 
+#if 1
+			/* 左脸 */
 			vectorShape.resize(13);
 			vectorShape[0] = cv::Point(shape.part(36).x() - 20, shape.part(36).y() + 40);
 			vectorShape[1] = cv::Point(shape.part(41).x(), shape.part(41).y() + 20);
@@ -136,10 +138,9 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 			vectorShape[10] = cv::Point(shape.part(2).x() + 20, shape.part(2).y());
 			vectorShape[11] = cv::Point(shape.part(1).x() + 20, shape.part(1).y());
 			vectorShape[12] = cv::Point(shape.part(0).x() + 20, shape.part(0).y());
-
 			contours.push_back(vectorShape);
 
-
+			/* 右脸 */
 			vectorShape.resize(13);
 			vectorShape[0] = cv::Point(shape.part(45).x() - 20, shape.part(45).y() + 40);
 			vectorShape[1] = cv::Point(shape.part(46).x(), shape.part(46).y() + 20);
@@ -154,24 +155,65 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 			vectorShape[10] = cv::Point(shape.part(14).x() - 20, shape.part(14).y());
 			vectorShape[11] = cv::Point(shape.part(15).x() - 20, shape.part(15).y());
 			vectorShape[12] = cv::Point(shape.part(16).x() - 20, shape.part(16).y());
-
 			contours.push_back(vectorShape);
 
+			/* 上额 */
+			vectorShape.resize(4);
+			vectorShape[0] = cv::Point(shape.part(17).x(), shape.part(19).y() - 200);
+			vectorShape[1] = cv::Point(shape.part(17).x(), shape.part(19).y() - 20);
+			vectorShape[2] = cv::Point(shape.part(25).x(), shape.part(19).y() - 20);
+			vectorShape[3] = cv::Point(shape.part(25).x(), shape.part(19).y() - 200);
+			contours.push_back(vectorShape);
+
+			/* 下额 */
+			vectorShape.resize(7);
+			vectorShape[0] = cv::Point(shape.part(5).x(), shape.part(5).y());
+			vectorShape[1] = cv::Point(shape.part(6).x(), shape.part(6).y());
+			vectorShape[2] = cv::Point(shape.part(7).x(), shape.part(7).y());
+			vectorShape[3] = cv::Point(shape.part(8).x(), shape.part(8).y());
+			vectorShape[4] = cv::Point(shape.part(9).x(), shape.part(9).y());
+			vectorShape[5] = cv::Point(shape.part(10).x(), shape.part(10).y());
+			vectorShape[6] = cv::Point(shape.part(11).x(), shape.part(11).y());
+			contours.push_back(vectorShape);
+
+			/* 鼻子 */
+			vectorShape.resize(3);
+			vectorShape[0] = cv::Point(shape.part(27).x(), shape.part(27).y());
+			vectorShape[1] = cv::Point(shape.part(31).x(), shape.part(30).y());
+			vectorShape[2] = cv::Point(shape.part(35).x(), shape.part(30).y());
+			contours.push_back(vectorShape);
+#if 0
+			/* 整个人脸正中部分，用于取面部肤色(同下面类似，只是这个取的比较全面；虽然有鼻子等数据，但是最终用的是统计图最大值部分) */
 			vectorShape.resize(4);
 			vectorShape[0] = cv::Point(shape.part(4).x(), shape.part(4).y());
 			vectorShape[1] = cv::Point(shape.part(12).x(), shape.part(4).y());
 			vectorShape[2] = cv::Point(shape.part(12).x(), shape.part(46).y());
 			vectorShape[3] = cv::Point(shape.part(4).x(), shape.part(46).y());
-
 			contours.push_back(vectorShape);
 
+			/* 左脸正中矩形，用于取面部肤色 */
 			vectorShape.resize(4);
 			vectorShape[0] = cv::Point(shape.part(4).x(), shape.part(1).y());
 			vectorShape[1] = cv::Point(shape.part(4).x(), shape.part(3).y());
 			vectorShape[2] = cv::Point(shape.part(40).x(), shape.part(3).y());
 			vectorShape[3] = cv::Point(shape.part(40).x(), shape.part(1).y());
+			contours.push_back(vectorShape);
+#endif
+
+#else
+			vectorShape.resize(19);
+			for (int i = 0; i < 17; ++i) {
+				vectorShape[i].x = shape.part(i).x();
+				vectorShape[i].y = shape.part(i).y();
+			}
+
+			vectorShape[17].x = shape.part(24).x();
+			vectorShape[17].y = shape.part(24).y() - 20;
+			vectorShape[18].x = shape.part(19).x();
+			vectorShape[18].y = shape.part(19).y() - 20;
 
 			contours.push_back(vectorShape);
+#endif
 
 		}
 
@@ -191,7 +233,7 @@ std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile)
 
 
 		t = (double)cv::getTickCount() - t;
-		cout << "Set image所用时间：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
+		cout << "Draw contours use time：" << t * 1000 / cv::getTickFrequency() << "ms" << endl;
 	}
 	catch (exception& e)
 	{
