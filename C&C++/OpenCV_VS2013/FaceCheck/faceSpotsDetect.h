@@ -1,9 +1,5 @@
 #pragma once
 
-#include <opencv2/opencv.hpp>
-#include <iostream>
-#include <vector>
+#include "faceGlobal.h"
 
-using namespace std;
-
-int findFaceSpots(const string &strFile, const vector<vector<cv::Point>> contours);
+bool findFaceSpots(const std::string &strFile, const vectorContours &faceContours, vectorInt &vectorIntResult);
