@@ -1,9 +1,8 @@
-#ifndef __FACE_COLOR_H__
+ï»¿#ifndef __FACE_COLOR_H__
 #define __FACE_COLOR_H__
 
 #include "faceGlobal.h"
 
-/* Í¸°×£º232/°×ðª£º217/×ÔÈ»£º200/Ð¡Âó£º161/°µ³Á£º120/÷îºÚ£º81 */
 typedef enum {
 	TouBai = 234,
 	BaiXi = 220,
