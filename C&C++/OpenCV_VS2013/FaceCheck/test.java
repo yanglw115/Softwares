@@ -6,7 +6,7 @@ public class test {
 	public test()
 	{
 		CureFaceParser parser = new CureFaceParser();
-		String strResult = parser.getFaceParseResult("/home/yangliwei/FaceCheck/liudehua.jpg");
+		String strResult = parser.getFaceParseResult("/home/yangliwei/OpenCV_Compile/FaceCheck/images/baby.jpg");
 		System.out.println("Get result: " + strResult);
 	}
 	static {

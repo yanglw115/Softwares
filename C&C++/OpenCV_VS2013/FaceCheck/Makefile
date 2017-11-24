@@ -22,7 +22,8 @@ LIBS = -L./build/libs -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -ldlib -
 
 OBJS = $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 
-CC = g++
+CC = /usr/local/gcc-7.2.0/bin/g++
+# CC = g++
 
 $(GENERATE_LIBRARY): $(OBJS) 
 	$(CC) -shared $(CFLAGS) $(OBJS) $(LIBS) -o $(GENERATE_LIBRARY)
@@ -37,7 +38,7 @@ clean:
 	rm -rf ./$(JAVA_SUBDIR)/*.class
 	rm -rf $(TEST_MAIN_EXE)
 
-java:
+java: $(GENERATE_LIBRARY)
 	javac CureFaceParser.java -d $(JAVA_SUBDIR)
 	javac test.java
 
