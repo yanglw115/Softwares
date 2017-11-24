@@ -2,8 +2,8 @@
 #include "faceLandmarkDetect.h"
 #include "faceSpotsDetect.h"
 #include "faceColor.h"
-#include "faceGrabcut.h"
-#include "faceDetect.h"
+//#include "faceGrabcut.h"
+//#include "faceDetect.h"
 #include "faceGlobal.h"
 
 using namespace std;
@@ -27,8 +27,8 @@ int main(int argc, char **argv)
 	if (!bResult) {
 		return -1;
 	}
-	for each (auto var in vectorIntResult)	{
-		cout << "°àµã¼ì²â½á¹ûÎª£º" << var << endl;
+	for (int i = 0; i < vectorIntResult.size(); ++i) {
+		cout << "Detect result for area: " << vectorIntResult[i] << endl;
 	}
 	colorType = getFaceColorType(pStrFilePath, vectorFace);
 	cout << "Face color type: " << colorType << endl;

@@ -4,8 +4,7 @@
 #include "faceLandmarkDetect.h"
 #include "faceSpotsDetect.h"
 #include "faceColor.h"
-
-#include <iostream>
+#include "faceGlobal.h"
 
 using namespace std;
 
@@ -15,13 +14,27 @@ JNIEXPORT jstring JNICALL Java_CureFaceParser_getFaceParseResult
 	const char *pStrFilePath = env->GetStringUTFChars(strFilePath, 0);
 	cout << "Input parameter:" << pStrFilePath << endl;
 
-	int nSpots = 0;
-	double nColorValue = 0;
+	vector<int> vectorIntResult(5);
+	vectorContours vectorFace;
+	enumFaceColorType colorType = Type_Color_TouBai;
+	bool bResult = false;
 
-	std::vector<std::vector<cv::Point>> vector1 = faceLandmarkDetect(pStrFilePath);
-	nSpots = findFaceSpots(pStrFilePath, vector1);
-	nColorValue = getFaceColorValue(pStrFilePath, vector1);
-	
+
+	bResult = faceLandmarkDetect(pStrFilePath, vectorFace);
+	if (!bResult) {
+		goto End;
+	}
+	bResult = findFaceSpots(pStrFilePath, vectorFace, vectorIntResult);
+	if (!bResult) {
+		goto End;
+	}
+	for (int i = 0; i < vectorIntResult.size(); ++i) {
+		cout << "Detect result for area: " << vectorIntResult[i] << endl;
+	}
+	colorType = getFaceColorType(pStrFilePath, vectorFace);
+	cout << "Face color type: " << colorType << endl;
+
+End:	
 	env->ReleaseStringUTFChars(strFilePath, 0);
 	return env->NewStringUTF("\"{\"result\": \"0\", \"spots\": \"10\", \"color\": \"110.1\"}.");
 }
