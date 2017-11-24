@@ -153,7 +153,7 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 	vectorShape[1] = cv::Point(shape.part(31).x(), shape.part(30).y());
 	vectorShape[2] = cv::Point(shape.part(35).x(), shape.part(30).y());
 	faceContours.push_back(vectorShape);
-#if 0
+
 	/* 整个人脸正中部分，用于取面部肤色(同下面类似，只是这个取的比较全面；虽然有鼻子等数据，但是最终用的是统计图最大值部分) */
 	vectorShape.resize(4);
 	vectorShape[0] = cv::Point(shape.part(4).x(), shape.part(4).y());
@@ -162,6 +162,7 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 	vectorShape[3] = cv::Point(shape.part(4).x(), shape.part(46).y());
 	faceContours.push_back(vectorShape);
 
+#if 0
 	/* 左脸正中矩形，用于取面部肤色 */
 	vectorShape.resize(4);
 	vectorShape[0] = cv::Point(shape.part(4).x(), shape.part(1).y());

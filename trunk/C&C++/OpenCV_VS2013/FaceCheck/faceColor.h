@@ -1,6 +1,27 @@
-#pragma once
+#ifndef __FACE_COLOR_H__
+#define __FACE_COLOR_H__
 
-#include <iostream>
-#include <opencv2/opencv.hpp>
+#include "faceGlobal.h"
 
-double getFaceColorValue(const std::string &strFile, std::vector<std::vector<cv::Point>> contours);
+/* Í¸°×£º232/°×ðª£º217/×ÔÈ»£º200/Ð¡Âó£º161/°µ³Á£º120/÷îºÚ£º81 */
+typedef enum {
+	TouBai = 234,
+	BaiXi = 220,
+	ZiRan = 205,
+	XiaoMai = 164,
+	AnChen = 122,
+	YouHei = 81
+} enumFaceColorValue;
+
+typedef enum {
+	Type_Color_TouBai = 0,
+	Type_Color_BaiXi = 1,
+	Type_Color_ZiRan = 2,
+	Type_Color_XiaoMai = 3,
+	Type_Color_AnChen = 4,
+	Type_Color_YouHei = 5
+} enumFaceColorType;
+
+enumFaceColorType getFaceColorType(const std::string &strFile, const vectorContours &contours);
+
+#endif // __FACE_COLOR_H__
