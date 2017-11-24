@@ -10,7 +10,6 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	{
 	const char *pStrFilePath = "images/baby.jpg";
 	vector<int> vectorIntResult(5);
 	vectorContours vectorFace;
@@ -37,6 +36,6 @@ int main(int argc, char **argv)
 #ifdef With_Debug
 	while ('q' != cv::waitKey(0));
 #endif // With_Debug
-	}
+
 	return 0;
 }
