@@ -10,13 +10,12 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	int nSpots = 0;
-	double nColorValue = 0;
-	const char *pStrFilePath = "images/zhuchong.jpg";
-	bool bResult = false;
-
+	{
+	const char *pStrFilePath = "images/baby.jpg";
 	vector<int> vectorIntResult(5);
 	vectorContours vectorFace;
+	enumFaceColorType colorType = Type_Color_TouBai;
+	bool bResult = false;
 
 	//cv::Rect rect = faceDetect(pStrFilePath);
 	//grabCut(pStrFilePath, rect);
@@ -32,11 +31,12 @@ int main(int argc, char **argv)
 	for each (auto var in vectorIntResult)	{
 		cout << "班点检测结果为：" << var << endl;
 	}
-	//nColorValue = getFaceColorValue(pStrFilePath, vectorFace);
+	colorType = getFaceColorType(pStrFilePath, vectorFace);
+	cout << "Face color type: " << colorType << endl;
 
 #ifdef With_Debug
 	while ('q' != cv::waitKey(0));
 #endif // With_Debug
-
+	}
 	return 0;
 }

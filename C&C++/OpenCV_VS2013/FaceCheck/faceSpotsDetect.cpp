@@ -13,18 +13,20 @@ using namespace std;
 static int findPimples(Mat &srcImg, Mat &imgMask)
 {
 	Mat bw;
+	vectorContours vectorSpots;
 #if 0
 	Mat bgr[3];
 	/* 将只有轮廓部分的图进行split通道分离 */
-	split(img, bgr);
+	split(imgMask, bgr);
 	/* 这里取绿色通道 */
 	bw = bgr[1];
-#endif
+#else
 	/* 转换为灰度图的效果和上面取单一通道效果差不太多 */
 	cvtColor(imgMask, bw, COLOR_BGR2GRAY);
-	int pimplesCount = -1;
+#endif
+	int pimplesCount = 0; // 找不到边界即设置为0
 
-#ifdef With_Debug
+#if 0 //def With_Debug
 	namedWindow("自适应阈值化之前", WINDOW_NORMAL);
 	imshow("自适应阈值化之前", bw);
 #endif // With_Debug
@@ -36,28 +38,26 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5); // 目前调试这里使用15是最优的，可以再调试
 	//adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 13, 5);
 
-#ifdef With_Debug
+#if 0//def With_Debug
 	namedWindow("自适应阈值化之后", WINDOW_NORMAL);
 	imshow("自适应阈值化之后", bw);
 #endif // With_Debug
 
 	/* 膨胀操作：前两个参数是输入与输出；参数3：膨胀操作的核，NULL时为3*3；参数4：锚的位置，下面代表位于中心；参数5：迭代使用dilate的次数 */
 	dilate(bw, bw, Mat(), Point(-1, -1), 1);
-#ifdef With_Debug
+#if 0 //def With_Debug
 	namedWindow("膨胀操作之后", WINDOW_NORMAL);
 	imshow("膨胀操作之后", bw);
 #endif // With_Debug
 
-	vectorContours contours;
-	contours.clear();
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
-	findContours(bw, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
+	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-	cout << "检测到的边界个数：" << contours.size() << endl;
-	for (size_t i = 0; i< contours.size(); i++)	{
-	    cout << "边界大小: " << contourArea(contours[i]) << endl;
+	cout << "检测到的边界个数：" << vectorSpots.size() << endl;
+	for (size_t i = 0; i < vectorSpots.size(); ++i)	{
+	    cout << "边界大小: " << contourArea(vectorSpots[i]) << endl;
 		/* 这里的值也需要调试 */
-		if (contourArea(contours[i]) > 0 && contourArea(contours[i]) < 150)	{
+		if (contourArea(vectorSpots[i]) > 0 && contourArea(vectorSpots[i]) < 150)	{
 #if 0
 			Rect minRect = boundingRect(Mat(contours[i]));
 			Mat imgroi(imgMask, minRect);
@@ -70,21 +70,21 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 #else
 			if (1) {
 #endif
-				Point2f center, vtx[4];
+				Point2f center;
 				float radius = 0;
-				minEnclosingCircle(Mat(contours[i]), center, radius);
+				minEnclosingCircle(Mat(vectorSpots[i]), center, radius);
 
 				/* 这里的值需要最终调试 */
 				if (radius > 2 && radius < 50)	{
 					//rectangle(srcImg, minRect, Scalar(0, 255, 0));
-					circle(srcImg, center, int(radius + 1), Scalar(0, 255, 0), 2, 8);
+					circle(srcImg, center, radius + 1, Scalar(0, 255, 0), 2, 8);
 					pimplesCount++;
 				}
 			}
 		}
 	}
 
-#ifdef With_Debug
+#if 0//def With_Debug
 	putText(srcImg, format("%d", pimplesCount), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
 	namedWindow("检测结果：", WINDOW_NORMAL);
 	imshow("检测结果：", srcImg);
@@ -102,7 +102,7 @@ bool findFaceSpots(const std::string &strFile, const vectorContours &faceContour
 	}
 
 	int pimples = -1;
-	for (uint i = 0; i < faceContours.size(); ++i) {
+	for (uint i = 0; i < vectorIntResult.size(); ++i) {
 		/* 创建一个通道并与原图大小相等的Mat */
 		Mat mask(imgSrc.size(), CV_8UC1);
 		/* 矩阵赋值为全0，颜色表现为全黑 */
@@ -115,9 +115,7 @@ bool findFaceSpots(const std::string &strFile, const vectorContours &faceContour
 		/* 将画了轮廓的原图按照mask拷贝到masked；这里的mask只有轮廓部分颜色值是1，即只拷贝原图这块的内容到masked */
 		imgSrc.copyTo(masked, mask);
 		/* imgSrc始终保持不变 */
-		if (-1 == (pimples = findPimples(imgSrc, masked))) {
-			return false;
-		}
+		pimples = findPimples(imgSrc, masked);
 		
 		vectorIntResult[i] = pimples;
 	}
