@@ -69,7 +69,7 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 	frontal_face_detector detector = get_frontal_face_detector();
 	shape_predictor sp;
 	/* 加载面部预测器，文件比较大，后续是否可以优化当作全局共享 */
-	deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
+	deserialize("../shape_predictor_68_face_landmarks.dat") >> sp;
 	
 	cout << "Processing image " << strFile << endl;
 	array2d<rgb_pixel> img;
