@@ -1,8 +1,8 @@
-#pragma once
+#ifndef  __FACE_LANDMARK_DETECT_H__
+#define __FACE_LANDMARK_DETECT_H__
 
-#include <opencv2/opencv.hpp>
-#include <iostream>
-#include <vector>
-using namespace std;
+#include "faceGlobal.h"
 
-std::vector<std::vector<cv::Point>> faceLandmarkDetect(const string strFile);
+bool faceLandmarkDetect(const std::string &, vectorContours &);
+
+#endif // ! __FACE_LANDMARK_DETECT_H__

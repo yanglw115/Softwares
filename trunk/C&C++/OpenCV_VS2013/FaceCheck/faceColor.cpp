@@ -1,4 +1,4 @@
-
+﻿
 #include "faceColor.h"
 
 #ifdef With_Debug
@@ -72,7 +72,8 @@ double getFaceColorValue(const std::string &strFile, std::vector<std::vector<cv:
 	Mat imageFace(imageSrc.size(), CV_8UC1);
 	Mat mask(imageSrc.size(), CV_8UC1);
 	mask = 0;
-	drawContours(mask, contours, 2, Scalar(255), -1);
+	/* 这里取的是向量数据第5索引，即整个面部的正中矩形 */
+	drawContours(mask, contours, -1, Scalar(255), -1);
 
 	imageSrc.copyTo(imageFace, mask);
 	/* 只取脸部代表颜色的关键区域 */
