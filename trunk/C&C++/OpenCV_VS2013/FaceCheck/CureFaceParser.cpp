@@ -6,6 +6,8 @@
 #include "faceColor.h"
 #include "faceGlobal.h"
 
+#include <sstream>
+
 using namespace std;
 
 JNIEXPORT jstring JNICALL Java_CureFaceParser_getFaceParseResult
@@ -36,5 +38,10 @@ JNIEXPORT jstring JNICALL Java_CureFaceParser_getFaceParseResult
 
 End:	
 	env->ReleaseStringUTFChars(strFilePath, 0);
-	return env->NewStringUTF("\"{\"result\": \"0\", \"spots\": \"10\", \"color\": \"110.1\"}.");
+	stringstream ss;
+	ss << "{\"result\":" << bResult << ",\"spots\":{\"A\":" << vectorIntResult[0] <<  ",\"B\":" << vectorIntResult[1]
+	   << ",\"C\":" << vectorIntResult[2] << ",\"D\":" << vectorIntResult[3] << ",\"E\":" << vectorIntResult[4] 
+	   << "},\"color\":" << colorType << "}";
+	
+	return env->NewStringUTF(ss.str().c_str());
 }
