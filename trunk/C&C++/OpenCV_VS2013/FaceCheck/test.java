@@ -5,7 +5,7 @@ import subdir.*;
 public class test implements Runnable {
 	String strImage;
 	public void run() {
-		FaceRecognition parser = new FaceRecognition();
+		CureJniFaceRecognition parser = new CureJniFaceRecognition();
 		String strResult = parser.recogni(strImage);
 		System.out.println("Get result: " + strResult);
 	}

@@ -63,13 +63,21 @@ instructions.  Note that AVX is the fastest but requires a CPU from at least
 using namespace dlib;
 using namespace std;
 
+static bool g_bShapePredictorInited = false;
+static shape_predictor g_sp;
+
 // ----------------------------------------------------------------------------------------
 bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 {
 	frontal_face_detector detector = get_frontal_face_detector();
-	shape_predictor sp;
-	/* 加载面部预测器，文件比较大，后续是否可以优化当作全局共享 */
-	deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
+	
+	if (!g_bShapePredictorInited) {
+		/* 加载面部预测器，文件比较大，后续是否可以优化当作全局共享 */
+		deserialize("/usr/local/FaceParser/shape_predictor_68_face_landmarks.dat") >> g_sp;
+		//g_bShapePredictorInited = true;
+		cout << "Init shape predictor..." << endl;
+	}
+
 	
 	cout << "Processing image " << strFile << endl;
 	array2d<rgb_pixel> img;
@@ -87,7 +95,7 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 
 	/* 获取面部形状，这里用的是68点进行描述。并且认为只有一个人脸被检测到，也只取第1个检测到的人脸数据 */
 	std::vector<cv::Point> vectorShape;
-	full_object_detection shape = sp(img, dets[0]);
+	full_object_detection shape = g_sp(img, dets[0]);
 
 	cout << "number of parts: " << shape.num_parts() << endl;
 	cout << "pixel position of first part:  " << shape.part(0) << endl;
