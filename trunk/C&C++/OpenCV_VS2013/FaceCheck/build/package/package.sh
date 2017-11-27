@@ -6,7 +6,7 @@ set -o errexit  #脚本中任意一行执行错误时则退出。或使用set -e
 PWD=$(pwd)
 NamePackage=package.tar.gz
 NameStdcpp=libstdc++.so.6.0.24
-NameJNILib=libCureFaceParser.so
+NameJNILib=libCureFaceRecognition.so
 NameFaceLandmarks=shape_predictor_68_face_landmarks.dat
 NameInstallShell=install.sh
 NameInstallBin=FaceParserInstall
