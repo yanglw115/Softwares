@@ -1,6 +1,6 @@
 
 # 最终生成的动态名称
-GENERATE_LIBRARY = libCureFaceParser.so
+GENERATE_LIBRARY = libCureFaceRecognition.so
 
 # jpeg和png图片的支持，由dlib依赖
 DEFINES = -DDLIB_JPEG_SUPPORT -DDLIB_PNG_SUPPORT
@@ -14,7 +14,7 @@ JAVA_SUBDIR = subdir
 TEST_MAIN_EXE = test.exe
 
 # 主要是opencv和dlib相关的库，可以去掉一些不必要的（这里的libjpeg.so和libpng.so使用的是系统的）
-LIBS = -L./build/libs -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -ldlib -ljpeg -lpng16
+LIBS = -L./build/libs -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopenblas -ldlib -ljpeg -lpng16
 #LIBS = -L./build/libs -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann 
 #LIBS += -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo
 #LIBS += -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_videoio -lopencv_video
@@ -32,17 +32,18 @@ $(GENERATE_LIBRARY): $(OBJS)
 	$(CC) -fPIC $(CFLAGS) -c $*.cpp
 
 clean:
-	rm -rf $(OBJS)
-	rm -rf $(GENERATE_LIBRARY)
+	rm -rf *.o
+	rm -rf *.so*
 	rm -rf *.class
 	rm -rf ./$(JAVA_SUBDIR)/*.class
 	rm -rf $(TEST_MAIN_EXE)
 
 java: $(GENERATE_LIBRARY)
-	javac CureFaceParser.java -d $(JAVA_SUBDIR)
+	javac Cure_JNI_FaceRecognition.java -d $(JAVA_SUBDIR)
 	javac test.java
 
 test: $(GENERATE_LIBRARY)
-	$(CC) -o $(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L. -lCureFaceParser
+#test: $(GENERATE_LIBRARY)
+	$(CC) -o $(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L. -lCureFaceRecognition
 
 
