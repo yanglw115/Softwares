@@ -39,7 +39,7 @@ clean:
 	rm -rf $(TEST_MAIN_EXE)
 
 java: $(GENERATE_LIBRARY)
-	javac Cure_JNI_FaceRecognition.java -d $(JAVA_SUBDIR)
+	javac CureJniFaceRecognition.java -d $(JAVA_SUBDIR)
 	javac test.java
 
 test: $(GENERATE_LIBRARY)
