@@ -43,7 +43,7 @@ Mat getHistogramImage(Mat &image, double *pColorValue)
 	double maxValue = 0;
 	Point maxPoint;
 	minMaxLoc(hist, 0, &maxValue, 0, &maxPoint);
-	cout << "最大值点：" << maxPoint << ", 最大值：" << maxValue << endl;
+	//cout << "最大值点：" << maxPoint << ", 最大值：" << maxValue << endl;
 	*pColorValue = maxPoint.y;
 
 #ifdef With_Debug

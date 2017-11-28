@@ -26,7 +26,7 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 #endif
 	int pimplesCount = 0; // 找不到边界即设置为0
 
-#ifdef With_Debug
+#if 0 //def With_Debug
 	namedWindow("自适应阈值化之前", WINDOW_NORMAL);
 	imshow("自适应阈值化之前", bw);
 #endif // With_Debug
@@ -38,14 +38,14 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5); // 目前调试这里使用15是最优的，可以再调试
 	//adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 13, 5);
 
-#ifdef With_Debug
+#if 0//def With_Debug
 	namedWindow("自适应阈值化之后", WINDOW_NORMAL);
 	imshow("自适应阈值化之后", bw);
 #endif // With_Debug
 
 	/* 膨胀操作：前两个参数是输入与输出；参数3：膨胀操作的核，NULL时为3*3；参数4：锚的位置，下面代表位于中心；参数5：迭代使用dilate的次数 */
 	dilate(bw, bw, Mat(), Point(-1, -1), 1);
-#ifdef With_Debug
+#if 0 //def With_Debug
 	namedWindow("膨胀操作之后", WINDOW_NORMAL);
 	imshow("膨胀操作之后", bw);
 #endif // With_Debug
@@ -53,9 +53,9 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
 	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-	cout << "检测到的边界个数：" << vectorSpots.size() << endl;
+	//cout << "检测到的边界个数：" << vectorSpots.size() << endl;
 	for (size_t i = 0; i < vectorSpots.size(); ++i)	{
-	    cout << "边界大小: " << contourArea(vectorSpots[i]) << endl;
+	    //cout << "边界大小: " << contourArea(vectorSpots[i]) << endl;
 		/* 这里的值也需要调试 */
 		if (contourArea(vectorSpots[i]) > 0 && contourArea(vectorSpots[i]) < 150)	{
 #if 0
@@ -84,7 +84,7 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 		}
 	}
 
-#ifdef With_Debug
+#if 0//def With_Debug
 	putText(srcImg, format("%d", pimplesCount), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
 	namedWindow("检测结果：", WINDOW_NORMAL);
 	imshow("检测结果：", srcImg);
