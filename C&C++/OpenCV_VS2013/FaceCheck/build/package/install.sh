@@ -23,6 +23,7 @@ DirInstall=/usr/local/${NameProject}
 DirInstallLibs=/usr/local/${NameProject}/libs
 DirStdcppInstall=/usr/lib64
 DirLDConfig=/etc/ld.so.conf.d
+DirLogs=/usr/local/${NameProject}/logs
 
 if [ -d ${DirInstall} ]
 then
@@ -51,6 +52,8 @@ rm -rf ${DirInstall}/${NameStdcppFull}
 # 添加系统动态库链接路径
 echo ${DirInstallLibs} > ${DirLDConfig}/${NameProject}
 ldconfig
+mkdir ${DirLogs}
+chmod -R a+w ${DirLogs}
 
 echo -e "\nCongratulations! Install face parser success!\n\n"
 
