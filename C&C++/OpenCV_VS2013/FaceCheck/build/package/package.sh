@@ -7,14 +7,13 @@ PWD=$(pwd)
 NamePackage=package.tar.gz
 NameStdcpp=libstdc++.so.6.0.24
 NameJNILib=libCureFaceRecognition.so
-NameFaceLandmarks=shape_predictor_68_face_landmarks.dat
 NameInstallShell=install.sh
 NameInstallBin=FaceParserInstall
 
 DirLibs=${PWD}/../libs
 DirLibStdcpp=${PWD}/../${NameStdcpp}
 DirLibJNILib=${PWD}/../../${NameJNILib}
-DirFaceLandmarks=${PWD}/../../${NameFaceLandmarks}
+DirData=${PWD}/../data
 
 echo -e "\n"
 # 提示判断opencv和dlib库是否都已经准备好并放在预定目录
@@ -33,7 +32,7 @@ rm -rf ${PWD}/${NameInstallBin}*
 
 # 创建压缩包，压缩打包除安装脚本以外的所有文件
 cp -f ${DirLibJNILib} ${DirLibs}
-tar czvf ${NamePackage} ${DirLibs}/* ${DirLibStdcpp} ${DirFaceLandmarks}
+tar czvf ${NamePackage} ${DirLibs} ${DirLibStdcpp} ${DirData}
 
 # 将安装脚本和安装包cat到一起，生成.bin安装文件
 cat ${NameInstallShell} ${NamePackage} > ${NameInstallBin}
