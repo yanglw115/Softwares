@@ -95,6 +95,10 @@ using std::fdopen;
 // There is no thread annotation support.
 #define EXCLUSIVE_LOCKS_REQUIRED(mu)
 
+#ifndef HW_LOG_SYSTEM
+#define HW_LOG_SYSTEM
+#endif
+
 static bool BoolFromEnv(const char *varname, bool defval) {
   const char* const valstr = getenv(varname);
   if (!valstr) {
@@ -173,7 +177,7 @@ GLOG_DEFINE_string(log_dir, DefaultLogDir(),
 GLOG_DEFINE_string(log_link, "", "Put additional links to the log "
                    "files in this directory");
 
-GLOG_DEFINE_int32(max_log_size, 20,
+GLOG_DEFINE_int32(max_log_size, 200,
                   "approx. maximum log file size (in MB). A value of 0 will "
                   "be silently overridden to 1.");
 
@@ -918,12 +922,13 @@ void LogFileObject::FlushUnlocked(){
 bool LogFileObject::CreateLogfile(const string& time_pid_string) {
 #ifdef HW_LOG_SYSTEM
    file_full_name = base_filename_ + filename_extension_;
+   const char* filename = file_full_name.c_str();
 #else
-  file_full_name = base_filename_+filename_extension_+
+  string string_filename = base_filename_+filename_extension_+
                            time_pid_string;
+  const char* filename = string_filename.c_str();
 #endif
-
-  const char* filename = file_full_name.c_str();
+  
 #ifdef HW_LOG_SYSTEM
   int fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, FLAGS_logfile_mode);
 #else
@@ -1115,7 +1120,7 @@ void LogFileObject::Write(bool force_flush,
                            << "Running on machine: "
                            << LogDestination::hostname() << '\n'
 #ifdef HW_LOG_SYSTEM
-                           << "Log line format: [mm-dd hh:mm:ss][app1|app2][INFO|WARNING|ERROR|FATAL]: msg" << '\n';
+                           << "Log line format: [mm-dd hh:mm:ss][appName][INFO|WARNING|ERROR|FATAL]: msg" << '\n';
 #else
                            << "Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu "
                            << "threadid file:line] msg" << '\n';
@@ -1314,7 +1319,7 @@ void LogMessage::Init(const char* file,
 
   if (!FLAGS_log_backtrace_at.empty()) {
     char fileline[128];
-    snprintf1(fileline, sizeof(fileline), "%s:%d", data_->basename_, line);
+    snprintf(fileline, sizeof(fileline), "%s:%d", data_->basename_, line);
 #ifdef HAVE_STACKTRACE
     if (!strcmp(FLAGS_log_backtrace_at.c_str(), fileline)) {
       string stacktrace;
@@ -1722,11 +1727,13 @@ void SetLogFilenameExtension(const char* ext) {
   LogDestination::SetLogFilenameExtension(ext);
 }
 
+#ifdef HW_LOG_SYSTEM
 void SetLogAppName(const char *app_name)
 {
   if (app_name)
     g_str_app_name = std::string(app_name);
 }
+#endif
 
 
 void SetStderrLogging(LogSeverity min_severity) {
@@ -2073,7 +2080,7 @@ string StrError(int err) {
   char buf[100];
   int rc = posix_strerror_r(err, buf, sizeof(buf));
   if ((rc < 0) || (buf[0] == '\000')) {
-    snprintf1(buf, sizeof(buf), "Error number %d", err);
+    snprintf(buf, sizeof(buf), "Error number %d", err);
   }
   return buf;
 }
