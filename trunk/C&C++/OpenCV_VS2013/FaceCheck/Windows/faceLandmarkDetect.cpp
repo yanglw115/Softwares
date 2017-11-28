@@ -66,7 +66,10 @@ using namespace std;
 
 static bool g_bShapePredictorInited = false;
 static shape_predictor g_sp;
-static string g_strCascadeName = "./build/data/haarcascades/haarcascade_frontalface_alt.xml";
+//const static string g_strCascadeName = "/usr/local/FaceParser/data/cascades/haarcascades/haarcascade_frontalface_alt.xml";
+/* 下面的检测速度要更快一些，比上面的速度提升一倍 */
+const static string g_strCascadeName = "/usr/local/FaceParser/data/cascades/lbpcascades/lbpcascade_frontalface_improved.xml";
+const static string g_strFaceLandmarks = "/usr/local/FaceParser/data/shape_predictor_68_face_landmarks.dat"; 
 static frontal_face_detector g_detector;
 static cv::CascadeClassifier g_cascade;
 static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -77,15 +80,13 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 	pthread_mutex_lock(&g_mutex);
 
 	if (!g_bShapePredictorInited) {
-		//shape_predictor g_sp;
 		/* 加载面部预测器，文件比较大，后续是否可以优化当作全局共享 */
-		deserialize("/usr/local/FaceParser/shape_predictor_68_face_landmarks.dat") >> g_sp;
+		deserialize(g_strFaceLandmarks) >> g_sp;
 		//g_detector = get_frontal_face_detector();
 		g_cascade.load(g_strCascadeName);
 		g_bShapePredictorInited = true;
 		cout << "Init shape predictor..." << endl;
 	}
-
 	
 	cout << "Processing image " << strFile << endl;
 	array2d<rgb_pixel> img;
