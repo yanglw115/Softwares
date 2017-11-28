@@ -53,9 +53,9 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
 	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-	cout << "检测到的边界个数：" << vectorSpots.size() << endl;
+	//cout << "检测到的边界个数：" << vectorSpots.size() << endl;
 	for (size_t i = 0; i < vectorSpots.size(); ++i)	{
-	    cout << "边界大小: " << contourArea(vectorSpots[i]) << endl;
+	    //cout << "边界大小: " << contourArea(vectorSpots[i]) << endl;
 		/* 这里的值也需要调试 */
 		if (contourArea(vectorSpots[i]) > 0 && contourArea(vectorSpots[i]) < 150)	{
 #if 0
