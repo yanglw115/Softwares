@@ -14,11 +14,11 @@ JAVA_SUBDIR = subdir
 TEST_MAIN_EXE = test.exe
 
 # 主要是opencv和dlib相关的库，可以去掉一些不必要的（这里的libjpeg.so和libpng.so使用的是系统的）
-LIBS = -L./build/libs -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopenblas -ldlib -ljpeg -lpng16
-#LIBS = -L./build/libs -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann 
+LIBS = -L./build/libs -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_objdetect -lopenblas -ldlib -ljpeg -lpng16 -lpthread
+#LIBS = -L./build/libsD -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann 
 #LIBS += -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo
 #LIBS += -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_videoio -lopencv_video
-#LIBS += -lopencv_videostab -ldlib -ljpeg -lpng
+#LIBS += -lopencv_videostab -ldlib -ljpeg -lpng16 -lpthread
 
 OBJS = $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 

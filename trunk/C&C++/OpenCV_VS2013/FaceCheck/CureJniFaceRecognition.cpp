@@ -31,10 +31,10 @@ JNIEXPORT jstring JNICALL Java_CureJniFaceRecognition_recogni
 		goto End;
 	}
 	for (int i = 0; i < vectorIntResult.size(); ++i) {
-		cout << "Detect result for area: " << vectorIntResult[i] << endl;
+		//cout << "Detect result for area: " << vectorIntResult[i] << endl;
 	}
 	colorType = getFaceColorType(pStrFilePath, vectorFace);
-	cout << "Face color type: " << colorType << endl;
+	//cout << "Face color type: " << colorType << endl;
 
 End:	
 	env->ReleaseStringUTFChars(strFilePath, 0);
