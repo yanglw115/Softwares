@@ -26,8 +26,9 @@ public class test implements Runnable {
 		for (int i = 0; i < 10; ++i) {
 			String strImage = "/home/yangliwei/OpenCV_Compile/FaceCheck/images/" + i + ".jpg";
 			test t = new test(strImage);
-			Thread t1 = new Thread(t);
-			t1.start();
+			//Thread t1 = new Thread(t);
+			//t1.start();
+			t.run();
 		}
 		while (true) {
 			try {
