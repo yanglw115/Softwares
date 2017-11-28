@@ -1,4 +1,4 @@
-#ifndef  __FACE_GLOBAL_H__
+﻿#ifndef  __FACE_GLOBAL_H__
 #define __FACE_GLOBAL_H__
 
 #include <opencv2/opencv.hpp>

@@ -59,17 +59,33 @@ instructions.  Note that AVX is the fastest but requires a CPU from at least
 #include <opencv2/objdetect.hpp>
 
 #include "faceLandmarkDetect.h"
+#include <pthread.h>
 
 using namespace dlib;
 using namespace std;
 
+static bool g_bShapePredictorInited = false;
+static shape_predictor g_sp;
+static string g_strCascadeName = "./build/data/haarcascades/haarcascade_frontalface_alt.xml";
+static frontal_face_detector g_detector;
+static cv::CascadeClassifier g_cascade;
+static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 // ----------------------------------------------------------------------------------------
 bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 {
-	frontal_face_detector detector = get_frontal_face_detector();
-	shape_predictor sp;
-	/* 加载面部预测器，文件比较大，后续是否可以优化当作全局共享 */
-	deserialize("../shape_predictor_68_face_landmarks.dat") >> sp;
+	pthread_mutex_lock(&g_mutex);
+
+	if (!g_bShapePredictorInited) {
+		//shape_predictor g_sp;
+		/* 加载面部预测器，文件比较大，后续是否可以优化当作全局共享 */
+		deserialize("/usr/local/FaceParser/shape_predictor_68_face_landmarks.dat") >> g_sp;
+		//g_detector = get_frontal_face_detector();
+		g_cascade.load(g_strCascadeName);
+		g_bShapePredictorInited = true;
+		cout << "Init shape predictor..." << endl;
+	}
+
 	
 	cout << "Processing image " << strFile << endl;
 	array2d<rgb_pixel> img;
@@ -78,20 +94,46 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 	// Make the image larger so we can detect small faces.
 	//pyramid_up(img); 手动去掉
 
+
 	/* 检测所有可能存在的人脸 */
-	std::vector<dlib::rectangle> dets = detector(img);
+	double tt = cv::getTickCount();
+#if 0
+	std::vector<dlib::rectangle> dets = g_detector(img);
 	cout << "Number of faces detected: " << dets.size() << endl;
+#else
+	std::vector<dlib::rectangle> dets;
+	dets.resize(1);
+	std::vector<cv::Rect> rectFaces;
+	cv::Mat imgGray;
+	cv::Mat imgSrc = cv::imread(strFile, 1);
+	cv::cvtColor(imgSrc, imgGray, cv::COLOR_BGR2GRAY);
+	cv::equalizeHist(imgGray, imgGray);
+	g_cascade.detectMultiScale(imgGray, rectFaces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
+    dets[0].set_left(rectFaces[0].x);
+    dets[0].set_top(rectFaces[0].y);
+    dets[0].set_right(rectFaces[0].x + rectFaces[0].width);
+    dets[0].set_bottom(rectFaces[0].y + rectFaces[0].height);
+#endif
+	tt = cv::getTickCount() - tt;
+	cout << "Face detector use time: " << tt * 1000 / cv::getTickFrequency() << "ms" << endl << endl;
+	
 	if (dets.size() <= 0) {
 		return false;
 	}
 
 	/* 获取面部形状，这里用的是68点进行描述。并且认为只有一个人脸被检测到，也只取第1个检测到的人脸数据 */
 	std::vector<cv::Point> vectorShape;
-	full_object_detection shape = sp(img, dets[0]);
 
-	cout << "number of parts: " << shape.num_parts() << endl;
-	cout << "pixel position of first part:  " << shape.part(0) << endl;
-	cout << "pixel position of second part: " << shape.part(1) << endl;
+	tt = cv::getTickCount();
+
+	full_object_detection shape = g_sp(img, dets[0]);
+
+	tt = cv::getTickCount() - tt;
+	cout << "Shape predictor use time: " << tt * 1000 / cv::getTickFrequency() << "ms" << endl << endl;
+
+	//cout << "number of parts: " << shape.num_parts() << endl;
+	//cout << "pixel position of first part:  " << shape.part(0) << endl;
+	//cout << "pixel position of second part: " << shape.part(1) << endl;
 
 #if 1
 	/* 左脸 */
@@ -187,6 +229,8 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 
 	faceContours.push_back(vectorShape);
 #endif
+
+	pthread_mutex_unlock(&g_mutex);
 
 #ifdef With_Debug
 	cv::Mat matTest = cv::imread(strFile, 1);
