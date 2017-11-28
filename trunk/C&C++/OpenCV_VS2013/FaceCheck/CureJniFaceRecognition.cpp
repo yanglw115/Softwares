@@ -5,10 +5,14 @@
 #include "faceSpotsDetect.h"
 #include "faceColor.h"
 #include "faceGlobal.h"
+#include "log.h"
 
 #include <sstream>
+#include <pthread.h>
 
 using namespace std;
+
+static CureLog g_logObject;
 
 JNIEXPORT jstring JNICALL Java_CureJniFaceRecognition_recogni
   (JNIEnv *env, jobject obj, jstring strFilePath)
