@@ -27,12 +27,12 @@ public class test implements Runnable {
 				System.err.println( "##Cannot load CureFaceParser library:\n " + e.toString() ); 
 			}
 		}
-		for (int i = 0; i < 1; ++i) {
-			//String strImage = "/home/yangliwei/OpenCV_Compile/FaceCheck/images/" + i + ".jpg";
-			String strImage = "/home/yangliwei/OpenCV_Compile/FaceCheck/images/222.jpg";
+		for (int i = 0; i < 10; ++i) {
+			String strImage = "/home/yangliwei/OpenCV_Compile/FaceCheck/images/" + i + ".jpg";
+			//String strImage = "/home/yangliwei/OpenCV_Compile/FaceCheck/images/222.jpg";
 			test t = new test(strImage);
-			//Thread t1 = new Thread(t);
-			//t1.start();
+			Thread t1 = new Thread(t);
+			t1.start();
 			t.run();
 		}
 		while (true) {

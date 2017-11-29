@@ -22,11 +22,14 @@ CureLog::CureLog()
     google::SetLogDestination(google::GLOG_FATAL, strLogFilePath.c_str());
     google::SetStderrLogging(google::GLOG_ERROR);
     google::SetLogFilenameExtension("");
-    google::SetLogAppName("CureFaceParser");
+    google::SetLogAppName("iFace");
+
+	LOG(INFO) << "###Log system start...";
 }
 
 
 CureLog::~CureLog()
 {
+	LOG(INFO) << "###Log system finish.";
     google::ShutdownGoogleLogging();
 }
