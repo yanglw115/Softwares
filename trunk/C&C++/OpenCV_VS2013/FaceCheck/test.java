@@ -17,6 +17,10 @@ public class test implements Runnable {
 	public static void main(String argv[])
 	{
 		{
+			String[] split = System.getProperty("java.library.path").split(";");  
+			for (String string : split) {  
+				System.out.println(string);  
+			}  
 			try {
 				System.loadLibrary("CureFaceRecognition");
 			} catch (UnsatisfiedLinkError e) {
