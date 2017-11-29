@@ -8,9 +8,9 @@ INCLUDES = -I. -I./build/include -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b
 CFLAGS = -Wall $(INCLUDES) $(DEFINES)
 
 # 在编译test.java时，test.java中import后面必须是目录？不然不成功
-JniDir=jniTest
-JniClassPath = $(jinTest)/classes
-JniSrcPath=$(jniTest)/src
+JniDir=Jni
+JniClassPath = $(JniDir)/classes
+JniSrcPath=$(JniDir)/src
 JniEntryName=com.youle.cosmetology.jni.test
 
 # 为了测试opencv库和dlib库的链接而对写的测试.c文件进行编译链接
