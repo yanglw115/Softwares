@@ -8,7 +8,6 @@
 
 #include <string>
 #include <sstream>
-#include <pthread.h>
 
 static CureLog g_logObject;
 
