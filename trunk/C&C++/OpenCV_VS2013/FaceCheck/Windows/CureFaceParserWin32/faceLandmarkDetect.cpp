@@ -64,6 +64,7 @@ instructions.  Note that AVX is the fastest but requires a CPU from at least
 #include <pthread.h>
 #else
 #include <windows.h>
+#include <io.h>
 #endif
 
 using namespace dlib;
@@ -85,6 +86,8 @@ HANDLE  g_hMutex = NULL;
 static frontal_face_detector g_detector;
 static cv::CascadeClassifier g_cascade;
 
+#define Use_68
+
 // ----------------------------------------------------------------------------------------
 #ifdef With_Debug
 bool faceLandmarkDetect(const string &strImageName, cv::Mat &matSrc, vectorContours &faceContours)
@@ -100,16 +103,17 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	WaitForSingleObject(g_hMutex, INFINITE);
 #endif
 
+	double tt = 0.0;
 	if (!g_bShapePredictorInited) {
-		if (access(g_strFaceLandmarks.c_str(), F_OK)) {
+		if (_access(g_strFaceLandmarks.c_str(), 04)) {
 			LOG(ERROR) << "File is not exist: " << g_strFaceLandmarks;
 			/* 这里改用goto    语句的话，gcc会报怨，并且关闭警告不太好，其实提示作用挺好 */
-			pthread_mutex_unlock(&g_mutex);
+			ReleaseMutex(g_hMutex);
 			return false;
 		}
-		if (access(g_strCascadeName.c_str(), F_OK)) {
+		if (_access(g_strCascadeName.c_str(), 04)) {
 			LOG(ERROR) << "File is not exist: " << g_strCascadeName;
-			pthread_mutex_unlock(&g_mutex);
+			ReleaseMutex(g_hMutex);
 			return false;
 		}
 
@@ -118,7 +122,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 		deserialize(g_strFaceLandmarks) >> g_sp;
 		if (!g_cascade.load(g_strCascadeName)) {
 			LOG(ERROR) << "Load cascadde file failed!";
-			pthread_mutex_unlock(&g_mutex);
+			ReleaseMutex(g_hMutex);
 			return false;
 		}
 		g_bShapePredictorInited = true;
@@ -148,7 +152,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	g_cascade.detectMultiScale(imgGray, rectFaces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 	if (rectFaces.size() <= 0) {
 		LOG(ERROR) << strImageName << ": Cannot detect face from image.";
-		pthread_mutex_unlock(&g_mutex);
+		ReleaseMutex(g_hMutex);
 		return false;
 	}
 	
@@ -161,7 +165,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	LOG(INFO) << strImageName << ": Detect face use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
 	
 	if (dets.size() <= 0) {
-		pthread_mutex_unlock(&g_mutex);
+		ReleaseMutex(g_hMutex);
 		return false;
 	}
 
@@ -177,7 +181,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 
 	if (shape.num_parts() < 68) {
 		LOG(ERROR) << strImageName << ": Get face shape points failed, shape number parts: " << shape.num_parts();
-		pthread_mutex_unlock(&g_mutex);
+		ReleaseMutex(g_hMutex);
 		return false;
 	}
 

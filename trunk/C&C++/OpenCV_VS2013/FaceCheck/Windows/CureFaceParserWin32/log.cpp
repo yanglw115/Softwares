@@ -6,7 +6,7 @@
 using namespace std;
 CureLog::CureLog()
 {
-    string strLogFilePath = "/usr/local/FaceParser/logs/FaceParserJni.log";
+    string strLogFilePath = "D:\\CureFaceParser\\logs\\FaceParserJni.log";
 
     FLAGS_log_dir = strLogFilePath;
     FLAGS_colorlogtostderr = true;
