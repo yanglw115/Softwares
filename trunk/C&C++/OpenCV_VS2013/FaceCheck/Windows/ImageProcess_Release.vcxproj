@@ -19,12 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CureFaceParser.cpp" />
     <ClCompile Include="faceColor.cpp" />
+    <ClCompile Include="faceDetect.cpp" />
     <ClCompile Include="faceLandmarkDetect.cpp" />
     <ClCompile Include="faceSpotsDetect.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CureFaceParser.h" />
     <ClInclude Include="faceColor.h" />
     <ClInclude Include="faceLandmarkDetect.h" />
     <ClInclude Include="faceSpotsDetect.h" />
@@ -52,7 +55,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <WholeProgramOptimization>PGOptimize</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -116,8 +119,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)build\include\dlib\external\zlib;$(ProjectDir)build\include\dlib\external\libpng;$(ProjectDir)build\include\dlib\external\libjpeg;$(ProjectDir)build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;DLIB_JPEG_SUPPORT;With_Debug;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>_MBCS;DLIB_JPEG_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -125,6 +128,8 @@
       <OptimizeReferences>false</OptimizeReferences>
       <AdditionalLibraryDirectories>$(ProjectDir)build\libs\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>dlib.lib;opencv_calib3d331.lib;opencv_core331.lib;opencv_dnn331.lib;opencv_features2d331.lib;opencv_flann331.lib;opencv_highgui331.lib;opencv_imgcodecs331.lib;opencv_imgproc331.lib;opencv_ml331.lib;opencv_objdetect331.lib;opencv_shape331.lib;opencv_stitching331.lib;opencv_superres331.lib;opencv_ts331.lib;opencv_video331.lib;opencv_videoio331.lib;opencv_videostab331.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ProfileGuidedDatabase />
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
