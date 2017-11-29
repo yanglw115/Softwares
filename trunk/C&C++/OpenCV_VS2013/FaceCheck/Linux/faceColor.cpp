@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <math.h>
 
-using namespace std;
 using namespace cv;
 
 static const char *g_colorString[] = {
@@ -35,14 +34,14 @@ MatND getHistogram(Mat &image)
 	return hist;
 }
   
-Mat getHistogramImage(Mat &image, double *pColorValue)
+Mat getHistogramImage(const string &strImageName, Mat &image, double *pColorValue)
 {
 	MatND hist = getHistogram(image);
 	Mat showImage(256, 256, CV_8UC3, Scalar(0, 0, 0));
 	double maxValue = 0;
 	Point maxPoint;
 	minMaxLoc(hist, 0, &maxValue, 0, &maxPoint);
-	//cout << "最大值点：" << maxPoint << ", 最大值：" << maxValue << endl;
+	LOG(INFO) << strImageName << ": Color max point：" << maxPoint << ", max value: " << maxValue << endl;
 	*pColorValue = maxPoint.y;
 
 #ifdef With_Debug
@@ -57,9 +56,9 @@ Mat getHistogramImage(Mat &image, double *pColorValue)
 }
 
 #ifdef With_Debug
-enumFaceColorType getFaceColorType(cv::Mat &imageSrc, const vectorContours &contours)
+enumFaceColorType getFaceColorType(const string &strImageName, cv::Mat &imageSrc, const vectorContours &contours)
 #else
-enumFaceColorType getFaceColorType(const cv::Mat &imageSrc, const vectorContours &contours)
+enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &imageSrc, const vectorContours &contours)
 #endif
 {
 	double maxColorValue = -1;
@@ -76,11 +75,11 @@ enumFaceColorType getFaceColorType(const cv::Mat &imageSrc, const vectorContours
 	/* 只取脸部代表颜色的关键区域 */
 	Mat imageColor(imageFace, Rect(contours.at(faceRectIndex).at(0), contours.at(faceRectIndex).at(2)));
 	if (!imageColor.data) {
-		cout << "fail to load the image" << endl;
+		LOG(ERROR) << strImageName << ": Fail to load the image";
 		return type;
 	}
 
-	Mat imageResult = getHistogramImage(imageColor, &maxColorValue);
+	Mat imageResult = getHistogramImage(strImageName, imageColor, &maxColorValue);
 
 	const char *pStrColorString = "";
 	if (maxColorValue >= TouBai) {

@@ -20,7 +20,7 @@ CureLog::CureLog()
     google::SetLogDestination(google::GLOG_WARNING, strLogFilePath.c_str());
     google::SetLogDestination(google::GLOG_ERROR, strLogFilePath.c_str());
     google::SetLogDestination(google::GLOG_FATAL, strLogFilePath.c_str());
-    google::SetStderrLogging(google::GLOG_ERROR);
+    //google::SetStderrLogging(google::GLOG_ERROR);
     google::SetLogFilenameExtension("");
     google::SetLogAppName("iFace");
 

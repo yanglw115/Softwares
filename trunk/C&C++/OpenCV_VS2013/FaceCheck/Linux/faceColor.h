@@ -22,9 +22,9 @@ typedef enum {
 } enumFaceColorType;
 
 #ifdef With_Debug
-enumFaceColorType getFaceColorType(cv::Mat &imgSrc, const vectorContours &contours);
+enumFaceColorType getFaceColorType(const string &strImageName, cv::Mat &imgSrc, const vectorContours &contours);
 #else
-enumFaceColorType getFaceColorType(const cv::Mat &imgSrc, const vectorContours &contours);
+enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &imgSrc, const vectorContours &contours);
 #endif
 
 #endif // __FACE_COLOR_H__
