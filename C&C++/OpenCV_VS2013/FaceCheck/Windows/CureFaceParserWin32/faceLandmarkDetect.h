@@ -4,9 +4,9 @@
 #include "faceGlobal.h"
 
 #ifdef With_Debug
-bool faceLandmarkDetect(cv::Mat &, vectorContours &);
+bool faceLandmarkDetect(const string &strImageName, cv::Mat &, vectorContours &);
 #else
-bool faceLandmarkDetect(const cv::Mat &, vectorContours &);
+bool faceLandmarkDetect(const string &strImageName, const cv::Mat &, vectorContours &);
 #endif
 
 #endif // ! __FACE_LANDMARK_DETECT_H__

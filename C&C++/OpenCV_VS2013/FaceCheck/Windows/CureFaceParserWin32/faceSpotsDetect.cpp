@@ -8,17 +8,16 @@
 #include "faceSpotsDetect.h"
 
 using namespace cv;
-using namespace std;
 
 #ifdef With_Debug
-static int findPimples(Mat &srcImg, Mat &imgMask)
+static int findPimples(const string &strImageName, Mat &srcImg, Mat &imgMask)
 #else
-static int findPimples(const Mat &srcImg, Mat &imgMask)
+static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 #endif
 {
 	Mat bw;
 	vectorContours vectorSpots;
-#if 0
+#ifdef Use_SingleChannel
 	Mat bgr[3];
 	/* 将只有轮廓部分的图进行split通道分离 */
 	split(imgMask, bgr);
@@ -30,7 +29,7 @@ static int findPimples(const Mat &srcImg, Mat &imgMask)
 #endif
 	int pimplesCount = 0; // 找不到边界即设置为0
 
-#if 0 //def With_Debug
+#ifdef With_Debug
 	namedWindow("自适应阈值化之前", WINDOW_NORMAL);
 	imshow("自适应阈值化之前", bw);
 #endif // With_Debug
@@ -42,14 +41,14 @@ static int findPimples(const Mat &srcImg, Mat &imgMask)
 	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5); // 目前调试这里使用15是最优的，可以再调试
 	//adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 13, 5);
 
-#if 0//def With_Debug
+#ifdef With_Debug
 	namedWindow("自适应阈值化之后", WINDOW_NORMAL);
 	imshow("自适应阈值化之后", bw);
 #endif // With_Debug
 
 	/* 膨胀操作：前两个参数是输入与输出；参数3：膨胀操作的核，NULL时为3*3；参数4：锚的位置，下面代表位于中心；参数5：迭代使用dilate的次数 */
 	dilate(bw, bw, Mat(), Point(-1, -1), 1);
-#if 0 //def With_Debug
+#ifdef With_Debug
 	namedWindow("膨胀操作之后", WINDOW_NORMAL);
 	imshow("膨胀操作之后", bw);
 #endif // With_Debug
@@ -57,9 +56,9 @@ static int findPimples(const Mat &srcImg, Mat &imgMask)
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
 	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-	//cout << "检测到的边界个数：" << vectorSpots.size() << endl;
+	LOG(INFO) << strImageName << ": Detected contours counts：" << vectorSpots.size();
 	for (size_t i = 0; i < vectorSpots.size(); ++i)	{
-	    //cout << "边界大小: " << contourArea(vectorSpots[i]) << endl;
+	    LOG(INFO) << strImageName << ": Contour area size: " << contourArea(vectorSpots[i]) << endl;
 		/* 这里的值也需要调试 */
 		if (contourArea(vectorSpots[i]) > 0 && contourArea(vectorSpots[i]) < 150)	{
 #if 0
@@ -80,15 +79,17 @@ static int findPimples(const Mat &srcImg, Mat &imgMask)
 
 				/* 这里的值需要最终调试 */
 				if (radius > 2 && radius < 50)	{
+#ifdef With_Debug
 					//rectangle(srcImg, minRect, Scalar(0, 255, 0));
-					//circle(srcImg, center, radius + 1, Scalar(0, 255, 0), 2, 8);
+					circle(srcImg, center, radius + 1, Scalar(0, 255, 0), 2, 8);
+#endif // With_Debug
 					pimplesCount++;
 				}
 			}
 		}
 	}
 
-#if 0//def With_Debug
+#ifdef With_Debug
 	putText(srcImg, format("%d", pimplesCount), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
 	namedWindow("检测结果：", WINDOW_NORMAL);
 	imshow("检测结果：", srcImg);
@@ -100,9 +101,9 @@ static int findPimples(const Mat &srcImg, Mat &imgMask)
 
 
 #ifdef With_Debug
-bool findFaceSpots(cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
+bool findFaceSpots(const string &strImageName, cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
 #else
-bool findFaceSpots(const cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
+bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
 #endif
 {
 	int pimples = -1;
@@ -119,7 +120,7 @@ bool findFaceSpots(const cv::Mat &matSrc, const vectorContours &faceContours, ve
 		/* 将画了轮廓的原图按照mask拷贝到masked；这里的mask只有轮廓部分颜色值是1，即只拷贝原图这块的内容到masked */
 		matSrc.copyTo(masked, mask);
 		/* imgSrc始终保持不变 */
-		pimples = findPimples(matSrc, masked);
+		pimples = findPimples(strImageName, matSrc, masked);
 		
 		vectorIntResult[i] = pimples;
 	}
