@@ -21,19 +21,30 @@ JNIEXPORT jstring JNICALL Java_CureJniFaceRecognition_recogni
 	enumFaceColorType colorType = Type_Color_TouBai;
 	bool bResult = false;
 
-
-	bResult = faceLandmarkDetect(pStrFilePath, vectorFace);
+	cv::Mat matSrc = cv::imread(pStrFilePath);
+	if (matSrc.empty()) {
+		goto End;
+	}
+	if (matSrc.rows > 1280 || matSrc.cols > 1280) {
+		if (matSrc.rows > matSrc.cols) {
+			cv::resize(matSrc, matSrc, cv::Size(1280 * matSrc.cols / matSrc.rows, 1280));
+		} else {
+			cv::resize(matSrc, matSrc, cv::Size(1280, 1280 * matSrc.rows / matSrc.cols));
+		}
+	}
+	
+	bResult = faceLandmarkDetect(matSrc, vectorFace);
 	if (!bResult) {
 		goto End;
 	}
-	bResult = findFaceSpots(pStrFilePath, vectorFace, vectorIntResult);
+	bResult = findFaceSpots(matSrc, vectorFace, vectorIntResult);
 	if (!bResult) {
 		goto End;
 	}
-	for (int i = 0; i < vectorIntResult.size(); ++i) {
+	for (uint i = 0; i < vectorIntResult.size(); ++i) {
 		//cout << "Detect result for area: " << vectorIntResult[i] << endl;
 	}
-	colorType = getFaceColorType(pStrFilePath, vectorFace);
+	colorType = getFaceColorType(matSrc, vectorFace);
 	//cout << "Face color type: " << colorType << endl;
 
 End:	

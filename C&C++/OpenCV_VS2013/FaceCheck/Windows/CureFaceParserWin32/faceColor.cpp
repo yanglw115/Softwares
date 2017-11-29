@@ -39,7 +39,6 @@ Mat getHistogramImage(Mat &image, double *pColorValue)
 {
 	MatND hist = getHistogram(image);
 	Mat showImage(256, 256, CV_8UC3, Scalar(0, 0, 0));
-	int i;
 	double maxValue = 0;
 	Point maxPoint;
 	minMaxLoc(hist, 0, &maxValue, 0, &maxPoint);
@@ -47,7 +46,7 @@ Mat getHistogramImage(Mat &image, double *pColorValue)
 	*pColorValue = maxPoint.y;
 
 #ifdef With_Debug
-	for (i = 0; i < 256; i++) {
+	for (int i = 0; i < 256; i++) {
 		float value = hist.at<float>(i);
 		int intensity = saturate_cast<int>(256 - 256 * (value / maxValue));
 		rectangle(showImage, Point(i, 256 - 1), Point((i + 1) - 1, intensity), Scalar(0, 0, 255));
@@ -57,12 +56,15 @@ Mat getHistogramImage(Mat &image, double *pColorValue)
 	return showImage;
 }
 
-enumFaceColorType getFaceColorType(const std::string &strFile, const vectorContours &contours)
+#ifdef With_Debug
+enumFaceColorType getFaceColorType(cv::Mat &imageSrc, const vectorContours &contours)
+#else
+enumFaceColorType getFaceColorType(const cv::Mat &imageSrc, const vectorContours &contours)
+#endif
 {
 	double maxColorValue = -1;
 	enumFaceColorType type = Type_Color_TouBai;
 	int faceRectIndex = 5; // 面部轮廓vector里面矩形索引
-	Mat imageSrc = imread(strFile, 0);
 
 	Mat imageFace(imageSrc.size(), CV_8UC1);
 	Mat mask(imageSrc.size(), CV_8UC1);
@@ -80,30 +82,30 @@ enumFaceColorType getFaceColorType(const std::string &strFile, const vectorConto
 
 	Mat imageResult = getHistogramImage(imageColor, &maxColorValue);
 
-	const char *strColorString = NULL;
+	const char *pStrColorString = "";
 	if (maxColorValue >= TouBai) {
-		strColorString = g_colorString[0];
+		pStrColorString = g_colorString[0];
 		type = Type_Color_TouBai;
 	} else if (maxColorValue >= BaiXi) {
-		strColorString = g_colorString[1];
+		pStrColorString = g_colorString[1];
 		type = Type_Color_BaiXi;
 	} else if (maxColorValue >= ZiRan) {
-		strColorString = g_colorString[2];
+		pStrColorString = g_colorString[2];
 		type = Type_Color_ZiRan;
 	} else if (maxColorValue >= XiaoMai) {
-		strColorString = g_colorString[3];
+		pStrColorString = g_colorString[3];
 		type = Type_Color_XiaoMai;
 	} else if (maxColorValue >= AnChen) {
-		strColorString = g_colorString[4];
+		pStrColorString = g_colorString[4];
 		type = Type_Color_AnChen;
 	} else {
-		strColorString = g_colorString[5];
+		pStrColorString = g_colorString[5];
 		type = Type_Color_YouHei;
 	}
 
 #ifdef With_Debug
 	namedWindow("image original:", WINDOW_NORMAL);
-	putText(imageSrc, format("%s", strColorString), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
+	putText(imageSrc, format("%s", pStrColorString), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
 	imshow("image original:", imageSrc);
 	namedWindow("image face pre:", WINDOW_NORMAL);
 	imshow("image face pre:", imageColor);
