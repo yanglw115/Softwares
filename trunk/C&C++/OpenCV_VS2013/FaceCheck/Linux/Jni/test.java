@@ -1,6 +1,6 @@
 
+package com.youle.cosmetology.jni;
 import java.util.*;
-import subdir.*;
 
 public class test implements Runnable {
 	String strImage;
