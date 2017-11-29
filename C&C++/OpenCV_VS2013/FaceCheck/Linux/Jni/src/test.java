@@ -33,7 +33,7 @@ public class test implements Runnable {
 			test t = new test(strImage);
 			Thread t1 = new Thread(t);
 			t1.start();
-			t.run();
+			//t.run();
 		}
 		while (true) {
 			try {

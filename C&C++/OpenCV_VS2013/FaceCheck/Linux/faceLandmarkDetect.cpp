@@ -60,9 +60,9 @@ instructions.  Note that AVX is the fastest but requires a CPU from at least
 
 #include "faceLandmarkDetect.h"
 #include <pthread.h>
+#include <unistd.h>
 
 using namespace dlib;
-using namespace std;
 
 static bool g_bShapePredictorInited = false;
 static shape_predictor g_sp;
@@ -74,33 +74,58 @@ static frontal_face_detector g_detector;
 static cv::CascadeClassifier g_cascade;
 static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+// ---defines
+#ifndef Use_68
+#define Use_68
+#endif // Use_68
+
 // ----------------------------------------------------------------------------------------
 #ifdef With_Debug
-bool faceLandmarkDetect(cv::Mat &matSrc, vectorContours &faceContours)
+bool faceLandmarkDetect(const string &strImageName, cv::Mat &matSrc, vectorContours &faceContours)
 #else
-bool faceLandmarkDetect(const cv::Mat &matSrc, vectorContours &faceContours)
+bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vectorContours &faceContours)
 #endif
 {
+	/* 这里加锁需要在一开始就进行，特别是要在全局对象使用前开始，否则会出混乱               */
 	pthread_mutex_lock(&g_mutex);
+	double tt = 0.0;
 
 	if (!g_bShapePredictorInited) {
-		/* 加载面部预测器，文件比较大，后续是否可以优化当作全局共享 */
+		if (access(g_strFaceLandmarks.c_str(), F_OK)) {
+			LOG(ERROR) << "File is not exist: " << g_strFaceLandmarks;
+			/* 这里改用goto    语句的话，gcc会报怨，并且关闭警告不太好，其实提示作用挺好 */
+			pthread_mutex_unlock(&g_mutex);
+			return false;
+		}
+		if (access(g_strCascadeName.c_str(), F_OK)) {
+			LOG(ERROR) << "File is not exist: " << g_strCascadeName;
+			pthread_mutex_unlock(&g_mutex);
+			return false;
+		}
+
+		/* 加载面部预测器，文件比较大，所以在共享库中全局共享 */
+		tt = cv::getTickCount();
 		deserialize(g_strFaceLandmarks) >> g_sp;
-		//g_detector = get_frontal_face_detector();
-		g_cascade.load(g_strCascadeName);
+		if (!g_cascade.load(g_strCascadeName)) {
+			LOG(ERROR) << "Load cascadde file failed!";
+			pthread_mutex_unlock(&g_mutex);
+			return false;
+		}
 		g_bShapePredictorInited = true;
-		cout << "Init shape predictor..." << endl;
+		tt = cv::getTickCount() - tt;
+		LOG(INFO) << "Init shape predictor finish, use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
 	}
 
 	// Make the image larger so we can detect small faces.
 	//pyramid_up(img); 手动去掉
 
-
 	/* 检测所有可能存在的人脸 */
-	double tt = cv::getTickCount();
-#if 0
+	tt = cv::getTickCount();
+#ifdef Use_Dlib_Detector
+	/* 使用dlib的detector()很慢，720P的图片进行人脸扫描时需要长达8秒的时间 */
+	g_detector = get_frontal_face_detector();
 	std::vector<dlib::rectangle> dets = g_detector(img);
-	cout << "Number of faces detected: " << dets.size() << endl;
+	LOG(INFO) << strImageName << ": Number of faces detected: " << dets.size();
 #else
 	std::vector<dlib::rectangle> dets;
 	dets.resize(1);
@@ -109,16 +134,24 @@ bool faceLandmarkDetect(const cv::Mat &matSrc, vectorContours &faceContours)
 	cv::Mat imgSrc = matSrc;
 	cv::cvtColor(imgSrc, imgGray, cv::COLOR_BGR2GRAY);
 	cv::equalizeHist(imgGray, imgGray);
+	
 	g_cascade.detectMultiScale(imgGray, rectFaces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
+	if (rectFaces.size() <= 0) {
+		LOG(ERROR) << strImageName << ": Cannot detect face from image.";
+		pthread_mutex_unlock(&g_mutex);
+		return false;
+	}
+	
     dets[0].set_left(rectFaces[0].x);
     dets[0].set_top(rectFaces[0].y);
     dets[0].set_right(rectFaces[0].x + rectFaces[0].width);
     dets[0].set_bottom(rectFaces[0].y + rectFaces[0].height);
 #endif
 	tt = cv::getTickCount() - tt;
-	cout << "Face detector use time: " << tt * 1000 / cv::getTickFrequency() << "ms" << endl << endl;
+	LOG(INFO) << strImageName << ": Detect face use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
 	
 	if (dets.size() <= 0) {
+		pthread_mutex_unlock(&g_mutex);
 		return false;
 	}
 
@@ -130,13 +163,15 @@ bool faceLandmarkDetect(const cv::Mat &matSrc, vectorContours &faceContours)
 	full_object_detection shape = g_sp(cv_image<rgb_pixel>(matSrc), dets[0]);
 
 	tt = cv::getTickCount() - tt;
-	cout << "Shape predictor use time: " << tt * 1000 / cv::getTickFrequency() << "ms" << endl << endl;
+	LOG(INFO) << strImageName << ": Shape predictor use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
 
-	//cout << "number of parts: " << shape.num_parts() << endl;
-	//cout << "pixel position of first part:  " << shape.part(0) << endl;
-	//cout << "pixel position of second part: " << shape.part(1) << endl;
+	if (shape.num_parts() < 68) {
+		LOG(ERROR) << strImageName << ": Get face shape points failed, shape number parts: " << shape.num_parts();
+		pthread_mutex_unlock(&g_mutex);
+		return false;
+	}
 
-#if 1
+#ifdef Use_68
 	/* 左脸 */
 	vectorShape.resize(13);
 	vectorShape[0] = cv::Point(shape.part(36).x() - 20, shape.part(36).y() + 40);
@@ -229,14 +264,16 @@ bool faceLandmarkDetect(const cv::Mat &matSrc, vectorContours &faceContours)
 	vectorShape[18].y = shape.part(19).y() - 20;
 
 	faceContours.push_back(vectorShape);
-#endif
+#endif // Use_68
 
-	pthread_mutex_unlock(&g_mutex);
+	tt = cv::getTickCount() - tt;
+	LOG(INFO) << strImageName << ": Get face every parts use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
 
+
+
+// -------------------------------debug--------------------------
 #ifdef With_Debug
 	cv::Mat matTest = cv::imread(strFile, 1);
-	cout << "rows: " << matTest.rows << endl;
-	cout << "cols: " << matTest.cols << endl;
 
 	/* 使用轮廓+mask的方法将图抠出来 */
 	cv::Mat test;
@@ -248,6 +285,10 @@ bool faceLandmarkDetect(const cv::Mat &matSrc, vectorContours &faceContours)
 	cv::imshow("选取的脸部区域", matTest);
 #endif // With_Debug
 
+
+
+
+	pthread_mutex_unlock(&g_mutex);
 	return true;
 }
 // ----------------------------------------------------------------------------------------
