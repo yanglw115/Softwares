@@ -75,7 +75,11 @@ static cv::CascadeClassifier g_cascade;
 static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // ----------------------------------------------------------------------------------------
-bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
+#ifdef With_Debug
+bool faceLandmarkDetect(cv::Mat &matSrc, vectorContours &faceContours)
+#else
+bool faceLandmarkDetect(const cv::Mat &matSrc, vectorContours &faceContours)
+#endif
 {
 	pthread_mutex_lock(&g_mutex);
 
@@ -87,10 +91,6 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 		g_bShapePredictorInited = true;
 		cout << "Init shape predictor..." << endl;
 	}
-	
-	cout << "Processing image " << strFile << endl;
-	array2d<rgb_pixel> img;
-	load_image(img, strFile);
 
 	// Make the image larger so we can detect small faces.
 	//pyramid_up(img); 手动去掉
@@ -106,7 +106,7 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 	dets.resize(1);
 	std::vector<cv::Rect> rectFaces;
 	cv::Mat imgGray;
-	cv::Mat imgSrc = cv::imread(strFile, 1);
+	cv::Mat imgSrc = matSrc;
 	cv::cvtColor(imgSrc, imgGray, cv::COLOR_BGR2GRAY);
 	cv::equalizeHist(imgGray, imgGray);
 	g_cascade.detectMultiScale(imgGray, rectFaces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
@@ -127,7 +127,7 @@ bool faceLandmarkDetect(const string &strFile, vectorContours &faceContours)
 
 	tt = cv::getTickCount();
 
-	full_object_detection shape = g_sp(img, dets[0]);
+	full_object_detection shape = g_sp(cv_image<rgb_pixel>(matSrc), dets[0]);
 
 	tt = cv::getTickCount() - tt;
 	cout << "Shape predictor use time: " << tt * 1000 / cv::getTickFrequency() << "ms" << endl << endl;

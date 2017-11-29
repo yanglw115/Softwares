@@ -5,7 +5,7 @@ GENERATE_LIBRARY = libCureFaceRecognition.so
 # jpeg和png图片的支持，由dlib依赖
 DEFINES = -DDLIB_JPEG_SUPPORT -DDLIB_PNG_SUPPORT
 INCLUDES = -I. -I./build/include -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include  -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include/linux
-CFLAGS = -Wall $(INCLUDES) $(DEFINES)
+CFLAGS = -Wall -Wunused-but-set-variable $(INCLUDES) $(DEFINES)
 
 # 在编译test.java时，test.java中import后面必须是目录？不然不成功
 JAVA_SUBDIR = subdir

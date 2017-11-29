@@ -10,7 +10,11 @@
 using namespace cv;
 using namespace std;
 
+#ifdef With_Debug
 static int findPimples(Mat &srcImg, Mat &imgMask)
+#else
+static int findPimples(const Mat &srcImg, Mat &imgMask)
+#endif
 {
 	Mat bw;
 	vectorContours vectorSpots;
@@ -77,7 +81,7 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 				/* 这里的值需要最终调试 */
 				if (radius > 2 && radius < 50)	{
 					//rectangle(srcImg, minRect, Scalar(0, 255, 0));
-					circle(srcImg, center, radius + 1, Scalar(0, 255, 0), 2, 8);
+					//circle(srcImg, center, radius + 1, Scalar(0, 255, 0), 2, 8);
 					pimplesCount++;
 				}
 			}
@@ -94,28 +98,28 @@ static int findPimples(Mat &srcImg, Mat &imgMask)
 	return pimplesCount;
 }
 
-bool findFaceSpots(const std::string &strFile, const vectorContours &faceContours, vectorInt &vectorIntResult)
-{
-	Mat imgSrc = imread(strFile);
-	if (imgSrc.empty()) {
-		return false;
-	}
 
+#ifdef With_Debug
+bool findFaceSpots(cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
+#else
+bool findFaceSpots(const cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
+#endif
+{
 	int pimples = -1;
 	for (uint i = 0; i < vectorIntResult.size(); ++i) {
 		/* 创建一个通道并与原图大小相等的Mat */
-		Mat mask(imgSrc.size(), CV_8UC1);
+		Mat mask(matSrc.size(), CV_8UC1);
 		/* 矩阵赋值为全0，颜色表现为全黑 */
 		mask = 0;
 		/* 第一个参数是需要画轮廓的图像，第二个参数代表轮廓数组，第三个参数代表所用数组索引，第4个参数代表轮廓填充颜色，第5个参数是 */
 		drawContours(mask, faceContours, i, Scalar(255), -1);
 		/* 创建一个三通道的mask */
-		Mat masked(imgSrc.size(), CV_8UC3);
+		Mat masked(matSrc.size(), CV_8UC3);
 		masked = Scalar(255, 255, 255);
 		/* 将画了轮廓的原图按照mask拷贝到masked；这里的mask只有轮廓部分颜色值是1，即只拷贝原图这块的内容到masked */
-		imgSrc.copyTo(masked, mask);
+		matSrc.copyTo(masked, mask);
 		/* imgSrc始终保持不变 */
-		pimples = findPimples(imgSrc, masked);
+		pimples = findPimples(matSrc, masked);
 		
 		vectorIntResult[i] = pimples;
 	}
