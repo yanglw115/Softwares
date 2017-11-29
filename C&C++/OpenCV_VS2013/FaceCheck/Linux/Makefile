@@ -8,10 +8,15 @@ INCLUDES = -I. -I./build/include -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b
 CFLAGS = -Wall $(INCLUDES) $(DEFINES)
 
 # 在编译test.java时，test.java中import后面必须是目录？不然不成功
-JniDir=Jni
-JniClassPath = $(JniDir)/classes
-JniSrcPath=$(JniDir)/src
-JniEntryName=com.youle.cosmetology.jni.test
+DirJin = Jni
+DirJniClasses = $(DirJin)/classes
+DirJniSrc = $(DirJin)/src
+NameJniEntry = com.youle.cosmetology.jni.test
+
+# 打包文件夹
+DirPackage = build/package
+NamePackageShell = package.sh
+NameInstaller = FaceParserInstall
 
 # 为了测试opencv库和dlib库的链接而对写的测试.c文件进行编译链接
 TEST_MAIN_EXE = test.exe
@@ -38,14 +43,21 @@ clean:
 	rm -rf *.o
 	rm -rf *.so*
 	rm -rf *.class
-	rm -rf $(JniClassPath)/*
+	rm -rf $(DirJniClasses)/*
 	rm -rf $(TEST_MAIN_EXE)
 
 java: $(GENERATE_LIBRARY)
-	javac -d $(JniClassPath) $(JniSrcPath)/*.java
-	java -classpath $(JniClassPath) $(JniEntryName)
+	javac -d $(DirJniClasses) $(DirJniSrc)/*.java
+	java -classpath $(DirJniClasses) $(NameJniEntry)
 
 test: $(GENERATE_LIBRARY)
 	$(CC) -o $(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L. -lCureFaceRecognition
+
+pack:
+	cd $(DirPackage) && bash $(NamePackageShell)
+
+# 安装到本机
+install:
+	cd $(DirPackage) && find ./ -name "*.bin" -exec sudo {} \;
 
 

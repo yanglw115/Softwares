@@ -24,7 +24,7 @@ public class test implements Runnable {
 			try {
 				System.loadLibrary("CureFaceRecognition");
 			} catch (UnsatisfiedLinkError e) {
-				System.err.println( "Cannot load CureFaceParser library:\n " + e.toString() ); 
+				System.err.println( "##Cannot load CureFaceParser library:\n " + e.toString() ); 
 			}
 		}
 		for (int i = 0; i < 1; ++i) {
