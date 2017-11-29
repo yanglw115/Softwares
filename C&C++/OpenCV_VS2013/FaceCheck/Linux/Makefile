@@ -5,10 +5,13 @@ GENERATE_LIBRARY = libCureFaceRecognition.so
 # jpeg和png图片的支持，由dlib依赖
 DEFINES = -DDLIB_JPEG_SUPPORT -DDLIB_PNG_SUPPORT
 INCLUDES = -I. -I./build/include -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include  -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include/linux
-CFLAGS = -Wall -Wunused-but-set-variable $(INCLUDES) $(DEFINES)
+CFLAGS = -Wall $(INCLUDES) $(DEFINES)
 
 # 在编译test.java时，test.java中import后面必须是目录？不然不成功
-JAVA_SUBDIR = subdir
+JniDir=jniTest
+JniClassPath = $(jinTest)/classes
+JniSrcPath=$(jniTest)/src
+JniEntryName=com.youle.cosmetology.jni.test
 
 # 为了测试opencv库和dlib库的链接而对写的测试.c文件进行编译链接
 TEST_MAIN_EXE = test.exe
@@ -35,15 +38,14 @@ clean:
 	rm -rf *.o
 	rm -rf *.so*
 	rm -rf *.class
-	rm -rf ./$(JAVA_SUBDIR)/*.class
+	rm -rf $(JniClassPath)/*
 	rm -rf $(TEST_MAIN_EXE)
 
 java: $(GENERATE_LIBRARY)
-	javac CureJniFaceRecognition.java -d $(JAVA_SUBDIR)
-	javac test.java
+	javac -d $(JniClassPath) $(JniSrcPath)/*.java
+	java -classpath $(JniClassPath) $(JniEntryName)
 
 test: $(GENERATE_LIBRARY)
-#test: $(GENERATE_LIBRARY)
 	$(CC) -o $(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L. -lCureFaceRecognition
 
 
