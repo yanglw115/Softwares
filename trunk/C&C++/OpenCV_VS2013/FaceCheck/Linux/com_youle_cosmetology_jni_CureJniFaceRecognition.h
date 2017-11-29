@@ -11,9 +11,9 @@ extern "C" {
  * Class:     com_youle_jni_FaceRecognition
  * Method:    recogni
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
- * !!!!!!!!!!!!!!!!!!!!!!!!Format: Java_ClassName_MethodName(ClassName里面不能有下划线)
+ * !!!!!!!!!!!!!!!!!!!!!!!!Format: Java_ClassName_MethodName
  */
-JNIEXPORT jstring JNICALL Java_CureJniFaceRecognition_recogni
+JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_recogni
   (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus

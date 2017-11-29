@@ -17,6 +17,7 @@ NameProject=FaceParser
 NamePackage=package.tar.gz
 NameStdcpp6=libstdc++.so.6
 NameStdcppFull=libstdc++.so.6.0.24
+NameJNILib=libCureFaceRecognition.so
 NameFaceLandmarks=shape_predictor_68_face_landmarks.dat
 
 DirInstall=/usr/local/${NameProject}
@@ -50,8 +51,14 @@ rm -rf ${DirInstall}/${NamePackage}
 rm -rf ${DirInstall}/${NameStdcppFull}
 
 # 添加系统动态库链接路径
-echo ${DirInstallLibs} > ${DirLDConfig}/${NameProject}
+rm -rf ${DirLDConfig}/${NameProject}*
+rm -rf ${DirStdcppInstall}/${NameJNILib}
+# JNI直接加载的库需要放在/lib:/usr/lib:/lib64:/usr/lib64等目录下面
+ln -sv ${DirInstallLibs}/${NameJNILib} ${DirStdcppInstall}/${NameJNILib}
+echo ${DirInstallLibs} > ${DirLDConfig}/${NameProject}.conf
 ldconfig
+
+# 添加日志路径
 mkdir ${DirLogs}
 chmod -R a+w ${DirLogs}
 
