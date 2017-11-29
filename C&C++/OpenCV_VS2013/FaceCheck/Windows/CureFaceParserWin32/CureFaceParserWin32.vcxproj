@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CureJniFaceRecognition.cpp" />
+    <ClCompile Include="com_youle_cosmetology_jni_CureJniFaceRecognition.cpp" />
     <ClCompile Include="faceColor.cpp" />
     <ClCompile Include="faceLandmarkDetect.cpp" />
     <ClCompile Include="faceSpotsDetect.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CureJniFaceRecognition.h" />
+    <ClInclude Include="com_youle_cosmetology_jni_CureJniFaceRecognition.h" />
     <ClInclude Include="faceColor.h" />
     <ClInclude Include="faceGlobal.h" />
     <ClInclude Include="faceLandmarkDetect.h" />

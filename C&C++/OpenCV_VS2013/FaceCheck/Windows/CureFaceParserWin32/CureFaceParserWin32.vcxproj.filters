@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CureJniFaceRecognition.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="faceColor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -27,11 +24,11 @@
     <ClCompile Include="faceSpotsDetect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="com_youle_cosmetology_jni_CureJniFaceRecognition.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CureJniFaceRecognition.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="faceColor.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -42,6 +39,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="faceSpotsDetect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="com_youle_cosmetology_jni_CureJniFaceRecognition.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

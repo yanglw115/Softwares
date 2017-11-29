@@ -1,5 +1,5 @@
 ﻿
-#include "CureJniFaceRecognition.h"
+#include "com_youle_cosmetology_jni_CureJniFaceRecognition.h"
 
 #include "faceLandmarkDetect.h"
 #include "faceSpotsDetect.h"
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-JNIEXPORT jstring JNICALL Java_CureJniFaceRecognition_recogni
+JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_recogni
   (JNIEnv *env, jobject obj, jstring strFilePath)
 {
 	const char *pStrFilePath = env->GetStringUTFChars(strFilePath, 0);
