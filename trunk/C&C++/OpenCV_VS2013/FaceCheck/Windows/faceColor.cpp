@@ -86,7 +86,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 
 	Mat imageResult = getHistogramImage(strImageName, imageColor, &maxColorValue);
 
-	const char *pStrColorString = "";
+	const char *pStrColorString = g_colorString[0];
 	if (maxColorValue >= TouBai) {
 		pStrColorString = g_colorString[0];
 		type = Type_Color_TouBai;
