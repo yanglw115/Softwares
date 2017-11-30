@@ -9,11 +9,7 @@
 
 using namespace cv;
 
-#ifdef With_Debug
-static int findPimples(const string &strImageName, Mat &srcImg, Mat &imgMask)
-#else
 static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
-#endif
 {
 	Mat bw;
 	vectorContours vectorSpots;
@@ -30,6 +26,8 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 	int pimplesCount = 0; // 找不到边界即设置为0
 
 #ifdef With_Debug
+	Mat matDebug;
+	srcImg.copyTo(matDebug);
 	namedWindow("自适应阈值化之前", WINDOW_NORMAL);
 	imshow("自适应阈值化之前", bw);
 #endif // With_Debug
@@ -80,8 +78,8 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 				/* 这里的值需要最终调试 */
 				if (radius > 2 && radius < 50)	{
 #ifdef With_Debug
-					//rectangle(srcImg, minRect, Scalar(0, 255, 0));
-					circle(srcImg, center, radius + 1, Scalar(0, 255, 0), 2, 8);
+					//rectangle(matDebug, minRect, Scalar(0, 255, 0));
+					circle(matDebug, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
 #endif // With_Debug
 					pimplesCount++;
 				}
@@ -90,21 +88,16 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 	}
 
 #ifdef With_Debug
-	putText(srcImg, format("%d", pimplesCount), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
+	putText(matDebug, format("%d", pimplesCount), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
 	namedWindow("检测结果：", WINDOW_NORMAL);
-	imshow("检测结果：", srcImg);
+	imshow("检测结果：", matDebug);
 	waitKey();
 #endif // With_Debug
 
 	return pimplesCount;
 }
 
-
-#ifdef With_Debug
-bool findFaceSpots(const string &strImageName, cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
-#else
 bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
-#endif
 {
 	int pimples = -1;
 	for (uint i = 0; i < vectorIntResult.size(); ++i) {
