@@ -10,6 +10,7 @@
 #include <sstream>
 
 static CureLog g_logObject;
+int main(int argc, char **argv)
 {
 	const char *pStrFilePath = "5.jpg";
 	vector<int> vectorIntResult(5);
@@ -23,7 +24,7 @@ static CureLog g_logObject;
 	matSrc = cv::imread(pStrFilePath);
 	if (matSrc.empty()) {
 		LOG(ERROR) << "Input image file path is invalid: " << pStrFilePath;
-		goto End;
+		return -1;
 	}
 	LOG(INFO) << "Get valid image file path: " << pStrFilePath;
 	strImageName = string(pStrFilePath);
@@ -41,15 +42,20 @@ static CureLog g_logObject;
 	}
 	bResult = faceLandmarkDetect(strImageName, matSrc, vectorFace);
 	if (!bResult) {
-		goto End;
+		return -1;
 	}
 	bResult = findFaceSpots(strImageName, matSrc, vectorFace, vectorIntResult);
 	if (!bResult) {
-		goto End;
+		return -1;
 	}
 	colorType = getFaceColorType(strImageName, matSrc, vectorFace);
 
+	stringstream ss;
+	ss << "{\"result\":" << bResult << ",\"spots\":{\"A\":" << vectorIntResult[0] <<  ",\"B\":" << vectorIntResult[1]
+	   << ",\"C\":" << vectorIntResult[2] << ",\"D\":" << vectorIntResult[3] << ",\"E\":" << vectorIntResult[4] 
+	   << "},\"color\":" << colorType << "}";
 	LOG(INFO) << strImageName << ": " << ss.str();
+#ifdef With_Debug
 	while ('q' != cv::waitKey(0));
 #endif // With_Debug
 
