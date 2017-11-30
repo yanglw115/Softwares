@@ -11,6 +11,12 @@
 
 static CureLog g_logObject;
 
+#ifdef __linux
+#define SIZE_TYPE_T int
+#else
+#define SIZE_TYPE_T size_t
+#endif
+
 JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_recogni
   (JNIEnv *env, jobject obj, jstring strFilePath)
 {
@@ -21,7 +27,7 @@ JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_
 	cv::Mat matSrc;
 	string strImageName("");
 	bool bResult = false;
-	size_t nPosition = -1;
+	SIZE_TYPE_T nPosition = -1;
 
 	const char *pStrFilePath = env->GetStringUTFChars(strFilePath, 0);
 	if (!pStrFilePath) {
