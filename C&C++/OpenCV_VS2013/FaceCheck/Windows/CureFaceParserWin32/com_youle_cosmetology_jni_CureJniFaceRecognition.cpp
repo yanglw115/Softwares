@@ -36,7 +36,9 @@ JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_
 	LOG(INFO) << "Get valid image file path: " << pStrFilePath;
 	strImageName = string(pStrFilePath);
 	nPosition = strImageName.rfind("/");
-	strImageName = strImageName.substr(nPosition == -1? 0: nPosition + 1);
+	if (-1 != nPosition) {
+		strImageName = strImageName.substr(nPosition + 1);
+	}
 	
 	if (matSrc.rows > 1280 || matSrc.cols > 1280) {
 		if (matSrc.rows > matSrc.cols) {
