@@ -6,36 +6,57 @@
 //#include "faceDetect.h"
 #include "faceGlobal.h"
 
+#include <string>
+#include <sstream>
+
 using namespace std;
 
 int main(int argc, char **argv)
 {
-	const char *pStrFilePath = "images/baby.jpg";
 	vector<int> vectorIntResult(5);
 	vectorContours vectorFace;
 	enumFaceColorType colorType = Type_Color_TouBai;
+	cv::Mat matSrc;
+	string strImageName("");
 	bool bResult = false;
+	int nPosition = -1;
 
-	//cv::Rect rect = faceDetect(pStrFilePath);
-	//grabCut(pStrFilePath, rect);
-
-	bResult = faceLandmarkDetect(pStrFilePath, vectorFace);
+	const char *pStrFilePath = "images/2.jpg";
+	matSrc = cv::imread(pStrFilePath);
+	if (matSrc.empty()) {
+		LOG(ERROR) << "Input image file path is invalid: " << pStrFilePath;
+		goto End;
+	}
+	LOG(INFO) << "Get valid image file path: " << pStrFilePath;
+	strImageName = string(pStrFilePath);
+	nPosition = strImageName.rfind("/");
+	strImageName = strImageName.substr(nPosition == -1? 0: nPosition + 1);
+	
+	if (matSrc.rows > 1280 || matSrc.cols > 1280) {
+		if (matSrc.rows > matSrc.cols) {
+			cv::resize(matSrc, matSrc, cv::Size(1280 * matSrc.cols / matSrc.rows, 1280));
+		} else {
+			cv::resize(matSrc, matSrc, cv::Size(1280, 1280 * matSrc.rows / matSrc.cols));
+		}
+	}
+	
+	bResult = faceLandmarkDetect(strImageName, matSrc, vectorFace);
 	if (!bResult) {
-		return -1;
+		goto End;
 	}
-	bResult = findFaceSpots(pStrFilePath, vectorFace, vectorIntResult);
+	bResult = findFaceSpots(strImageName, matSrc, vectorFace, vectorIntResult);
 	if (!bResult) {
-		return -1;
+		goto End;
 	}
-	for (int i = 0; i < vectorIntResult.size(); ++i) {
-		cout << "Detect result for area: " << vectorIntResult[i] << endl;
-	}
-	colorType = getFaceColorType(pStrFilePath, vectorFace);
-	cout << "Face color type: " << colorType << endl;
+	colorType = getFaceColorType(strImageName, matSrc, vectorFace);
 
-#ifdef With_Debug
-	while ('q' != cv::waitKey(0));
-#endif // With_Debug
+End:	
+	stringstream ss;
+	ss << "{\"result\":" << bResult << ",\"spots\":{\"A\":" << vectorIntResult[0] <<  ",\"B\":" << vectorIntResult[1]
+	   << ",\"C\":" << vectorIntResult[2] << ",\"D\":" << vectorIntResult[3] << ",\"E\":" << vectorIntResult[4] 
+	   << "},\"color\":" << colorType << "}";
+
+	LOG(INFO) << strImageName << ": " << ss.str();
 
 	return 0;
 }

@@ -88,7 +88,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 {
 	/* 这里加锁需要在一开始就进行，特别是要在全局对象使用前开始，否则会出混乱               */
 	pthread_mutex_lock(&g_mutex);
-	double tt = 0.0;
+	int64_t tt = 0;
 
 	if (!g_bShapePredictorInited) {
 		if (access(g_strFaceLandmarks.c_str(), F_OK)) {
@@ -113,7 +113,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 		}
 		g_bShapePredictorInited = true;
 		tt = cv::getTickCount() - tt;
-		LOG(INFO) << "Init shape predictor finish, use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
+		LOG(INFO) << "Init shape predictor finish, use time: " << tt * 1000 / (int64_t)cv::getTickFrequency() << "ms";
 	}
 
 	// Make the image larger so we can detect small faces.
@@ -148,7 +148,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
     dets[0].set_bottom(rectFaces[0].y + rectFaces[0].height);
 #endif
 	tt = cv::getTickCount() - tt;
-	LOG(INFO) << strImageName << ": Detect face use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
+	LOG(INFO) << strImageName << ": Detect face use time: " << tt * 1000 / (int64_t)cv::getTickFrequency() << "ms";
 	
 	if (dets.size() <= 0) {
 		pthread_mutex_unlock(&g_mutex);
@@ -163,7 +163,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	full_object_detection shape = g_sp(cv_image<rgb_pixel>(matSrc), dets[0]);
 
 	tt = cv::getTickCount() - tt;
-	LOG(INFO) << strImageName << ": Shape predictor use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
+	LOG(INFO) << strImageName << ": Shape predictor use time: " << tt * 1000 / (int64_t)cv::getTickFrequency() << "ms";
 
 	if (shape.num_parts() < 68) {
 		LOG(ERROR) << strImageName << ": Get face shape points failed, shape number parts: " << shape.num_parts();
@@ -171,6 +171,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 		return false;
 	}
 
+	tt = cv::getTickCount();
 #ifdef Use_68
 	/* 左脸 */
 	vectorShape.resize(13);
@@ -267,7 +268,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 #endif // Use_68
 
 	tt = cv::getTickCount() - tt;
-	LOG(INFO) << strImageName << ": Get face every parts use time: " << tt * 1000 / cv::getTickFrequency() << "ms";
+	LOG(INFO) << strImageName << ": Get face every parts use time: " << tt * 1000 / (int64_t)cv::getTickFrequency() << "ms";
 
 
 
