@@ -9,10 +9,11 @@ NameStdcpp=libstdc++.so.6.0.24
 NameJNILib=libCureFaceRecognition.so
 NameInstallShell=install.sh
 NameInstallBin=FaceParserInstall
+NameCompile=compile
 
 DirLibs=${PWD}/../libs
 DirLibStdcpp=${PWD}/../${NameStdcpp}
-DirLibJNILib=${PWD}/../../${NameJNILib}
+DirLibJNILib=${PWD}/../../${NameCompile}/${NameJNILib}
 DirData=${PWD}/../data
 
 echo -e "\n"

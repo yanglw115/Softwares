@@ -6,6 +6,7 @@ GENERATE_LIBRARY = libCureFaceRecognition.so
 DEFINES = -DDLIB_JPEG_SUPPORT -DDLIB_PNG_SUPPORT
 INCLUDES = -I. -I./build/include -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include  -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el6_9.x86_64/include/linux
 CFLAGS = -Wall $(INCLUDES) $(DEFINES)
+DirCompile=compile
 
 # 在编译test.java时，test.java中import后面必须是目录？不然不成功
 DirJin = Jni
@@ -28,30 +29,27 @@ LIBS = -L./build/libs -lglog -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -
 #LIBS += -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_videoio -lopencv_video
 #LIBS += -lopencv_videostab -ldlib -ljpeg -lpng16 -lpthread -lglog
 
-OBJS = $(patsubst %.cpp, %.o, $(wildcard *.cpp))
+OBJS = $(patsubst %.cpp, $(DirCompile)/%.o, $(wildcard *.cpp))
 
 CC = /usr/local/gcc-7.2.0/bin/g++
 # CC = g++
 
 $(GENERATE_LIBRARY): $(OBJS) 
-	$(CC) -shared $(CFLAGS) $(OBJS) $(LIBS) -o $(GENERATE_LIBRARY)
+	$(CC) -shared $(CFLAGS) $(OBJS) $(LIBS) -o $(DirCompile)/$(GENERATE_LIBRARY)
 
-%.o: %.cpp
-	$(CC) -fPIC $(CFLAGS) -c $*.cpp
+ $(DirCompile)/%.o: %.cpp
+	$(CC) -fPIC $(CFLAGS) -c $*.cpp -o $@
 
 clean:
-	rm -rf *.o
-	rm -rf *.so*
-	rm -rf *.class
+	rm -rf $(DirCompile)/*
 	rm -rf $(DirJniClasses)/*
-	rm -rf $(TEST_MAIN_EXE)
 
 java: $(GENERATE_LIBRARY)
 	javac -d $(DirJniClasses) $(DirJniSrc)/*.java
 	java -classpath $(DirJniClasses) $(NameJniEntry)
 
 test: $(GENERATE_LIBRARY)
-	$(CC) -o $(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L. -lCureFaceRecognition
+	$(CC) -o $(DirCompile)/$(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L. -lCureFaceRecognition
 
 pack:
 	cd $(DirPackage) && bash $(NamePackageShell)
