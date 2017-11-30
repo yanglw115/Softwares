@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 	cv::Mat matSrc;
 	string strImageName("");
 	bool bResult = false;
-	size_t nPosition = -1;
+	int nPosition = -1;
 
 	const char *pStrFilePath = "images/2.jpg";
 	matSrc = cv::imread(pStrFilePath);
