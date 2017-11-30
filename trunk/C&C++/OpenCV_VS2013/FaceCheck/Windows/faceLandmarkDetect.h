@@ -3,6 +3,10 @@
 
 #include "faceGlobal.h"
 
-bool faceLandmarkDetect(const std::string &, vectorContours &);
+#ifdef With_Debug
+bool faceLandmarkDetect(const string &strImageName, cv::Mat &, vectorContours &);
+#else
+bool faceLandmarkDetect(const string &strImageName, const cv::Mat &, vectorContours &);
+#endif
 
 #endif // ! __FACE_LANDMARK_DETECT_H__
