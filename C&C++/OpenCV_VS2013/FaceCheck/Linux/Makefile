@@ -29,11 +29,13 @@ LIBS = -L./build/libs -lglog -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -
 #LIBS += -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_videoio -lopencv_video
 #LIBS += -lopencv_videostab -ldlib -ljpeg -lpng16 -lpthread -lglog
 
+# 这里指定了临时库存在目录，非当前目录
 OBJS = $(patsubst %.cpp, $(DirCompile)/%.o, $(wildcard *.cpp))
 
 CC = /usr/local/gcc-7.2.0/bin/g++
 # CC = g++
 
+# 生成动态库，并且生成到compile目录当中
 $(GENERATE_LIBRARY): $(OBJS) 
 	$(CC) -shared $(CFLAGS) $(OBJS) $(LIBS) -o $(DirCompile)/$(GENERATE_LIBRARY)
 
@@ -44,6 +46,8 @@ clean:
 	rm -rf $(DirCompile)/*
 	rm -rf $(DirJniClasses)/*
 
+# java在编译时需要同时编译入口java与依赖java文件，即下面的*.java
+# java运行的时候需要指定-classpath，到哪个路径下去找依赖的class
 java: $(GENERATE_LIBRARY)
 	javac -d $(DirJniClasses) $(DirJniSrc)/*.java
 	java -classpath $(DirJniClasses) $(NameJniEntry)
@@ -51,10 +55,11 @@ java: $(GENERATE_LIBRARY)
 test: $(GENERATE_LIBRARY)
 	$(CC) -o $(DirCompile)/$(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L. -lCureFaceRecognition
 
+# 打包文件(调用相关脚本)
 pack:
 	cd $(DirPackage) && bash $(NamePackageShell)
 
-# 安装到本机
+# 安装到本机(调用相关脚本)
 install:
 	cd $(DirPackage) && find ./ -name "*.bin" -exec sudo {} \;
 
