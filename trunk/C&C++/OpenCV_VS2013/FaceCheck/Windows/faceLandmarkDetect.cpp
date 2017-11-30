@@ -291,7 +291,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 #endif
 
 #ifdef With_Debug
-	cv::Mat matTest = cv::imread(strFile, 1);
+	cv::Mat matTest = matSrc;
 
 	/* 使用轮廓+mask的方法将图抠出来 */
 	cv::Mat test;
@@ -300,7 +300,9 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 					
 	//cv::drawContours(matTest, contours, 0, cv::Scalar(0, 0, 0), 3);
 	cv::drawContours(matTest, faceContours, -1, cv::Scalar(0, 0, 0), CV_FILLED);
+	cv::namedWindow("选取的脸部区域", cv::WINDOW_NORMAL);
 	cv::imshow("选取的脸部区域", matTest);
+	cv::waitKey();
 #endif // With_Debug
 
 	return true;
