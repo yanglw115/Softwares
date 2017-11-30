@@ -86,14 +86,8 @@ HANDLE  g_hMutex = NULL;
 static frontal_face_detector g_detector;
 static cv::CascadeClassifier g_cascade;
 
-#define Use_68
-
 // ----------------------------------------------------------------------------------------
-#ifdef With_Debug
-bool faceLandmarkDetect(const string &strImageName, cv::Mat &matSrc, vectorContours &faceContours)
-#else
-bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vectorContours &faceContours)
-#endif
+bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vectorContours &faceContours, cv::Rect &rectOutput)
 {
 #ifdef __linux
 	pthread_mutex_lock(&g_mutex);
@@ -146,8 +140,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	dets.resize(1);
 	std::vector<cv::Rect> rectFaces;
 	cv::Mat imgGray;
-	cv::Mat imgSrc = matSrc;
-	cv::cvtColor(imgSrc, imgGray, cv::COLOR_BGR2GRAY);
+	cv::cvtColor(matSrc, imgGray, cv::COLOR_BGR2GRAY);
 	cv::equalizeHist(imgGray, imgGray);
 	g_cascade.detectMultiScale(imgGray, rectFaces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 	if (rectFaces.size() <= 0) {
@@ -185,8 +178,21 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 		return false;
 	}
 
+#ifdef With_Debug
+	cv::Mat matDebug;
+	matSrc.copyTo(matDebug);
+
+	for (uint i = 0; i < shape.num_parts(); ++i) {
+		cv::circle(matDebug, cv::Point(shape.part(i).x(), shape.part(i).y()), 5, cv::Scalar(0, 255, 0), 2, cv::FILLED);
+	}
+	cv::namedWindow("68点区域", cv::WINDOW_NORMAL);
+	cv::imshow("68点区域", matDebug);
+	cv::waitKey();
+#endif
+
+	faceContours.clear();
 	tt = cv::getTickCount();
-#ifdef Use_68
+
 	/* 左脸 */
 	vectorShape.resize(13);
 	vectorShape[0] = cv::Point(shape.part(36).x() - 20, shape.part(36).y() + 40);
@@ -248,38 +254,16 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	faceContours.push_back(vectorShape);
 
 	/* 整个人脸正中部分，用于取面部肤色(同下面类似，只是这个取的比较全面；虽然有鼻子等数据，但是最终用的是统计图最大值部分) */
-	vectorShape.resize(4);
-	vectorShape[0] = cv::Point(shape.part(4).x(), shape.part(4).y());
-	vectorShape[1] = cv::Point(shape.part(12).x(), shape.part(4).y());
-	vectorShape[2] = cv::Point(shape.part(12).x(), shape.part(46).y());
-	vectorShape[3] = cv::Point(shape.part(4).x(), shape.part(46).y());
-	faceContours.push_back(vectorShape);
-
-#if 0
-	/* 左脸正中矩形，用于取面部肤色 */
-	vectorShape.resize(4);
-	vectorShape[0] = cv::Point(shape.part(4).x(), shape.part(1).y());
-	vectorShape[1] = cv::Point(shape.part(4).x(), shape.part(3).y());
-	vectorShape[2] = cv::Point(shape.part(40).x(), shape.part(3).y());
-	vectorShape[3] = cv::Point(shape.part(40).x(), shape.part(1).y());
-	faceContours.push_back(vectorShape);
-#endif
-
-#else
-	/* 只取19个点即可把脸部轮廓大致取出 */
-	vectorShape.resize(19);
-	for (int i = 0; i < 17; ++i) {
-		vectorShape[i].x = shape.part(i).x();
-		vectorShape[i].y = shape.part(i).y();
-	}
-
-	vectorShape[17].x = shape.part(24).x();
-	vectorShape[17].y = shape.part(24).y() - 20;
-	vectorShape[18].x = shape.part(19).x();
-	vectorShape[18].y = shape.part(19).y() - 20;
-
-	faceContours.push_back(vectorShape);
-#endif
+	/* 
+		vectorShape.resize(4);
+		vectorShape[0] = cv::Point(shape.part(4).x(), shape.part(4).y());
+		vectorShape[1] = cv::Point(shape.part(12).x(), shape.part(4).y());
+		vectorShape[2] = cv::Point(shape.part(12).x(), shape.part(46).y());
+		vectorShape[3] = cv::Point(shape.part(4).x(), shape.part(46).y());
+		faceContours.push_back(vectorShape);
+	*/
+	// 这里还是使用rect保存数据，不然调试显示的时候不太直观
+	rectOutput = cv::Rect(cv::Point(shape.part(4).x(), shape.part(4).y()), cv::Point(shape.part(12).x(), shape.part(46).y()));
 
 	tt = cv::getTickCount() - tt;
 	LOG(INFO) << strImageName << ": Get face every parts use time: " << to_string(tt * 1000 / (int64)cv::getTickFrequency()) << "ms";
@@ -291,15 +275,11 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 #endif
 
 #ifdef With_Debug
-	cv::Mat matTest = matSrc;
-
-	/* 使用轮廓+mask的方法将图抠出来 */
-	cv::Mat test;
-	matTest.copyTo(test);
-	cv::cvtColor(test, test, cv::COLOR_RGB2GRAY);
+	cv::Mat matTest;
+	matSrc.copyTo(matTest);
 					
 	//cv::drawContours(matTest, contours, 0, cv::Scalar(0, 0, 0), 3);
-	cv::drawContours(matTest, faceContours, -1, cv::Scalar(0, 0, 0), CV_FILLED);
+	cv::drawContours(matTest, faceContours, -1, cv::Scalar(0, 0, 0), cv::LINE_8); // CV_FILLED
 	cv::namedWindow("选取的脸部区域", cv::WINDOW_NORMAL);
 	cv::imshow("选取的脸部区域", matTest);
 	cv::waitKey();

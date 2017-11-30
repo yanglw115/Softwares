@@ -10,14 +10,15 @@
 static CureLog g_logObject;
 int main(int argc, char **argv)
 {
-	const char *pStrFilePath = "5.jpg";
+	const char *pStrFilePath = "images/yangliwei.jpg";
 	vector<int> vectorIntResult(5);
 	vectorContours vectorFace;
+	cv::Rect rectFace;
 	enumFaceColorType colorType = Type_Color_TouBai;
 	cv::Mat matSrc;
 	string strImageName("");
 	bool bResult = false;
-	int nPosition = -1;
+	size_t nPosition = -1;
 
 	matSrc = cv::imread(pStrFilePath);
 	if (matSrc.empty()) {
@@ -38,7 +39,7 @@ int main(int argc, char **argv)
 			cv::resize(matSrc, matSrc, cv::Size(1280, 1280 * matSrc.rows / matSrc.cols));
 		}
 	}
-	bResult = faceLandmarkDetect(strImageName, matSrc, vectorFace);
+	bResult = faceLandmarkDetect(strImageName, matSrc, vectorFace, rectFace);
 	if (!bResult) {
 		return -1;
 	}
@@ -46,7 +47,7 @@ int main(int argc, char **argv)
 	if (!bResult) {
 		return -1;
 	}
-	colorType = getFaceColorType(strImageName, matSrc, vectorFace);
+	colorType = getFaceColorType(strImageName, matSrc, rectFace);
 
 	stringstream ss;
 	ss << "{\"result\":" << bResult << ",\"spots\":{\"A\":" << vectorIntResult[0] <<  ",\"B\":" << vectorIntResult[1]
