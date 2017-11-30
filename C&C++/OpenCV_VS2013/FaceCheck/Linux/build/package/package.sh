@@ -24,7 +24,7 @@ if [ -z ${REPLY} ] || [ ${REPLY}x = "Y"x ] || [ ${REPLY}x = "y"x ]
 then
 	echo "Start to package..."
 else
-	echo "Failed!"
+	echo "Canceled!"
 	exit
 fi
 
