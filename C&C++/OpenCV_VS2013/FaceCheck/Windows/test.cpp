@@ -1,6 +1,4 @@
 
-#include "com_youle_cosmetology_jni_CureJniFaceRecognition.h"
-
 #include "faceLandmarkDetect.h"
 #include "faceSpotsDetect.h"
 #include "faceColor.h"
