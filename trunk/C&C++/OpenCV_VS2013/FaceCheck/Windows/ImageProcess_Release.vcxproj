@@ -23,7 +23,7 @@
     <ClCompile Include="faceLandmarkDetect.cpp" />
     <ClCompile Include="faceSpotsDetect.cpp" />
     <ClCompile Include="log.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="test.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="faceColor.h" />
