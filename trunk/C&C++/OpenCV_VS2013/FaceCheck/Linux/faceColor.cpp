@@ -41,7 +41,8 @@ Mat getHistogramImage(const string &strImageName, Mat &image, double *pColorValu
 	double maxValue = 0;
 	Point maxPoint;
 	minMaxLoc(hist, 0, &maxValue, 0, &maxPoint);
-	LOG(INFO) << strImageName << ": Color max point：" << maxPoint << ", max value: " << maxValue << endl;
+	LOG(INFO) << strImageName << ": Color max point：" << "(" << to_string(maxPoint.x) << ", " << to_string(maxPoint.y) << ")" 
+		<< ", max value: " << to_string(maxValue);
 	*pColorValue = maxPoint.y;
 
 #ifdef With_Debug
@@ -55,25 +56,29 @@ Mat getHistogramImage(const string &strImageName, Mat &image, double *pColorValu
 	return showImage;
 }
 
-#ifdef With_Debug
-enumFaceColorType getFaceColorType(const string &strImageName, cv::Mat &imageSrc, const vectorContours &contours)
-#else
-enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &imageSrc, const vectorContours &contours)
-#endif
+enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &imageSrc, const cv::Rect &rectFace)
 {
 	double maxColorValue = -1;
 	enumFaceColorType type = Type_Color_TouBai;
-	int faceRectIndex = 5; // 面部轮廓vector里面矩形索引
+
+	vectorContours faceContours;
+	vector<Point> vectorShape;
+	vectorShape.resize(4);
+	vectorShape[0] = Point(rectFace.x, rectFace.y);
+	vectorShape[1] = Point(rectFace.x, rectFace.y + rectFace.height);
+	vectorShape[2] = Point(rectFace.x + rectFace.width, rectFace.y + rectFace.height);
+	vectorShape[3] = Point(rectFace.x + rectFace.width, rectFace.y);
+	faceContours.push_back(vectorShape);
 
 	Mat imageFace(imageSrc.size(), CV_8UC1);
 	Mat mask(imageSrc.size(), CV_8UC1);
 	mask = 0;
 	/* 这里取的是向量数据第5索引，即整个面部的正中矩形 */
-	drawContours(mask, contours, faceRectIndex, Scalar(255), -1);
+	drawContours(mask, faceContours, 0, Scalar(255), -1);
 
 	imageSrc.copyTo(imageFace, mask);
 	/* 只取脸部代表颜色的关键区域 */
-	Mat imageColor(imageFace, Rect(contours.at(faceRectIndex).at(0), contours.at(faceRectIndex).at(2)));
+	Mat imageColor(imageFace, rectFace);
 	if (!imageColor.data) {
 		LOG(ERROR) << strImageName << ": Fail to load the image";
 		return type;
@@ -81,7 +86,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 
 	Mat imageResult = getHistogramImage(strImageName, imageColor, &maxColorValue);
 
-	const char *pStrColorString = "";
+	const char *pStrColorString = g_colorString[0];
 	if (maxColorValue >= TouBai) {
 		pStrColorString = g_colorString[0];
 		type = Type_Color_TouBai;
