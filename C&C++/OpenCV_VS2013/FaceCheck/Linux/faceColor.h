@@ -21,10 +21,6 @@ typedef enum {
 	Type_Color_YouHei = 5
 } enumFaceColorType;
 
-#ifdef With_Debug
-enumFaceColorType getFaceColorType(const string &strImageName, cv::Mat &imgSrc, const vectorContours &contours);
-#else
-enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &imgSrc, const vectorContours &contours);
-#endif
+enumFaceColorType getFaceColorType(const string &, const cv::Mat &, const cv::Rect &);
 
 #endif // __FACE_COLOR_H__
