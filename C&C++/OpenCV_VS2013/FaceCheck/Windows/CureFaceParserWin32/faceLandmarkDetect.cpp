@@ -65,7 +65,6 @@ instructions.  Note that AVX is the fastest but requires a CPU from at least
 #else
 #include <windows.h>
 #include <io.h>
-#include <sstream>
 #endif
 
 using namespace dlib;
@@ -105,7 +104,6 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 #endif
 
 	int64 tt = 0;
-	stringstream ss;
 	if (!g_bShapePredictorInited) {
 		if (_access(g_strFaceLandmarks.c_str(), 04)) {
 			LOG(ERROR) << "File is not exist: " << g_strFaceLandmarks;
@@ -129,9 +127,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 		}
 		g_bShapePredictorInited = true;
 		tt = cv::getTickCount() - tt;
-		ss.clear();
-		ss << tt * 1000 / (int64)(cv::getTickFrequency());
-		LOG(INFO) << "Init shape predictor finish, use time: " << ss.str() << "ms";
+		LOG(INFO) << "Init shape predictor finish, use time: " << to_string(tt * 1000 / (int64)cv::getTickFrequency()) << "ms";
 	}
 
 	// Make the image larger so we can detect small faces.
@@ -166,9 +162,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
     dets[0].set_bottom(rectFaces[0].y + rectFaces[0].height);
 #endif
 	tt = cv::getTickCount() - tt;
-	ss.clear();
-	ss << tt * 1000 / (int64)(cv::getTickFrequency());
-	LOG(INFO) << strImageName << ": Detect face use time: " << ss.str() << "ms";
+	LOG(INFO) << strImageName << ": Detect face use time: " << to_string(tt * 1000 / (int64)cv::getTickFrequency()) << "ms";
 	
 	if (dets.size() <= 0) {
 		ReleaseMutex(g_hMutex);
@@ -183,9 +177,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	full_object_detection shape = g_sp(cv_image<rgb_pixel>(matSrc), dets[0]);
 
 	tt = cv::getTickCount() - tt;
-	ss.clear();
-	ss << tt * 1000 / (int64)(cv::getTickFrequency());
-	LOG(INFO) << strImageName << ": Shape predictor use time: " << ss.str() << "ms";
+	LOG(INFO) << strImageName << ": Shape predictor use time: " << to_string(tt * 1000 / (int64)cv::getTickFrequency()) << "ms";
 
 	if (shape.num_parts() < 68) {
 		LOG(ERROR) << strImageName << ": Get face shape points failed, shape number parts: " << shape.num_parts();
@@ -193,6 +185,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 		return false;
 	}
 
+	tt = cv::getTickCount();
 #ifdef Use_68
 	/* 左脸 */
 	vectorShape.resize(13);
@@ -289,9 +282,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 #endif
 
 	tt = cv::getTickCount() - tt;
-	ss.clear();
-	ss << tt * 1000 / (int64)(cv::getTickFrequency());
-	LOG(INFO) << strImageName << ": Get face every parts use time: " << ss.str() << "ms";
+	LOG(INFO) << strImageName << ": Get face every parts use time: " << to_string(tt * 1000 / (int64)cv::getTickFrequency()) << "ms";
 
 #ifdef __linux
 	pthread_mutex_unlock(&g_mutex);
