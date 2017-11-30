@@ -12,4 +12,3 @@ public:
 };
 
 #endif // __CURE_LOG__H
-
