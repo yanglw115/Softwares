@@ -53,7 +53,7 @@ java: $(GENERATE_LIBRARY)
 	java -classpath $(DirJniClasses) $(NameJniEntry)
 
 test: $(GENERATE_LIBRARY)
-	$(CC) -o $(DirCompile)/$(TEST_MAIN_EXE) test.c $(CFLAGS) $(LIBS) -L./$(DirCompile) -lCureFaceRecognition
+	$(CC) -o $(DirCompile)/$(TEST_MAIN_EXE) test.cxx $(CFLAGS) $(LIBS) -L./$(DirCompile) -lCureFaceRecognition
 
 # 打包文件(调用相关脚本)
 pack:
