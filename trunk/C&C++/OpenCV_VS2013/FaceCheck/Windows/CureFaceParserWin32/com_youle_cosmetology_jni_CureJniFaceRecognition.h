@@ -11,6 +11,7 @@ extern "C" {
  * Class:     com_youle_cosmetology_jni_CureJniFaceRecognition
  * Method:    recogni
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ * !!!!!!!!!!!!!!!!!!!!!!!!Format: Java_ClassName_MethodName
  */
 JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_recogni
   (JNIEnv *, jobject, jstring);
