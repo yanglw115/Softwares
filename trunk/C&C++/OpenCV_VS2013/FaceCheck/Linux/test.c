@@ -2,8 +2,6 @@
 #include "faceLandmarkDetect.h"
 #include "faceSpotsDetect.h"
 #include "faceColor.h"
-//#include "faceGrabcut.h"
-//#include "faceDetect.h"
 #include "faceGlobal.h"
 
 #include <string>
