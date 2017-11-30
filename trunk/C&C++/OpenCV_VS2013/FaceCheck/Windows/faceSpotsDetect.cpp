@@ -56,9 +56,9 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
 	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-	LOG(INFO) << strImageName << ": Detected contours counts：" << vectorSpots.size();
+	LOG(INFO) << strImageName << ": Detected contours counts：" << to_string(vectorSpots.size());
 	for (size_t i = 0; i < vectorSpots.size(); ++i)	{
-	    LOG(INFO) << strImageName << ": Contour area size: " << contourArea(vectorSpots[i]) << endl;
+	    LOG(INFO) << strImageName << ": Contour area size: " << to_string(contourArea(vectorSpots[i]));
 		/* 这里的值也需要调试 */
 		if (contourArea(vectorSpots[i]) > 0 && contourArea(vectorSpots[i]) < 150)	{
 #if 0

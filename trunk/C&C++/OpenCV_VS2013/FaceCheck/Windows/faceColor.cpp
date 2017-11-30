@@ -41,7 +41,8 @@ Mat getHistogramImage(const string &strImageName, Mat &image, double *pColorValu
 	double maxValue = 0;
 	Point maxPoint;
 	minMaxLoc(hist, 0, &maxValue, 0, &maxPoint);
-	LOG(INFO) << strImageName << ": Color max point：" << maxPoint << ", max value: " << maxValue << endl;
+	LOG(INFO) << strImageName << ": Color max point：" << "(" << to_string(maxPoint.x) << ", " << to_string(maxPoint.y) << ")" 
+		<< ", max value: " << to_string(maxValue);
 	*pColorValue = maxPoint.y;
 
 #ifdef With_Debug
