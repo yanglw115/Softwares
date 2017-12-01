@@ -15,39 +15,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="faceColor.cpp">
+    <ClCompile Include="..\..\..\com_youle_cosmetology_jni_CureJniFaceRecognition.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="faceLandmarkDetect.cpp">
+    <ClCompile Include="..\..\..\faceColor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="faceSpotsDetect.cpp">
+    <ClCompile Include="..\..\..\faceLandmarkDetect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="com_youle_cosmetology_jni_CureJniFaceRecognition.cpp">
+    <ClCompile Include="..\..\..\faceSpotsDetect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="log.cpp">
+    <ClCompile Include="..\..\..\log.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="faceColor.h">
+    <ClInclude Include="..\..\..\com_youle_cosmetology_jni_CureJniFaceRecognition.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="faceGlobal.h">
+    <ClInclude Include="..\..\..\faceColor.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="faceLandmarkDetect.h">
+    <ClInclude Include="..\..\..\faceGlobal.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="faceSpotsDetect.h">
+    <ClInclude Include="..\..\..\faceLandmarkDetect.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="com_youle_cosmetology_jni_CureJniFaceRecognition.h">
+    <ClInclude Include="..\..\..\faceSpotsDetect.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="log.h">
+    <ClInclude Include="..\..\..\log.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
