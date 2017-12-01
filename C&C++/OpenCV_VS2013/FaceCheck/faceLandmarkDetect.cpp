@@ -236,10 +236,10 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 
 	/* 上额 */
 	vectorShape.resize(4);
-	vectorShape[0] = cv::Point(shape.part(17).x(), shape.part(19).y() - 200);
+	vectorShape[0] = cv::Point(shape.part(18).x(), shape.part(19).y() - 120);
 	vectorShape[1] = cv::Point(shape.part(17).x(), shape.part(19).y() - 20);
 	vectorShape[2] = cv::Point(shape.part(25).x(), shape.part(19).y() - 20);
-	vectorShape[3] = cv::Point(shape.part(25).x(), shape.part(19).y() - 200);
+	vectorShape[3] = cv::Point(shape.part(24).x(), shape.part(19).y() - 120);
 	faceContours.push_back(vectorShape);
 
 	/* 下额 */
