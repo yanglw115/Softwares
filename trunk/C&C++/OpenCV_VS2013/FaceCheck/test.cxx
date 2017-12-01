@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 #ifdef __linux
 	const char *pStrFilePath = "images/yangliwei.jpg";
 #else
-	const char *pStrFilePath = "images/2.jpg";
+	const char *pStrFilePath = "../../../images/2.jpg";
 #endif
 	vector<int> vectorIntResult(5);
 	vectorContours vectorFace;
