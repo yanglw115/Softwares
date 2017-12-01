@@ -70,7 +70,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 	vectorShape[3] = Point(rectFace.x + rectFace.width, rectFace.y);
 	faceContours.push_back(vectorShape);
 
-	Mat imageFace(imageSrc.size(), CV_8UC1);
+	Mat imageFace(imageSrc.size(), CV_8UC3);
 	Mat mask(imageSrc.size(), CV_8UC1);
 	mask = 0;
 	/* 这里取的是向量数据第5索引，即整个面部的正中矩形 */
@@ -84,7 +84,17 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 		return type;
 	}
 
-	Mat imageResult = getHistogramImage(strImageName, imageColor, &maxColorValue);
+#ifdef Use_ITA
+	Mat imageTemp(imageColor.size(), CV_8UC3);
+	cvtColor(imageColor, imageTemp, COLOR_BGR2Lab);
+	Scalar labScalar =  mean(imageTemp);
+	double L = labScalar[0] * 100 / 255;
+	double B = labScalar[2] - 128;
+	maxColorValue = atan((L - 50) / B) * 180 / PI;
+	cout << "ITA: " << maxColorValue;
+#else
+   	Mat imageResult = getHistogramImage(strImageName, imageColor, &maxColorValue);
+#endif // Use_ITA
 
 	const char *pStrColorString = g_colorString[0];
 	if (maxColorValue >= TouBai) {
@@ -113,9 +123,12 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 	imshow("image original:", imageSrc);
 	namedWindow("image face pre:", WINDOW_NORMAL);
 	imshow("image face pre:", imageColor);
+#ifndef Use_ITA
 	namedWindow("showImage", WINDOW_NORMAL);
 	imshow("showImage", imageResult);
+#endif // Use_ITA
 	waitKey(0);
 #endif // With_Debug
+
 	return type;
 }
