@@ -3,6 +3,20 @@
 
 #include "faceGlobal.h"
 
+#define PI 3.14
+#define Use_ITA
+
+#ifdef Use_ITA
+typedef enum {
+	TouBai = 55, // 色图测出来是78,
+	BaiXi = 41, // 色图测出来是72,
+	ZiRan = 28, // 色图测出来是57,
+	XiaoMai = 10, // 色图测出来是48,
+	AnChen = -30, // 色图测出来是3,
+	YouHei = -30, // 色图测出来是-57
+} enumFaceColorValue;
+
+#else
 typedef enum {
 	TouBai = 234,
 	BaiXi = 220,
@@ -11,6 +25,8 @@ typedef enum {
 	AnChen = 122,
 	YouHei = 81
 } enumFaceColorValue;
+
+#endif // Use_ITA
 
 typedef enum {
 	Type_Color_TouBai = 0,
