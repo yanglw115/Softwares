@@ -28,7 +28,7 @@ public class test implements Runnable {
 			}
 		}
 		for (int i = 0; i < 1; ++i) {
-			String strImage = "5.jpg";
+			String strImage = "src/5.jpg";
 			test t = new test(strImage);
 			//Thread t1 = new Thread(t);
 			//t1.start();
