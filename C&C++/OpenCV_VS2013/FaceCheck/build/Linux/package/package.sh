@@ -9,12 +9,12 @@ NameStdcpp=libstdc++.so.6.0.24
 NameJNILib=libCureFaceRecognition.so
 NameInstallShell=install.sh
 NameInstallBin=FaceParserInstall
-NameCompile=compile
+NameProject=project
 
 DirLibs=${PWD}/../libs
 DirLibStdcpp=${PWD}/../${NameStdcpp}
-DirLibJNILib=${PWD}/../../${NameCompile}/${NameJNILib}
-DirData=${PWD}/../data
+DirLibJNILib=${PWD}/../${NameProject}/${NameJNILib}
+DirData=${PWD}/../../data
 
 echo -e "\n"
 # 提示判断opencv和dlib库是否都已经准备好并放在预定目录
