@@ -11,9 +11,8 @@
 #define SIZE_TYPE_T int
 #else
 #define SIZE_TYPE_T size_t
-#endif
-
 static CureLog g_logObject;
+#endif
 
 int main(int argc, char **argv)
 {
