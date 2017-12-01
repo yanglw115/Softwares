@@ -19,18 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="faceColor.cpp" />
-    <ClCompile Include="faceLandmarkDetect.cpp" />
-    <ClCompile Include="faceSpotsDetect.cpp" />
-    <ClCompile Include="log.cpp" />
-    <ClCompile Include="test.cxx" />
+    <ClCompile Include="..\..\..\faceColor.cpp" />
+    <ClCompile Include="..\..\..\faceLandmarkDetect.cpp" />
+    <ClCompile Include="..\..\..\faceSpotsDetect.cpp" />
+    <ClCompile Include="..\..\..\log.cpp" />
+    <ClCompile Include="..\..\..\test.cxx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="faceColor.h" />
-    <ClInclude Include="faceLandmarkDetect.h" />
-    <ClInclude Include="faceSpotsDetect.h" />
-    <ClInclude Include="faceGlobal.h" />
-    <ClInclude Include="log.h" />
+    <ClInclude Include="..\..\..\faceColor.h" />
+    <ClInclude Include="..\..\..\faceGlobal.h" />
+    <ClInclude Include="..\..\..\faceLandmarkDetect.h" />
+    <ClInclude Include="..\..\..\faceSpotsDetect.h" />
+    <ClInclude Include="..\..\..\log.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0E6FFA73-5F33-4FF5-A8CE-0B8038C53B93}</ProjectGuid>
@@ -102,11 +102,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)build\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\..\libs64\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_calib3d331d.lib;opencv_core331d.lib;opencv_dnn331d.lib;opencv_features2d331d.lib;opencv_flann331d.lib;opencv_highgui331d.lib;opencv_imgcodecs331d.lib;opencv_imgproc331d.lib;opencv_ml331d.lib;opencv_objdetect331d.lib;opencv_shape331d.lib;opencv_stitching331d.lib;opencv_superres331d.lib;opencv_ts331d.lib;opencv_video331d.lib;opencv_videoio331d.lib;opencv_videostab331d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -138,7 +138,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\build\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);With_Debug</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libglog.lib;dlib.lib;opencv_core331.lib;opencv_imgcodecs331.lib;opencv_highgui331.lib;opencv_imgproc331.lib;opencv_objdetect331.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)\build\libs64\release;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\..\libs64\release;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
