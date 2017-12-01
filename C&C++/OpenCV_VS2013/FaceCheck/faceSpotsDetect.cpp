@@ -97,6 +97,8 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 	return pimplesCount;
 }
 
+#define INDEX_FOREHEAD 2
+
 bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
 {
 	int pimples = -1;
@@ -118,5 +120,9 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 		vectorIntResult[i] = pimples;
 	}
 
+	/* 这里暂时对额头的脏数据进行简单处理 */
+	if (vectorIntResult[INDEX_FOREHEAD] > 5) {
+		vectorIntResult[INDEX_FOREHEAD] = 0;
+	}
 	return true;
 }
