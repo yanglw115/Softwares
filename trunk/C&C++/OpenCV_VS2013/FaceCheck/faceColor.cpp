@@ -91,7 +91,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 	double L = labScalar[0] * 100 / 255;
 	double B = labScalar[2] - 128;
 	maxColorValue = atan((L - 50) / B) * 180 / PI;
-	cout << "ITA: " << maxColorValue;
+	LOG(INFO) << strImageName << ": ITA: " << to_string(maxColorValue);
 #else
    	Mat imageResult = getHistogramImage(strImageName, imageColor, &maxColorValue);
 #endif // Use_ITA
@@ -117,6 +117,12 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 		type = Type_Color_YouHei;
 	}
 
+#if 0
+	Mat matOutput;
+	imageSrc.copyTo(matOutput);
+	putText(matOutput, format("%s:%4f", pStrColorString, maxColorValue), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
+	imwrite("../../../images/pics/bak_" + strImageName, matOutput);
+#endif
 #ifdef With_Debug
 	namedWindow("image original:", WINDOW_NORMAL);
 	putText(imageSrc, format("%s", pStrColorString), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
