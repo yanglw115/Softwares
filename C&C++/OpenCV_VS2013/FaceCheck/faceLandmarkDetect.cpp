@@ -201,63 +201,58 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	tt = cv::getTickCount();
 
 	/* 左脸(本人自己角度，非观察者角度) */
-	vectorShape.resize(13);
-	vectorShape[0] = cv::Point(shape.part(45).x() - 20, shape.part(45).y() + 40);
-	vectorShape[1] = cv::Point(shape.part(46).x(), shape.part(46).y() + 20);
-	vectorShape[2] = cv::Point(shape.part(47).x(), shape.part(47).y() + 20);
-	vectorShape[3] = cv::Point(shape.part(42).x(), shape.part(42).y() + 20);
-	vectorShape[4] = cv::Point((shape.part(42).x() + shape.part(47).x()) / 2, shape.part(15).y());
-	vectorShape[5] = cv::Point(shape.part(47).x() - 20, shape.part(14).y());
-	vectorShape[6] = cv::Point(shape.part(11).x() - 40, shape.part(12).y());
-	vectorShape[7] = cv::Point(shape.part(11).x() - 20, shape.part(11).y());
-	vectorShape[8] = cv::Point(shape.part(12).x() - 20, shape.part(12).y());
-	vectorShape[9] = cv::Point(shape.part(13).x() - 20, shape.part(13).y());
-	vectorShape[10] = cv::Point(shape.part(14).x() - 20, shape.part(14).y());
-	vectorShape[11] = cv::Point(shape.part(15).x() - 20, shape.part(15).y());
-	vectorShape[12] = cv::Point(shape.part(16).x() - 20, shape.part(16).y());
+	vectorShape.push_back(cv::Point(shape.part(46).x(), shape.part(46).y() + 20));
+	vectorShape.push_back(cv::Point(shape.part(42).x(), shape.part(46).y() + 20));
+	//vectorShape.push_back(cv::Point((shape.part(42).x() + shape.part(47).x()) / 2, shape.part(15).y()));
+	//vectorShape.push_back(cv::Point(shape.part(47).x() - 20, shape.part(14).y()));
+	vectorShape.push_back(cv::Point(shape.part(11).x() - 30, shape.part(12).y()));
+	vectorShape.push_back(cv::Point(shape.part(11).x() - 10, shape.part(11).y()));
+	vectorShape.push_back(cv::Point(shape.part(12).x() - 10, shape.part(12).y()));
+	vectorShape.push_back(cv::Point(shape.part(13).x() - 10, shape.part(13).y()));
+	vectorShape.push_back(cv::Point(shape.part(14).x() - 10, shape.part(14).y()));
+	vectorShape.push_back(cv::Point(shape.part(15).x() - 10, shape.part(15).y()));
+	vectorShape.push_back(cv::Point(shape.part(16).x() - 10, shape.part(16).y()));
 	faceContours.push_back(vectorShape);
 
 	/* 右脸 */
-	vectorShape.resize(13);
-	vectorShape[0] = cv::Point(shape.part(36).x() - 20, shape.part(36).y() + 40);
-	vectorShape[1] = cv::Point(shape.part(41).x(), shape.part(41).y() + 20);
-	vectorShape[2] = cv::Point(shape.part(40).x(), shape.part(40).y() + 20);
-	vectorShape[3] = cv::Point(shape.part(39).x(), shape.part(39).y() + 20);
-	vectorShape[4] = cv::Point((shape.part(39).x() + shape.part(40).x()) / 2, shape.part(1).y());
-	vectorShape[5] = cv::Point(shape.part(40).x(), shape.part(2).y());
-	vectorShape[6] = cv::Point(shape.part(41).x(), shape.part(4).y());
-	vectorShape[7] = cv::Point(shape.part(5).x() + 20, shape.part(5).y());
-	vectorShape[8] = cv::Point(shape.part(4).x() + 20, shape.part(4).y());
-	vectorShape[9] = cv::Point(shape.part(3).x() + 20, shape.part(3).y());
-	vectorShape[10] = cv::Point(shape.part(2).x() + 20, shape.part(2).y());
-	vectorShape[11] = cv::Point(shape.part(1).x() + 20, shape.part(1).y());
-	vectorShape[12] = cv::Point(shape.part(0).x() + 20, shape.part(0).y());
+	vectorShape.clear();
+	vectorShape.push_back(cv::Point(shape.part(41).x(), shape.part(41).y() + 20));
+	vectorShape.push_back(cv::Point(shape.part(39).x(), shape.part(41).y() + 20));
+	vectorShape.push_back(cv::Point((shape.part(39).x() + shape.part(40).x()) / 2, (shape.part(2).y() + shape.part(1).y()) / 2));
+	vectorShape.push_back(cv::Point(shape.part(40).x(), shape.part(2).y()));
+	vectorShape.push_back(cv::Point(shape.part(41).x() > (shape.part(5).x() + 10)? shape.part(41).x(): (shape.part(5).x() + 10), shape.part(4).y()));
+	vectorShape.push_back(cv::Point(shape.part(5).x() + 10, shape.part(5).y()));
+	vectorShape.push_back(cv::Point(shape.part(4).x() + 10, shape.part(4).y()));
+	vectorShape.push_back(cv::Point(shape.part(3).x() + 10, shape.part(3).y()));
+	vectorShape.push_back(cv::Point(shape.part(2).x() + 10, shape.part(2).y()));
+	vectorShape.push_back(cv::Point(shape.part(1).x() + 10, shape.part(1).y()));
+	vectorShape.push_back(cv::Point(shape.part(0).x() + 10, shape.part(0).y()));
 	faceContours.push_back(vectorShape);
 
 	/* 上额 */
-	vectorShape.resize(4);
-	vectorShape[0] = cv::Point(shape.part(18).x(), shape.part(19).y() - 120);
-	vectorShape[1] = cv::Point(shape.part(17).x(), shape.part(19).y() - 20);
-	vectorShape[2] = cv::Point(shape.part(25).x(), shape.part(19).y() - 20);
-	vectorShape[3] = cv::Point(shape.part(24).x(), shape.part(19).y() - 120);
+	vectorShape.clear();
+	vectorShape.push_back(cv::Point(shape.part(18).x(), shape.part(19).y() - 120));
+	vectorShape.push_back(cv::Point(shape.part(17).x(), shape.part(19).y() - 20));
+	vectorShape.push_back(cv::Point(shape.part(25).x(), shape.part(19).y() - 20));
+	vectorShape.push_back(cv::Point(shape.part(24).x(), shape.part(19).y() - 120));
 	faceContours.push_back(vectorShape);
 
 	/* 下额 */
-	vectorShape.resize(7);
-	vectorShape[0] = cv::Point(shape.part(5).x(), shape.part(5).y());
-	vectorShape[1] = cv::Point(shape.part(6).x(), shape.part(6).y());
-	vectorShape[2] = cv::Point(shape.part(7).x(), shape.part(7).y());
-	vectorShape[3] = cv::Point(shape.part(8).x(), shape.part(8).y());
-	vectorShape[4] = cv::Point(shape.part(9).x(), shape.part(9).y());
-	vectorShape[5] = cv::Point(shape.part(10).x(), shape.part(10).y());
-	vectorShape[6] = cv::Point(shape.part(11).x(), shape.part(11).y());
+	vectorShape.clear();
+	vectorShape.push_back(cv::Point(shape.part(5).x(), shape.part(5).y()));
+	vectorShape.push_back(cv::Point(shape.part(6).x(), shape.part(6).y()));
+	vectorShape.push_back(cv::Point(shape.part(7).x(), shape.part(7).y()));
+	vectorShape.push_back(cv::Point(shape.part(8).x(), shape.part(8).y()));
+	vectorShape.push_back(cv::Point(shape.part(9).x(), shape.part(9).y()));
+	vectorShape.push_back(cv::Point(shape.part(10).x(), shape.part(10).y()));
+	vectorShape.push_back(cv::Point(shape.part(11).x(), shape.part(11).y()));
 	faceContours.push_back(vectorShape);
 
 	/* 鼻子 */
-	vectorShape.resize(3);
-	vectorShape[0] = cv::Point(shape.part(27).x(), shape.part(27).y());
-	vectorShape[1] = cv::Point(shape.part(31).x(), shape.part(30).y());
-	vectorShape[2] = cv::Point(shape.part(35).x(), shape.part(30).y());
+	vectorShape.clear();
+	vectorShape.push_back(cv::Point(shape.part(27).x(), shape.part(27).y()));
+	vectorShape.push_back(cv::Point(shape.part(31).x(), shape.part(30).y()));
+	vectorShape.push_back(cv::Point(shape.part(35).x(), shape.part(30).y()));
 	faceContours.push_back(vectorShape);
 
 	/* 整个人脸正中部分，用于取面部肤色(同下面类似，只是这个取的比较全面；虽然有鼻子等数据，但是最终用的是统计图最大值部分) */
