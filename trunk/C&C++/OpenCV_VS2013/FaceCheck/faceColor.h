@@ -9,8 +9,8 @@
 #ifdef Use_ITA
 typedef enum {
 	TouBai = 55, // 色图测出来是78,
-	BaiXi = 41, // 色图测出来是72,
-	ZiRan = 28, // 色图测出来是57,
+	BaiXi = 45, // 色图测出来是72,
+	ZiRan = 25, // 色图测出来是57,
 	XiaoMai = 10, // 色图测出来是48,
 	AnChen = -30, // 色图测出来是3,
 	YouHei = -30, // 色图测出来是-57
