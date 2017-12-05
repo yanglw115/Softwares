@@ -47,7 +47,8 @@ JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_
 		strImageName = strImageName.substr(nPosition + 1);
 	}
 	
-	if (matSrc.rows > 1280 || matSrc.cols > 1280) {
+	/* 不管图片尺寸，全部转换为以1280为基准的图像进行处理 */
+	if (1) {//(matSrc.rows > 1280 || matSrc.cols > 1280) {
 		if (matSrc.rows > matSrc.cols) {
 			cv::resize(matSrc, matSrc, cv::Size(1280 * matSrc.cols / matSrc.rows, 1280));
 		} else {

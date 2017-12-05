@@ -55,12 +55,14 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
 	//LOG(INFO) << strImageName << ": Detected contours counts：" << to_string(vectorSpots.size());
+	double areaSize = 0.0;
 	for (size_t i = 0; i < vectorSpots.size(); ++i)	{
-	    //LOG(INFO) << strImageName << ": Contour area size: " << to_string(contourArea(vectorSpots[i]));
+	    //LOG(INFO) << strImageName << ": Contour area size: " << to_string(fabs(contourArea(vectorSpots[i])));
 		/* 这里的值也需要调试 */
-		if (contourArea(vectorSpots[i]) > 0 && contourArea(vectorSpots[i]) < 150)	{
+		areaSize = fabs(contourArea(vectorSpots[i]));
+		if (areaSize > 25 && areaSize < 150)	{
+			Rect minRect = boundingRect(Mat(vectorSpots[i]));
 #if 0
-			Rect minRect = boundingRect(Mat(contours[i]));
 			Mat imgroi(imgMask, minRect);
 
 			cvtColor(imgroi, imgroi, COLOR_BGR2HSV);
@@ -69,20 +71,23 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 			/* 这里还根据颜色值进行了一次过滤 */
 			if (color[0] < 10 & color[1] > 70 & color[2] > 50) {
 #else
-			if (1) {
+			float ratio = minRect.width * 1.0 / minRect.height;
+			if ((ratio < 2.5) && (ratio > 0.3)) {
 #endif
+#ifdef With_Debug
 				Point2f center;
 				float radius = 0;
 				minEnclosingCircle(Mat(vectorSpots[i]), center, radius);
 
-				/* 这里的值需要最终调试 */
-				if (radius > 2 && radius < 50)	{
-#ifdef With_Debug
-					//rectangle(matDebug, minRect, Scalar(0, 255, 0));
-					circle(matDebug, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
-#endif // With_Debug
-					pimplesCount++;
+				/* 这里的值或许需要调试 */
+				if (1) {//(radius > 2 && radius < 50) {
+					string strSize = to_string(areaSize);
+					putText(matDebug, format("%s", strSize.substr(0, 3).c_str()), cv::Point2f(center.x, center.y - 10), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
+					rectangle(matDebug, minRect, Scalar(0, 255, 0));
+					//circle(matDebug, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
 				}
+#endif // With_Debug		
+				pimplesCount++;
 			}
 		}
 	}
@@ -98,6 +103,7 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 }
 
 #define INDEX_FOREHEAD 2
+#define INDEX_JAW 3
 
 bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
 {
@@ -120,9 +126,12 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 		vectorIntResult[i] = pimples;
 	}
 
-	/* 这里暂时对额头的脏数据进行简单处理 */
-	if (vectorIntResult[INDEX_FOREHEAD] > 5) {
+	/* 这里暂时对额头和下巴的脏数据进行简单处理 */
+	if (vectorIntResult[INDEX_FOREHEAD] > 3) {
 		vectorIntResult[INDEX_FOREHEAD] = 0;
+	}
+	if (vectorIntResult[INDEX_JAW] > 3) {
+		vectorIntResult[INDEX_JAW] = 0;
 	}
 	return true;
 }
