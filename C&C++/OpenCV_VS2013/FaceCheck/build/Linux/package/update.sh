@@ -40,11 +40,10 @@ cp -f ${NameJNILib} ${DirInstallLibs}
 
 # 删除无用的文件
 rm -rf ${DirInstall}/${NamePackageUpdate}
+rm -rf ${NameJNILib}
 
-echo -e "\nCongratulations! Install face parser success!\n\n"
+echo -e "\nCongratulations! Update face parser success!\n\n"
 
 exit 0
 #注意下面一行必须有且只能有一个换行符号
 ###End###
-
-
