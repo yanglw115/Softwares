@@ -37,7 +37,7 @@ tar czvf ${NamePackage} ${DirLibs} ${DirLibStdcpp} ${DirData}
 
 # 将安装脚本和安装包cat到一起，生成.bin安装文件
 cat ${NameInstallShell} ${NamePackage} > ${NameInstallBin}
-chmod a+x ${NameInstallBin}
+chmod u+x ${NameInstallBin}
 mv ${NameInstallBin} ${NameInstallBin}.$(date "+%Y%m%d_%H.%M.%S").bin
 
 rm -rf ${NamePackage}
