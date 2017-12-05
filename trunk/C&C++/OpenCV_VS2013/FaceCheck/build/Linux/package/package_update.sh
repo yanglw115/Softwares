@@ -18,7 +18,9 @@ rm -rf ${PWD}/${NamePackageUpdate}
 rm -rf ${PWD}/${NameUpdateBin}*
 
 # 创建压缩包，压缩打包除安装脚本以外的所有文件
-tar czvf ${NamePackageUpdate} ${DirLibJNILib}
+cp ${DirLibJNILib} ${PWD}
+tar czvf ${NamePackageUpdate} ${NameJNILib}
+rm -rf ${NameJNILib}
 
 # 将安装脚本和安装包cat到一起，生成.bin安装文件
 cat ${NameUpdateShell} ${NamePackageUpdate} > ${NameUpdateBin}

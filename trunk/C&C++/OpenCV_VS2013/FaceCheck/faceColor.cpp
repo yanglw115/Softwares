@@ -96,24 +96,17 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
    	Mat imageResult = getHistogramImage(strImageName, imageColor, &maxColorValue);
 #endif // Use_ITA
 
-	const char *pStrColorString = g_colorString[0];
 	if (maxColorValue >= TouBai) {
-		pStrColorString = g_colorString[0];
 		type = Type_Color_TouBai;
 	} else if (maxColorValue >= BaiXi) {
-		pStrColorString = g_colorString[1];
 		type = Type_Color_BaiXi;
 	} else if (maxColorValue >= ZiRan) {
-		pStrColorString = g_colorString[2];
 		type = Type_Color_ZiRan;
 	} else if (maxColorValue >= XiaoMai) {
-		pStrColorString = g_colorString[3];
 		type = Type_Color_XiaoMai;
 	} else if (maxColorValue >= AnChen) {
-		pStrColorString = g_colorString[4];
 		type = Type_Color_AnChen;
 	} else {
-		pStrColorString = g_colorString[5];
 		type = Type_Color_YouHei;
 	}
 
@@ -124,6 +117,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 	imwrite("../../../images/pics/bak_" + strImageName, matOutput);
 #endif
 #ifdef With_Debug
+	const char *pStrColorString = g_colorString[type];
 	namedWindow("image original:", WINDOW_NORMAL);
 	putText(imageSrc, format("%s", pStrColorString), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
 	imshow("image original:", imageSrc);

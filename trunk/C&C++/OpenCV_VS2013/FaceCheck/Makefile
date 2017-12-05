@@ -19,6 +19,9 @@ DirPackage = build/Linux/package
 NamePackageShell = package.sh
 NameInstaller = FaceParserInstall
 
+NamePackageUpdateShell = package_update.sh
+NameUpdateBin = FaceParserUpdate
+
 # 为了测试opencv库和dlib库的链接而对写的测试.c文件进行编译链接
 TEST_MAIN_EXE = test.exe
 
@@ -61,6 +64,12 @@ pack:
 
 # 安装到本机(调用相关脚本)
 install:
-	cd $(DirPackage) && find ./ -name "*.bin" -exec sudo {} \;
+	cd $(DirPackage) && find ./ -name $(NameInstaller)"*.bin" -exec sudo {} \;
+
+pack_update:
+	cd $(DirPackage) && bash $(NamePackageUpdateShell)
+	
+update:
+	cd $(DirPackage) && find ./ -name $(NameUpdateBin)"*.bin" -exec sudo {} \;
 
 
