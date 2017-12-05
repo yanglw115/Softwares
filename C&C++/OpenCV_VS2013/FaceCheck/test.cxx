@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 			strImageName = strImageName.substr(nPosition + 1);
 		}
 
-		if (matSrc.rows > 1280 || matSrc.cols > 1280) {
+		if (1) {//(matSrc.rows > 1280 || matSrc.cols > 1280) {
 			if (matSrc.rows > matSrc.cols) {
 				cv::resize(matSrc, matSrc, cv::Size(1280 * matSrc.cols / matSrc.rows, 1280));
 			}
