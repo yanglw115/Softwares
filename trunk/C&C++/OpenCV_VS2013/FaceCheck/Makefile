@@ -68,7 +68,7 @@ test: $(GENERATE_LIBRARY)
 	ln -sv $(DirProject)/$(TEST_MAIN_EXE) $(TEST_MAIN_EXE)
 
 # 打包文件(调用相关脚本)
-pack:
+pack: $(GENERATE_LIBRARY)
 	cd $(DirPackage) && bash $(NamePackageShell)
 
 # 安装到本机(调用相关脚本)
