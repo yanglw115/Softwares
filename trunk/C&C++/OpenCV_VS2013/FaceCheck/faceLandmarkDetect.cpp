@@ -159,7 +159,7 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 
 	int indexRect = 0;
 	cv::Rect rectMax;
-	for (int i = 0; i < rectFaces.size(); ++i) {
+	for (uint i = 0; i < rectFaces.size(); ++i) {
 		if ((rectMax.width * rectMax.height) < (rectFaces[i].width * rectFaces[i].height)) {
 			indexRect = i;
 			rectMax = rectFaces[i];

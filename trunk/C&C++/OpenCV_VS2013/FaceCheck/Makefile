@@ -1,6 +1,7 @@
 
 # 最终生成的动态名称
 GENERATE_LIBRARY = libCureFaceRecognition.so
+VERSION_FILE = version.h
 
 # jpeg和png图片的支持，由dlib依赖
 DEFINES = -DDLIB_JPEG_SUPPORT -DDLIB_PNG_SUPPORT
@@ -37,17 +38,23 @@ OBJS = $(patsubst %.cpp, $(DirProject)/%.o, $(wildcard *.cpp))
 
 CC = /usr/local/gcc-7.2.0/bin/g++
 # CC = g++
+VERSION=$(shell svn info | grep "Last Changed Rev" | cut -f2 -d ":")
 
 # 生成动态库，并且生成到compile目录当中
-$(GENERATE_LIBRARY): $(OBJS) 
+$(GENERATE_LIBRARY): $(VERSION_FILE) $(OBJS) 
 	$(CC) -shared $(CFLAGS) $(OBJS) $(LIBS) -o $(DirProject)/$(GENERATE_LIBRARY)
 
- $(DirProject)/%.o: %.cpp
+$(VERSION_FILE):
+	echo "static const int nVersion = $(VERSION);" > $(VERSION_FILE)
+
+$(DirProject)/%.o: %.cpp
 	$(CC) -fPIC $(CFLAGS) -c $*.cpp -o $@
 
 clean:
 	rm -rf $(DirProject)/*
 	rm -rf $(DirJniClasses)/*
+	rm -rf $(VERSION_FILE)
+	rm -rf $(TEST_MAIN_EXE)
 
 # java在编译时需要同时编译入口java与依赖java文件，即下面的*.java
 # java运行的时候需要指定-classpath，到哪个路径下去找依赖的class
@@ -57,6 +64,8 @@ java: $(GENERATE_LIBRARY)
 
 test: $(GENERATE_LIBRARY)
 	$(CC) -o $(DirProject)/$(TEST_MAIN_EXE) test.cxx $(CFLAGS) $(LIBS) -L./$(DirProject) -lCureFaceRecognition
+	rm -rf $(TEST_MAIN_EXE)
+	ln -sv $(DirProject)/$(TEST_MAIN_EXE) $(TEST_MAIN_EXE)
 
 # 打包文件(调用相关脚本)
 pack:
