@@ -1,6 +1,7 @@
 
 
 #include "log.h"
+#include "version.h"
 #include <string>
 
 using namespace std;
@@ -28,7 +29,7 @@ CureLog::CureLog()
     google::SetLogFilenameExtension("");
     google::SetLogAppName("iFace");
 
-	LOG(INFO) << "###Log system start...";
+	LOG(INFO) << "###Log system start, library version: " << nVersion;
 }
 
 
