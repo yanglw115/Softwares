@@ -149,18 +149,29 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	cv::Mat imgGray;
 	cv::cvtColor(matSrc, imgGray, cv::COLOR_BGR2GRAY);
 	cv::equalizeHist(imgGray, imgGray);
-	g_cascade.detectMultiScale(imgGray, rectFaces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
+	g_cascade.detectMultiScale(imgGray, rectFaces, 1.1, 2, 0 | cv::CASCADE_FIND_BIGGEST_OBJECT, cv::Size(50, 50));
+
 	if (rectFaces.size() <= 0) {
 		LOG(ERROR) << strImageName << ": Cannot detect face from image.";
 		PTHREAD_MUTEX_UNLOCK();
 		return false;
 	}
-	
-    dets[0].set_left(rectFaces[0].x);
-    dets[0].set_top(rectFaces[0].y);
-    dets[0].set_right(rectFaces[0].x + rectFaces[0].width);
-    dets[0].set_bottom(rectFaces[0].y + rectFaces[0].height);
-#endif
+
+	int indexRect = 0;
+	cv::Rect rectMax;
+	for (int i = 0; i < rectFaces.size(); ++i) {
+		if ((rectMax.width * rectMax.height) < (rectFaces[i].width * rectFaces[i].height)) {
+			indexRect = i;
+			rectMax = rectFaces[i];
+		}
+	}
+	LOG(INFO) << strImageName << ": Max face rect: " << "(" << to_string(rectFaces[indexRect].width) << ", " << to_string(rectFaces[indexRect].height) << ")";
+
+    dets[0].set_left(rectFaces[indexRect].x);
+    dets[0].set_top(rectFaces[indexRect].y);
+    dets[0].set_right(rectFaces[indexRect].x + rectFaces[0].width);
+    dets[0].set_bottom(rectFaces[indexRect].y + rectFaces[0].height);
+#endif // Use_Dlib_Detector
 	tt = cv::getTickCount() - tt;
 	LOG(INFO) << strImageName << ": Detect face use time: " << to_string(tt * 1000 / (INT64_T)cv::getTickFrequency()) << "ms";
 	
