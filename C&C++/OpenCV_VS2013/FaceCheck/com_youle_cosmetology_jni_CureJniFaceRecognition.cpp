@@ -40,7 +40,7 @@ JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_
 		LOG(ERROR) << "Input image file path is invalid: " << pStrFilePath;
 		goto End;
 	}
-	LOG(INFO) << "Get valid image file path: " << pStrFilePath;
+	LOG(INFO) << "Get valid image file path: " << pStrFilePath << "(" << matSrc.cols << ", " << matSrc.rows << ")";
 	strImageName = string(pStrFilePath);
 	nPosition = strImageName.rfind("/");
 	if (-1 != nPosition) {
