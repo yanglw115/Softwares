@@ -36,7 +36,7 @@ CureLog::CureLog()
 #ifdef __linux
 	LOG(INFO) << "###Log system start, library version: " << nVersion;
 #else
-	LOG(INFO) << "###Log system start...... " << nVersion;
+	LOG(INFO) << "###Log system start...... ";
 #endif
 }
 
