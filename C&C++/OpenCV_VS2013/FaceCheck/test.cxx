@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 			LOG(ERROR) << "Input image file path is invalid: " << pStrFilePath;
 			goto End;
 		}
-		LOG(INFO) << "Get valid image file path: " << pStrFilePath;
+		LOG(INFO) << "Get valid image file path: " << pStrFilePath << "(" << to_string(matSrc.cols) << ", " << to_string(matSrc.rows) << ")";
 		strImageName = string(pStrFilePath);
 		nPosition = strImageName.rfind("/");
 		if (-1 != nPosition) {
