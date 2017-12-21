@@ -45,5 +45,5 @@ rm -rf ${NameJNILib}
 echo -e "\nCongratulations! Update face parser success!\n\n"
 
 exit 0
-#注意下面一行必须有且只能有一个换行符号
+#注意下面一行必须有且只能有一个换行符号。理论上讲不需要，但是实际应用出了问题
 ###End###
