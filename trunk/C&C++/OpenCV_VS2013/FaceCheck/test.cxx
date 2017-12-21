@@ -20,7 +20,9 @@ int main(int argc, char **argv)
 {
 	vector<int> vectorIntResult(INDEX_VALUE_MAX); /* left_face, right_face, forehead, jaw, nose | blackheads */
 	vectorContours vectorFace;
-	cv::Rect rectFace;
+	cv::Rect rectFaceColor;
+	cv::Rect rectFaceCorassness;
+	double fCoarseness = 0.0;
 	enumFaceColorType colorType = Type_Color_TouBai;
 	cv::Mat matSrc;
 	string strImageName("");
@@ -71,13 +73,14 @@ int main(int argc, char **argv)
 				cv::resize(matSrc, matSrc, cv::Size(1280, 1280 * matSrc.rows / matSrc.cols));
 			}
 		}
-		bResult = faceLandmarkDetect(strImageName, matSrc, vectorFace, rectFace);
+		bResult = faceLandmarkDetect(strImageName, matSrc, vectorFace, rectFaceColor);
 		if (!bResult) {
 			LOG(ERROR) << strImageName << ": Detect face landmark failed!";
 			goto End;
 		}
 
-		double fCoarseness = getFaceCoarseness(matSrc, rectFace);
+		rectFaceCorassness = cv::Rect(vectorFace[INDEX_CONTOUR_FACE][0], vectorFace[INDEX_CONTOUR_FACE][2]);
+		fCoarseness = getFaceCoarseness(matSrc, rectFaceCorassness);
 		LOG(INFO) << strImageName << ": Skin coarseness: " << to_string(fCoarseness); 
 
 		bResult = findFaceSpots(strImageName, matSrc, vectorFace, vectorIntResult);
@@ -85,7 +88,7 @@ int main(int argc, char **argv)
 			LOG(ERROR) << strImageName << ": Find face spots failed!";
 			goto End;
 		}
-		colorType = getFaceColorType(strImageName, matSrc, rectFace);
+		colorType = getFaceColorType(strImageName, matSrc, rectFaceColor);
 
 	End:
 		stringstream ss;
