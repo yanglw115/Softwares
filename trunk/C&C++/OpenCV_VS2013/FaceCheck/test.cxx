@@ -17,7 +17,7 @@ static CureLog g_logObject;
 
 int main(int argc, char **argv)
 {
-	vector<int> vectorIntResult(5);
+	vector<int> vectorIntResult(6); /* left_face, right_face, forehead, jaw, nose | blackheads */
 	vectorContours vectorFace;
 	cv::Rect rectFace;
 	enumFaceColorType colorType = Type_Color_TouBai;
