@@ -115,10 +115,10 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 						//putText(matTest, format("color(%d:%d:%d), areaSize(%s)", color[0], color[1], color[2], strSize.substr(0, 3).c_str()), cv::Point2f(center.x, center.y - radius), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
 						putText(matTest, format("color(%d:%d:%d-%d), areaSize(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3 ,strSize.substr(0, 3).c_str()), cv::Point2f(100, 100), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
 						rectangle(matTest, minRect, Scalar(0, 255, 0));
-						//circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
-						//namedWindow("当前斑点：", WINDOW_NORMAL);
-						//imshow("当前斑点：", matTest);
-						//waitKey();
+						circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
+						namedWindow("当前斑点：", WINDOW_NORMAL);
+						imshow("当前斑点：", matTest);
+						waitKey();
 					}
 #endif // With_Debug		
 					pimplesCount++;
