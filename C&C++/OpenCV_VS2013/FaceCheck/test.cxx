@@ -17,7 +17,7 @@ static CureLog g_logObject;
 
 int main(int argc, char **argv)
 {
-	vector<int> vectorIntResult(6); /* left_face, right_face, forehead, jaw, nose | blackheads */
+	vector<int> vectorIntResult(INDEX_VALUE_MAX); /* left_face, right_face, forehead, jaw, nose | blackheads */
 	vectorContours vectorFace;
 	cv::Rect rectFace;
 	enumFaceColorType colorType = Type_Color_TouBai;
@@ -84,9 +84,9 @@ int main(int argc, char **argv)
 
 	End:
 		stringstream ss;
-		ss << "{\"result\":" << bResult << ",\"spots\":{\"A\":" << vectorIntResult[0] << ",\"B\":" << vectorIntResult[1]
-			<< ",\"C\":" << vectorIntResult[2] << ",\"D\":" << vectorIntResult[3] << ",\"E\":" << vectorIntResult[4]
-			<< "},\"color\":" << colorType << "}";
+		ss << "{\"result\":" << bResult << ",\"spots\":{\"A\":" << vectorIntResult[INDEX_VALUE_LEFT] << ",\"B\":" << vectorIntResult[INDEX_VALUE_RIGHT]
+			<< ",\"C\":" << vectorIntResult[INDEX_VALUE_FOREHEAD] << ",\"D\":" << vectorIntResult[INDEX_VALUE_JAW] << ",\"E\":" << vectorIntResult[INDEX_VALUE_NOSE]
+			<< "}, \"blackheads\":" << vectorIntResult[INDEX_VALUE_BLACKHEADS] << ",\"pore\":" << vectorIntResult[INDEX_VALUE_PORE_TYPE] << ",\"color\":" << colorType << "}";
 
 		LOG(INFO) << strImageName << ": " << ss.str();
 #ifndef __linux
