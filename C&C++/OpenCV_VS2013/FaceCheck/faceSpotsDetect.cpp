@@ -18,12 +18,6 @@ using namespace cv;
 #define MIN_COLOR_PIMPLES 200 // 痘痘颜色最大值
 #define MAX_COLOR_BLACKHEADS 200 // 黑头颜色最大值
 
-#define INDEX_CONTOUR_LEFT 0
-#define INDEX_CONTOUR_RIGHT 1
-#define INDEX_CONTOUR_FOREHEAD 2
-#define INDEX_CONTOUR_JAW 3
-#define INDEX_CONTOUR_NOSE	4
-
 #define NUMBER_PORE_ROUGH 150
 #define NUMBER_PORE_NORMAL 60
 
@@ -251,7 +245,7 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 	int nBlackHeadsNose = 0;
 	int nBlackHeadsFace = 0;
 
-	for (size_t i = 0; i < faceContours.size(); ++i) {
+	for (size_t i = 0; i <= INDEX_CONTOUR_NOSE; ++i) {
 		/* 创建一个通道并与原图大小相等的Mat */
 		Mat mask(matSrc.size(), CV_8UC1);
 		/* 矩阵赋值为全0，颜色表现为全黑 */

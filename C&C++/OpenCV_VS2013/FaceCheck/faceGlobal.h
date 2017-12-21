@@ -25,6 +25,15 @@ enum enumFaceValueIndex {
 	INDEX_VALUE_MAX
 };
 
+enum enumFaceContourIndex {
+	INDEX_CONTOUR_LEFT = 0,
+	INDEX_CONTOUR_RIGHT = 1,
+	INDEX_CONTOUR_FOREHEAD = 2,
+	INDEX_CONTOUR_JAW = 3,
+	INDEX_CONTOUR_NOSE = 4,
+	INDEX_CONTOUR_FACE = 5,
+};
+
 using namespace std;
 
 typedef vector<vector<cv::Point> > vectorContours;

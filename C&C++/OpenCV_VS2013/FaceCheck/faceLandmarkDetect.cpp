@@ -266,6 +266,14 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	vectorShape.push_back(cv::Point(shape.part(35).x(), shape.part(30).y()));
 	faceContours.push_back(vectorShape);
 
+	/* 取皮肤的一块矩形区域，用于粗糙度检测 */
+	vectorShape.clear();
+	vectorShape.push_back(cv::Point(shape.part(4).x(), shape.part(3).y()));
+	vectorShape.push_back(cv::Point(shape.part(4).x(), shape.part(1).y()));
+	vectorShape.push_back(cv::Point(shape.part(40).x(), shape.part(1).y()));
+	vectorShape.push_back(cv::Point(shape.part(40).x(), shape.part(3).y()));
+	faceContours.push_back(vectorShape);
+
 	/* 整个人脸正中部分，用于取面部肤色(同下面类似，只是这个取的比较全面；虽然有鼻子等数据，但是最终用的是统计图最大值部分) */
 	/* 
 		vectorShape.resize(4);
