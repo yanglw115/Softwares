@@ -3,6 +3,7 @@
 #include "faceSpotsDetect.h"
 #include "faceColor.h"
 #include "faceGlobal.h"
+#include "faceTamura.h"
 
 #include <string>
 #include <sstream>
@@ -75,6 +76,10 @@ int main(int argc, char **argv)
 			LOG(ERROR) << strImageName << ": Detect face landmark failed!";
 			goto End;
 		}
+
+		double fCoarseness = getFaceCoarseness(matSrc, rectFace);
+		LOG(INFO) << strImageName << ": Skin coarseness: " << to_string(fCoarseness); 
+
 		bResult = findFaceSpots(strImageName, matSrc, vectorFace, vectorIntResult);
 		if (!bResult) {
 			LOG(ERROR) << strImageName << ": Find face spots failed!";

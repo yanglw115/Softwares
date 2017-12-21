@@ -249,8 +249,8 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 {
 	int nPimples = -1;
 	int nBlackHeadsNose = 0;
-	int nBlackHeadsLeft = 0;
-	int nBlackHeadsRight = 0;
+	int nBlackHeadsFace = 0;
+
 	for (size_t i = 0; i < faceContours.size(); ++i) {
 		/* 创建一个通道并与原图大小相等的Mat */
 		Mat mask(matSrc.size(), CV_8UC1);
@@ -267,18 +267,18 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 		nPimples = findPimples(strImageName, matSrc, masked);
 		vectorIntResult[i] = nPimples;
 		if (INDEX_CONTOUR_LEFT == i) {
-			nBlackHeadsLeft = findBlackHeads(strImageName, matSrc, masked);
+			nBlackHeadsFace = findBlackHeads(strImageName, matSrc, masked);
 		} else if (INDEX_CONTOUR_RIGHT == i) {
-			nBlackHeadsRight = findBlackHeads(strImageName, matSrc, masked);
+			nBlackHeadsFace += findBlackHeads(strImageName, matSrc, masked);
 		} else if (INDEX_CONTOUR_NOSE == i) {
 			nBlackHeadsNose = findBlackHeads(strImageName, matSrc, masked);
 			vectorIntResult[INDEX_VALUE_BLACKHEADS] = nBlackHeadsNose;
 		}
 	}
 
-	if (nBlackHeadsLeft + nBlackHeadsRight >= NUMBER_PORE_ROUGH) {
+	if (nBlackHeadsFace >= NUMBER_PORE_ROUGH) {
 		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_ROUGH;
-	} else if (nBlackHeadsLeft + nBlackHeadsRight >= NUMBER_PORE_NORMAL) {
+	} else if (nBlackHeadsFace >= NUMBER_PORE_NORMAL) {
 		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_NORMAL;
 	} else {
 		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_SMOOTH;
@@ -298,7 +298,7 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 	Mat matDebug;
 	const string strPoreTypes[] = {"smooth", "normal", "rough"};
 	matSrc.copyTo(matDebug);
-	putText(matDebug, format("%s(%d)", strPoreTypes[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str(), nBlackHeadsLeft + nBlackHeadsRight), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
+	putText(matDebug, format("%s(%d)", strPoreTypes[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str(), nBlackHeadsFace), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
 	namedWindow("毛孔检测结果：", WINDOW_NORMAL);
 	imshow("毛孔检测结果：", matDebug);
 	waitKey();
