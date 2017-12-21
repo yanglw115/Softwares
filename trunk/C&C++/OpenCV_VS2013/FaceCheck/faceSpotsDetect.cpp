@@ -18,9 +18,14 @@ using namespace cv;
 #define MIN_COLOR_PIMPLES 200 // 痘痘颜色最大值
 #define MAX_COLOR_BLACKHEADS 200 // 黑头颜色最大值
 
-#define INDEX_FACE_FOREHEAD 2
-#define INDEX_FACE_JAW 3
-#define INDEX_FACE_NOSE	4
+#define INDEX_CONTOUR_LEFT 0
+#define INDEX_CONTOUR_RIGHT 1
+#define INDEX_CONTOUR_FOREHEAD 2
+#define INDEX_CONTOUR_JAW 3
+#define INDEX_CONTOUR_NOSE	4
+
+#define NUMBER_PORE_ROUGH 150
+#define NUMBER_PORE_NORMAL 60
 
 #ifndef WITH_SPOTS_AS_PIMPLES
 //#define WITH_SPOTS_AS_PIMPLES // 将斑点都当作痘痘来处理，否则排除斑点，只计算痘痘
@@ -113,7 +118,7 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 						srcImg.copyTo(matTest);
 						string strSize = to_string(areaSize);
 						//putText(matTest, format("color(%d:%d:%d), areaSize(%s)", color[0], color[1], color[2], strSize.substr(0, 3).c_str()), cv::Point2f(center.x, center.y - radius), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
-						putText(matTest, format("color(%d:%d:%d-%d), areaSize(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3 ,strSize.substr(0, 3).c_str()), cv::Point2f(100, 100), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
+						putText(matTest, format("color(%d:%d:%d-%d), areaSize(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3 ,strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
 						rectangle(matTest, minRect, Scalar(0, 255, 0));
 						circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
 						namedWindow("当前斑点：", WINDOW_NORMAL);
@@ -216,7 +221,7 @@ static int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &im
 						srcImg.copyTo(matTest);
 						string strSize = to_string(areaSize);
 						//putText(matTest, format("color(%d:%d:%d), areaSize(%s)", color[0], color[1], color[2], strSize.substr(0, 3).c_str()), cv::Point2f(center.x, center.y - radius), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
-						putText(matTest, format("color(%d:%d:%d-%d), areaSize(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3, strSize.substr(0, 3).c_str()), cv::Point2f(100, 100), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
+						putText(matTest, format("color(%d:%d:%d-%d), areaSize(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3, strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
 						rectangle(matTest, minRect, Scalar(0, 255, 0));
 						//circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
 						namedWindow("当前黑头：", WINDOW_NORMAL);
@@ -243,7 +248,9 @@ static int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &im
 bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult)
 {
 	int nPimples = -1;
-	int nBlackHeads = 0;
+	int nBlackHeadsNose = 0;
+	int nBlackHeadsLeft = 0;
+	int nBlackHeadsRight = 0;
 	for (size_t i = 0; i < faceContours.size(); ++i) {
 		/* 创建一个通道并与原图大小相等的Mat */
 		Mat mask(matSrc.size(), CV_8UC1);
@@ -259,20 +266,43 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 		/* imgSrc始终保持不变 */
 		nPimples = findPimples(strImageName, matSrc, masked);
 		vectorIntResult[i] = nPimples;
-		if (INDEX_FACE_NOSE == i) {
-			nBlackHeads = findBlackHeads(strImageName, matSrc, masked);
-			vectorIntResult[i + 1] = nBlackHeads;
+		if (INDEX_CONTOUR_LEFT == i) {
+			nBlackHeadsLeft = findBlackHeads(strImageName, matSrc, masked);
+		} else if (INDEX_CONTOUR_RIGHT == i) {
+			nBlackHeadsRight = findBlackHeads(strImageName, matSrc, masked);
+		} else if (INDEX_CONTOUR_NOSE == i) {
+			nBlackHeadsNose = findBlackHeads(strImageName, matSrc, masked);
+			vectorIntResult[INDEX_VALUE_BLACKHEADS] = nBlackHeadsNose;
 		}
+	}
+
+	if (nBlackHeadsLeft + nBlackHeadsRight >= NUMBER_PORE_ROUGH) {
+		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_ROUGH;
+	} else if (nBlackHeadsLeft + nBlackHeadsRight >= NUMBER_PORE_NORMAL) {
+		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_NORMAL;
+	} else {
+		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_SMOOTH;
 	}
 
 #ifdef WITH_SPOTS_AS_PIMPLES
 	/* 这里暂时对额头和下巴的脏数据进行简单处理 */
-	if (vectorIntResult[INDEX_FACE_FOREHEAD] > 3) {
-		vectorIntResult[INDEX_FACE_FOREHEAD] = 0;
+	if (vectorIntResult[INDEX_CONTOUR_FOREHEAD] > 3) {
+		vectorIntResult[INDEX_CONTOUR_FOREHEAD] = 0;
 	}
-	if (vectorIntResult[INDEX_FACE_JAW] > 3) {
-		vectorIntResult[INDEX_FACE_JAW] = 0;
+	if (vectorIntResult[INDEX_CONTOUR_JAW] > 3) {
+		vectorIntResult[INDEX_CONTOUR_JAW] = 0;
 	}
 #endif // WITH_SPOTS_AS_PIMPLES
+
+#ifdef With_Debug
+	Mat matDebug;
+	const string strPoreTypes[] = {"smooth", "normal", "rough"};
+	matSrc.copyTo(matDebug);
+	putText(matDebug, format("%s(%d)", strPoreTypes[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str(), nBlackHeadsLeft + nBlackHeadsRight), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
+	namedWindow("毛孔检测结果：", WINDOW_NORMAL);
+	imshow("毛孔检测结果：", matDebug);
+	waitKey();
+#endif // With_Debug
+
 	return true;
 }
