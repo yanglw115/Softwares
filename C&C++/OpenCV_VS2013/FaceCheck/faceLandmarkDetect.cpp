@@ -167,10 +167,10 @@ bool faceLandmarkDetect(const string &strImageName, const cv::Mat &matSrc, vecto
 	}
 	LOG(INFO) << strImageName << ": Max face rect: " << "(" << to_string(rectFaces[indexRect].width) << ", " << to_string(rectFaces[indexRect].height) << ")";
 
-    dets[0].set_left(rectFaces[indexRect].x);
-    dets[0].set_top(rectFaces[indexRect].y);
-    dets[0].set_right(rectFaces[indexRect].x + rectFaces[0].width);
-    dets[0].set_bottom(rectFaces[indexRect].y + rectFaces[0].height);
+    dets[0].set_left(rectMax.x);
+    dets[0].set_top(rectMax.y);
+    dets[0].set_right(rectMax.x + rectMax.width);
+    dets[0].set_bottom(rectMax.y + rectMax.height);
 #endif // Use_Dlib_Detector
 	tt = cv::getTickCount() - tt;
 	LOG(INFO) << strImageName << ": Detect face use time: " << to_string(tt * 1000 / (INT64_T)cv::getTickFrequency()) << "ms";
