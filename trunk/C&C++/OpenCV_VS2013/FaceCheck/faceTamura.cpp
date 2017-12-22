@@ -12,18 +12,23 @@ using namespace std;
 double getFaceCoarseness(const Mat& matSrc, Rect rect)
 {
 	Mat matFace(matSrc, rect);
+	cvtColor(matFace, matFace, COLOR_BGR2GRAY);
 	double fCoarseness = tamuraCalCoarseness(matFace);
+	double fContrast = tamuraCalContrast(matFace);
+	cout << "Data rect: " << rect << endl;
 
 #ifdef With_Debug
 	Mat matDebug;
 	matSrc.copyTo(matDebug);
-	putText(matDebug, format("%f", fCoarseness), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
+	putText(matDebug, format("%f(%f:%f)", fCoarseness + fContrast, fCoarseness, fContrast), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
+	static int i = 1;
+	imwrite(format("%d.jpg", i++), matDebug);
 	namedWindow("Æ¤·ô´Ö²Ú¶È£º", WINDOW_NORMAL);
 	imshow("Æ¤·ô´Ö²Ú¶È£º", matDebug);
 	waitKey();
 #endif // With_Debug
 
-	return fCoarseness;
+	return fCoarseness + fContrast;
 }
 
 //=====================================================
