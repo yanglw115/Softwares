@@ -6,6 +6,9 @@
 
 #define		PI		(3.141592653589793)
 
+using namespace cv;
+using namespace std;
+
 double getFaceCoarseness(const Mat& matSrc, Rect rect)
 {
 	Mat matFace(matSrc, rect);
@@ -21,7 +24,6 @@ double getFaceCoarseness(const Mat& matSrc, Rect rect)
 #endif // With_Debug
 
 	return fCoarseness;
-
 }
 
 //=====================================================
@@ -176,7 +178,7 @@ double tamuraCalCoarseness(const Mat& mat, int kVal, int histBins)
         EnKv	=	NULL;
     }
 
-	LOG(INFO) << "Calculate coarseness result: " << to_string(coarseness);
+	//LOG(INFO) << "Calculate coarseness result: " << to_string(coarseness);
     return coarseness;
 }
 
