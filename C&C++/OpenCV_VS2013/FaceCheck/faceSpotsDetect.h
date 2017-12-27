@@ -4,6 +4,8 @@
 #include "faceGlobal.h"
 
 bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vectorContours &faceContours, vectorInt &vectorIntResult);
+int findBlackHeads(const string &strImageName, const cv::Mat &srcImg, cv::Mat &imgMask);
+int findPimples(const string &strImageName, const cv::Mat &srcImg, cv::Mat &imgMask);
 
 #endif // __FACE_SPOTS_DETECT_H__
 
