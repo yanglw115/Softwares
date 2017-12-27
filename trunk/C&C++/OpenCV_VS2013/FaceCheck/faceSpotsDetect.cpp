@@ -9,8 +9,8 @@
 
 using namespace cv;
 
-#define MIN_SIZE_PIMPLES 50 // 痘痘的最小尺寸
-#define MAX_SIZE_PIMPLES 150
+#define MIN_SIZE_PIMPLES 20 // 痘痘的最小尺寸
+#define MAX_SIZE_PIMPLES 250
 #define MAX_SIZE_BLACKHEADS 20 // 黑头的最大尺寸
 
 #define MAX_RATIO 2.5 // 矩形长宽比最大值
@@ -23,14 +23,8 @@ using namespace cv;
 //#define WITH_SPOTS_AS_PIMPLES // 将斑点都当作痘痘来处理，否则排除斑点，只计算痘痘
 #endif // WITH_SPOTS_AS_PIMPLES
 
-#ifdef USE_COLOR_RGB // 在根据颜色进行痘痘与痣的区分时，选择的颜色空间
-	#define MIN_COLOR_PIMPLES 150
-	#define MAX_COLOR_BLACKHEADS 255
-#else
-	#define USE_COLOR_LAB
-	#define MIN_COLOR_PIMPLES 0
-	#define MAX_COLOR_BLACKHEADS 100
-#endif // USE_COLOR_RGB
+#define MIN_COLOR_PIMPLES 30
+#define MAX_COLOR_BLACKHEADS 255
 
 int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 {
@@ -100,21 +94,15 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 			imgMask.copyTo(maskCopy);
 			Mat imgroi(maskCopy, minRect);
 
-	#ifdef USE_COLOR_RGB
-			//cvtColor(imgroi, imgroi, COLOR_BGR2HSV);
+			int nShiftV = (minRect.height / 5 - 1) / 2; // adjustROI的参数所*的核是5pix*5pix
+			int nShiftH = (minRect.width / 5 - 1) / 2;
+			imgroi = imgroi.adjustROI(-nShiftV, -nShiftV, -nShiftH, -nShiftH); // top, bottom, left, right
+			cvtColor(imgroi, imgroi, COLOR_BGR2HLS);
 			Scalar color = mean(imgroi);
 
 			/* 这里根据颜色值进行一次过滤 */
 			//if (color[0] < 10 & color[1] > 70 & color[2] > 50) { // HSV
-			if ((int)(color[0] + color[1] + color[2]) / 3 > MIN_COLOR_PIMPLES) {
-	#else // USE_COLOR_LAB
-			cvtColor(imgroi, imgroi, COLOR_BGR2Lab);
-			Scalar color = mean(imgroi);
-			double L = color[0] * 100 / 255;
-			double B = color[2] - 128;
-			double colorValue = atan((L - 50) / B) * 180 / PI;
-			if (colorValue > MIN_COLOR_PIMPLES) {
-	#endif // USE_COLOR_RGB
+			if ((int)(color[2]) >= MIN_COLOR_PIMPLES) { // HSL的L值
 
 #endif // WITH_SPOTS_AS_PIMPLES
 				double ratio = minRect.width * 1.0 / minRect.height;
@@ -129,11 +117,7 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 						srcImg.copyTo(matTest);
 						string strSize = to_string(areaSize);
 						//putText(matTest, format("color(%d:%d:%d), areaSize(%s)", color[0], color[1], color[2], strSize.substr(0, 3).c_str()), cv::Point2f(center.x, center.y - radius), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
-	#ifdef USE_COLOR_RGB
-						putText(matTest, format("color(%d:%d:%d-%d), areaSize(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3 ,strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
-	#else
-						putText(matTest, format("color(%d),area(%s)", (int)colorValue, strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
-	#endif // USE_COLOR_RGB
+						putText(matTest, format("c(%d:%d:%d-%d),s(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3 ,strSize.substr(0, 3).c_str()), cv::Point2f(20, 20), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 0, 255), 1);
 						rectangle(matTest, minRect, Scalar(0, 255, 0));
 						circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
 						namedWindow("当前斑点：", WINDOW_NORMAL);
@@ -219,20 +203,11 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 			imgMask.copyTo(maskCopy);
 			Mat imgroi(maskCopy, minRect);
 
-#ifdef WITH_COLOR_RGB
 			//cvtColor(imgroi, imgroi, COLOR_BGR2HSV);
 			Scalar color = mean(imgroi);
 
 			/* 这里根据颜色值进行一次过滤 */
 			if ((int)(color[0] + color[1] + color[2]) / 3 <= MAX_COLOR_BLACKHEADS) {
-#else
-			cvtColor(imgroi, imgroi, COLOR_BGR2Lab);
-			Scalar color = mean(imgroi);
-			double L = color[0] * 100 / 255;
-			double B = color[2] - 128;
-			double colorValue = atan((L - 50) / B) * 180 / PI;
-			if (colorValue <= MAX_COLOR_BLACKHEADS) {
-#endif // WITH_COLOR_RGB
 				double ratio = minRect.width * 1.0 / minRect.height;
 				if ((ratio < MAX_RATIO) && (ratio > MIN_RATIO)) {
 #ifdef With_Debug
