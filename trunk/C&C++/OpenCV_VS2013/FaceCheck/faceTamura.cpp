@@ -4,8 +4,6 @@
 #include "opencv2/highgui.hpp"
 #endif // With_Debug
 
-#define		PI		(3.141592653589793)
-
 using namespace cv;
 using namespace std;
 
@@ -15,12 +13,13 @@ double getFaceCoarseness(const Mat& matSrc, Rect rect)
 	cvtColor(matFace, matFace, COLOR_BGR2GRAY);
 	double fCoarseness = tamuraCalCoarseness(matFace);
 	double fContrast = tamuraCalContrast(matFace);
+	double fDirectionality = tamuraCalDirectionality(matFace);
 	cout << "Data rect: " << rect << endl;
 
 #ifdef With_Debug
 	Mat matDebug;
 	matSrc.copyTo(matDebug);
-	putText(matDebug, format("%f(%f:%f)", fCoarseness + fContrast, fCoarseness, fContrast), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
+	putText(matDebug, format("%f:%f:%f", fCoarseness, fContrast, fDirectionality), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.3, Scalar(0, 0, 255), 2);
 	static int i = 1;
 	imwrite(format("%d.jpg", i++), matDebug);
 	namedWindow("Æ¤·ô´Ö²Ú¶È£º", WINDOW_NORMAL);
@@ -286,4 +285,126 @@ double localMean(const Mat& mat, int x, int y, int K)
     }
 
     return sum / (roiRows * roiCols);                // MY god , dead here!!!!  sum / roiRows * roiCols ;
+}
+
+//======================================================
+/// calculate directionality for a greylevel image 
+//======================================================
+
+double tamuraCalDirectionality(const Mat& mat)
+{
+	if (NULL == mat.data) {
+		LOG(ERROR) << "Invalid input Mat when calDirectionality";
+		return 0.0;
+	}
+	if (mat.channels() != 1) {
+		LOG(ERROR) << "Input Mat must has only one channel.";
+		return 0.0;
+	}
+
+	float kerH[9] = { -1 , 0 , 1 ,
+		-1 , 0 , 1 ,
+		-1 , 0 , 1 };
+	float kerV[9] = { 1 , 1 , 1 ,
+		0 , 0 , 0 ,
+		-1 ,-1 , -1 };
+
+	Mat hmat = Mat::zeros(mat.size(), CV_64FC1);
+	Mat	vmat = Mat::zeros(mat.size(), CV_64FC1);
+	int		rows = mat.rows;
+	int		cols = mat.cols;
+	for (int i = 1; i < rows - 1; ++i) {
+		for (int j = 1; j < cols - 1; ++j) {
+			double	sumh = 0;
+
+			for (int k = -1; k < 2; ++k) {
+				sumh += *(mat.data + (i + k) * mat.step.p[0] + (j + 1) * mat.step.p[1])
+					- *(mat.data + (i + k) * mat.step.p[0] + (j - 1) * mat.step.p[1]);
+			}
+			*(double*)(hmat.data + i * hmat.step.p[0] + j * hmat.step.p[1]) = sumh;
+
+			double sumv = 0;
+
+			for (int k = -1; k < 2; ++k) {
+				sumv += *(mat.data + (i - 1) * mat.step.p[0] + (j + k) * mat.step.p[1])
+					- *(mat.data + (i + 1) * mat.step.p[0] + (j + k) * mat.step.p[1]);
+			}
+			*(double*)(vmat.data + i * vmat.step.p[0] + j * vmat.step.p[1]) = sumv;
+		}
+	}
+
+	// 	disMat( mat , "mat0.txt") ;
+	// 	disMat( hmat , "hmat.txt" ) ;
+	//	disMat( vmat , "vmat.txt" ) ;
+
+	Mat	theta = Mat::zeros(rows, cols, CV_64FC1);
+	double	sumR = 0;
+	int ccount = 0;
+
+	for (int i = 1; i < rows - 1; ++i) {
+		for (int j = 1; j < cols - 1; ++j) {
+			double*	hVal = (double*)(hmat.data + i * hmat.step.p[0] + j * hmat.step.p[1]);
+			double*	vVal = (double*)(vmat.data + i * vmat.step.p[0] + j * vmat.step.p[1]);
+			double*	tVal = (double*)(theta.data + i * theta.step.p[0] + j * theta.step.p[1]);
+
+			if (abs(*hVal) >= 0.0001) {			// God: i forget abs()
+				*tVal = atan((*vVal) / (*hVal)) + PI / 2 + 0.0001;
+				// for what???
+				sumR += (*vVal) * (*vVal) + (*hVal) * (*hVal) + (*tVal) * (*tVal);
+			}
+			else {
+				if (0 > (*vVal)) {
+					*tVal = PI;
+				}
+				else {
+					*tVal = 0.0;
+					if (0 == *vVal) {
+						ccount++;
+					}
+				}
+			}
+		}
+	}
+
+
+	//	disMat( theta ,"theta.txt" ) ;
+	// build histogram
+#define		NBINS	(125)
+	double	interval = PI / NBINS;
+	vector<double>	thetaHist(NBINS, 0);
+	vector<double>::iterator iter;
+
+	for (int i = 1; i < rows - 1; ++i) {
+		for (int j = 1; j < cols - 1; ++j) {
+			double*	tVal = (double*)(theta.data + i * theta.step.p[0] + j * theta.step.p[1]);
+			int	index = cvFloor(min(max(*tVal, 0.0), PI) / interval);
+
+			thetaHist[index] += 1;
+		}
+	}
+
+	// normalize and get the max bin
+	double	maxHistVal = -1;
+	int		maxBinIndex;
+	int		count = 0;
+
+	for (iter = thetaHist.begin(); iter != thetaHist.end(); ++iter) {
+		*iter /= (double)((rows - 1) * (cols - 1));
+
+		if (maxHistVal < *iter) {
+			maxHistVal = *iter;
+			maxBinIndex = count;
+		}
+		count++;
+	}
+
+	double	dir = 0; // directionality
+	count = 0;
+	for (iter = thetaHist.begin(); iter != thetaHist.end(); ++iter) {
+		dir += (count - maxBinIndex) * (count - maxBinIndex) * (*iter);
+		count++;
+	}
+
+	//	return	( fabs( log( dir / sumR + 0.00000001) ) ) ;
+	return	dir;
 }

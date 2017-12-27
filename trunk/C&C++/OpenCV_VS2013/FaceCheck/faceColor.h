@@ -3,7 +3,6 @@
 
 #include "faceGlobal.h"
 
-#define PI 3.14
 #define Use_ITA
 
 #ifdef Use_ITA
