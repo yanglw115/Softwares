@@ -34,6 +34,9 @@ enum enumFaceContourIndex {
 	INDEX_CONTOUR_FACE = 5,
 };
 
+//#define PI 3.14
+#define		PI		(3.141592653589793)
+
 using namespace std;
 
 typedef vector<vector<cv::Point> > vectorContours;
