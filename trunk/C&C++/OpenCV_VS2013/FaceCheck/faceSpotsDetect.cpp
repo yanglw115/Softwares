@@ -32,7 +32,7 @@ using namespace cv;
 	#define MAX_COLOR_BLACKHEADS 100
 #endif // USE_COLOR_RGB
 
-static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
+int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 {
 	Mat bw;
 	vectorContours vectorSpots;
@@ -117,7 +117,7 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 	#endif // USE_COLOR_RGB
 
 #endif // WITH_SPOTS_AS_PIMPLES
-				float ratio = minRect.width * 1.0 / minRect.height;
+				double ratio = minRect.width * 1.0 / minRect.height;
 				if ((ratio < MAX_RATIO) && (ratio > MIN_RATIO)) {
 #ifdef With_Debug
 					Point2f center;
@@ -132,7 +132,7 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 	#ifdef USE_COLOR_RGB
 						putText(matTest, format("color(%d:%d:%d-%d), areaSize(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3 ,strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
 	#else
-						putText(matTest, format("color(%d),area(%s)", (int)colorValue, strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_ HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
+						putText(matTest, format("color(%d),area(%s)", (int)colorValue, strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
 	#endif // USE_COLOR_RGB
 						rectangle(matTest, minRect, Scalar(0, 255, 0));
 						circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
@@ -160,7 +160,7 @@ static int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMa
 }
 
 
-static int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask)
+int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 {
 	Mat bw;
 	vectorContours vectorSpots;
@@ -233,7 +233,7 @@ static int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &im
 			double colorValue = atan((L - 50) / B) * 180 / PI;
 			if (colorValue <= MAX_COLOR_BLACKHEADS) {
 #endif // WITH_COLOR_RGB
-				float ratio = minRect.width * 1.0 / minRect.height;
+				double ratio = minRect.width * 1.0 / minRect.height;
 				if ((ratio < MAX_RATIO) && (ratio > MIN_RATIO)) {
 #ifdef With_Debug
 					Point2f center;
@@ -275,7 +275,7 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 	int nBlackHeadsNose = 0;
 	int nBlackHeadsFace = 0;
 
-	for (size_t i = 0; i <= INDEX_CONTOUR_NOSE; ++i) {
+	for (int i = 0; i <= INDEX_CONTOUR_NOSE; ++i) {
 		/* 创建一个通道并与原图大小相等的Mat */
 		Mat mask(matSrc.size(), CV_8UC1);
 		/* 矩阵赋值为全0，颜色表现为全黑 */
