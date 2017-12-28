@@ -23,7 +23,8 @@ using namespace cv;
 //#define WITH_SPOTS_AS_PIMPLES // 将斑点都当作痘痘来处理，否则排除斑点，只计算痘痘
 #endif // WITH_SPOTS_AS_PIMPLES
 
-#define MIN_COLOR_PIMPLES 30
+#define MIN_COLOR_PIMPLES 20
+#define MIN_COLOR_DIFF_G_R 20
 #define MAX_COLOR_BLACKHEADS 255
 
 int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
@@ -97,12 +98,14 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 			int nShiftV = (minRect.height / 5 - 1) / 2; // adjustROI的参数所*的核是5pix*5pix
 			int nShiftH = (minRect.width / 5 - 1) / 2;
 			imgroi = imgroi.adjustROI(-nShiftV, -nShiftV, -nShiftH, -nShiftH); // top, bottom, left, right
-			cvtColor(imgroi, imgroi, COLOR_BGR2HLS);
-			Scalar color = mean(imgroi);
+			Mat imgroiHLS = imgroi.clone();
+			cvtColor(imgroiHLS, imgroiHLS, COLOR_BGR2HLS);
+			Scalar meanColorHLS = mean(imgroiHLS);
+			Scalar meanColor = mean(imgroi);
 
 			/* 这里根据颜色值进行一次过滤 */
 			//if (color[0] < 10 & color[1] > 70 & color[2] > 50) { // HSV
-			if ((int)(color[2]) >= MIN_COLOR_PIMPLES) { // HSL的L值
+			if (((int)(meanColorHLS[2]) >= MIN_COLOR_PIMPLES) && (meanColor[2] - meanColor[1] > MIN_COLOR_DIFF_G_R)) { // HLS的L值;RGB的G与B值差；
 
 #endif // WITH_SPOTS_AS_PIMPLES
 				double ratio = minRect.width * 1.0 / minRect.height;
@@ -110,14 +113,14 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 #ifdef With_Debug
 					Point2f center;
 					float radius = 0;
-					minEnclosingCircle(Mat(vectorSpots[i]), center, radius);
+					minEnclosingCircle(Mat(vectorSpots[i]), center, radius); 
 
 					if (1) {//(radius > 2 && radius < 50) {
 						Mat matTest;
 						srcImg.copyTo(matTest);
 						string strSize = to_string(areaSize);
-						//putText(matTest, format("color(%d:%d:%d), areaSize(%s)", color[0], color[1], color[2], strSize.substr(0, 3).c_str()), cv::Point2f(center.x, center.y - radius), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
-						putText(matTest, format("c(%d:%d:%d-%d),s(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3 ,strSize.substr(0, 3).c_str()), cv::Point2f(20, 20), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 0, 255), 1);
+						//putText(matTest, format("c(%d:%d),s(%s)", (int)meanColorHLS[2], (int)(meanColor[2] - meanColor[1]), strSize.substr(0, 3).c_str()), cv::Point2f(20, 20), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 0, 255), 1);
+						putText(matTest, format("c(%d:%d),s(%s)", (int)meanColorHLS[2], (int)(meanColor[2] - meanColor[1]), strSize.substr(0, 3).c_str()), cv::Point2f(20, 20), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
 						rectangle(matTest, minRect, Scalar(0, 255, 0));
 						circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
 						namedWindow("当前斑点：", WINDOW_NORMAL);
