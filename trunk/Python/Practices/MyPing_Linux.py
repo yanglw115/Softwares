@@ -22,8 +22,7 @@ ip = '192.168.1.196'
 cmd_ping = "ping -c 10 {} | grep 'packet loss' | cut -d ',' -f 3 | cut -d '%' -f 1 ".format(ip)
 
 while True:
-    result_ping = os.popen(cmd_ping, 'r').read()
-    #print(str(result_ping))
+    result_ping = os.popen(cmd_ping, 'r').read() # 这里使用popen而不是system是因为system返回的是内容执行正确与否，而popen却可以得到命令执行后想要得到的结果。与linux的popen一致。
     result_ping = int(str(result_ping).strip())
     print('Packet lost %d'%(result_ping))
     if result_ping >= 100:
