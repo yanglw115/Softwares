@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 	double fCoarseness = 0.0;
 	enumFaceColorType colorType = Type_Color_TouBai;
 	cv::Mat matSrc;
+	cv::Mat matTest;
 	string strImageName("");
 	bool bResult = false;
 	SIZE_TYPE_T nPosition = -1;
@@ -32,22 +33,22 @@ int main(int argc, char **argv)
 #ifdef __linux
 	const char *pStrFilePath = "images/yangliwei.jpg";
 #else
-	const char *pStrFilePath = "../../../images/pics/*.*";
+	const char *pStrFilePath = "../../../images/pics/";
 	vector<string> vectorFiles;
 	HANDLE hFile;
 	WIN32_FIND_DATA pNextInfo;
-	hFile = FindFirstFile(pStrFilePath, &pNextInfo);
+	hFile = FindFirstFile((string(pStrFilePath) + string("*.*")).c_str(), &pNextInfo);
 	if (hFile == INVALID_HANDLE_VALUE) {
 		LOG(WARNING) << "Cannot find image files.";
 		return -1;
 	}
 	if (pNextInfo.cFileName[0] != '.')
-		vectorFiles.push_back("../../../images/pics/" + string(pNextInfo.cFileName));
+		vectorFiles.push_back(string(pStrFilePath) + string(pNextInfo.cFileName));
 
 	while (FindNextFile(hFile, &pNextInfo)) {
 		if (pNextInfo.cFileName[0] == '.')//¹ýÂË.ºÍ..
 			continue;
-		vectorFiles.push_back("../../../images/pics/" + string(pNextInfo.cFileName));
+		vectorFiles.push_back(string(pStrFilePath) + string(pNextInfo.cFileName));
 	}
 	for (int j = 0; j < vectorFiles.size(); ++j) {
 		pStrFilePath = vectorFiles[j].c_str();
@@ -66,7 +67,10 @@ int main(int argc, char **argv)
 		}
 
 #if 0
-		findPimples(strImageName, matSrc, matSrc);
+		//findPimples(strImageName, matSrc, matSrc);
+		matTest = matSrc.clone();
+		cv::resize(matTest, matTest, cv::Size(1024, 768));
+		cv::imwrite(string(strImageName + ".jpg").c_str(), matTest);
 #else
 		if (1) {//(matSrc.rows > 1280 || matSrc.cols > 1280) {
 			if (matSrc.rows > matSrc.cols) {
