@@ -12,14 +12,15 @@ double getFaceCoarseness(const Mat& matSrc, Rect rect)
 	Mat matFace(matSrc, rect);
 	cvtColor(matFace, matFace, COLOR_BGR2GRAY);
 	double fCoarseness = tamuraCalCoarseness(matFace);
-	double fContrast = tamuraCalContrast(matFace);
-	double fDirectionality = tamuraCalDirectionality(matFace);
+	//double fContrast = tamuraCalContrast(matFace);
+	//double fDirectionality = tamuraCalDirectionality(matFace);
 	cout << "Data rect: " << rect << endl;
 
 #ifdef With_Debug
 	Mat matDebug;
 	matSrc.copyTo(matDebug);
-	putText(matDebug, format("%f:%f:%f", fCoarseness, fContrast, fDirectionality), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.3, Scalar(0, 0, 255), 2);
+	//putText(matDebug, format("%f:%f:%f", fCoarseness, fContrast, fDirectionality), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.3, Scalar(0, 0, 255), 2);
+	putText(matDebug, format("%f", fCoarseness), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.3, Scalar(0, 0, 255), 2);
 	static int i = 1;
 	imwrite(format("%d.jpg", i++), matDebug);
 	namedWindow("Æ¤·ô´Ö²Ú¶È£º", WINDOW_NORMAL);
@@ -27,7 +28,8 @@ double getFaceCoarseness(const Mat& matSrc, Rect rect)
 	waitKey();
 #endif // With_Debug
 
-	return fCoarseness + fContrast;
+	//return fCoarseness + fContrast;
+	return fCoarseness;
 }
 
 //=====================================================
