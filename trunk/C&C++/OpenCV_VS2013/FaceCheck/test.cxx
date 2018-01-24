@@ -99,9 +99,14 @@ int main(int argc, char **argv)
 #endif
 	End:
 		stringstream ss;
-		ss << "{\"result\":" << bResult << ",\"spots\":{\"A\":" << vectorIntResult[INDEX_VALUE_LEFT] << ",\"B\":" << vectorIntResult[INDEX_VALUE_RIGHT]
-			<< ",\"C\":" << vectorIntResult[INDEX_VALUE_FOREHEAD] << ",\"D\":" << vectorIntResult[INDEX_VALUE_JAW] << ",\"E\":" << vectorIntResult[INDEX_VALUE_NOSE]
-			<< "}, \"blackheads\":" << vectorIntResult[INDEX_VALUE_BLACKHEADS] << ",\"pore\":" << vectorIntResult[INDEX_VALUE_PORE_TYPE] << ",\"coarseness\":" << fCoarseness << ",\"color\":" << colorType << "}";
+		ss << "{\"result\":" << bResult;
+		ss << ",\"spots\":{\"A\":" << vectorIntResult[INDEX_VALUE_LEFT] << ",\"B\":" << vectorIntResult[INDEX_VALUE_RIGHT]
+			<< ",\"C\":" << vectorIntResult[INDEX_VALUE_FOREHEAD] << ",\"D\":" << vectorIntResult[INDEX_VALUE_JAW] << ",\"E\":" << vectorIntResult[INDEX_VALUE_NOSE] << "}";
+		ss << ",\"blackheads\":" << vectorIntResult[INDEX_VALUE_BLACKHEADS];
+		ss << ",\"pore\":" << vectorIntResult[INDEX_VALUE_PORE_TYPE];
+		ss << ",\"coarseness\":" << fCoarseness;
+		ss << ",\"color\":" << colorType;
+		ss << "}";
 
 		LOG(INFO) << strImageName << ": " << ss.str();
 #ifndef __linux
