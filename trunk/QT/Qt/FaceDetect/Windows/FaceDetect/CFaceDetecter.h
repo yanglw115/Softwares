@@ -11,6 +11,7 @@
 
 #include "vs_charset.h"
 #include "CResultDetail.h"
+#include "CObjectResult.h"
 
 class CFaceDetecter: public QWidget
 {
@@ -22,6 +23,7 @@ public:
 private:
     void initWindow();
 private:
+    CObjectResult *m_pObjResult;
     QHBoxLayout *m_pHLayoutMain;
     QVBoxLayout *m_pVLayoutLeft;
     QVBoxLayout *m_pVLayoutRight;
@@ -32,6 +34,11 @@ private:
     QFrame *m_pLineMiddle;
     QListWidget *m_pListWidget;
     QStackedWidget *m_pStacked;
+    CResultDetail *m_pDetailPimples;
+    CResultDetail *m_pDetailBlackheads;
+    CResultDetail *m_pDetailFaceColor;
+    CResultDetail *m_pDetailPore;
+    CResultDetail *m_pDetailCoarse;
 };
 
 #endif // CFACEDETECTER_H
