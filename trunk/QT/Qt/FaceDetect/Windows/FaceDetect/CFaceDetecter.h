@@ -1,5 +1,5 @@
-#ifndef CDETECTRESULT_H
-#define CDETECTRESULT_H
+#ifndef CFACEDETECTER_H
+#define CFACEDETECTER_H
 
 #include <QWidget>
 #include <QLayout>
@@ -12,11 +12,12 @@
 #include "vs_charset.h"
 #include "CResultDetail.h"
 
-class CDetectResult: public QWidget
+class CFaceDetecter: public QWidget
 {
 public:
-    CDetectResult(QWidget * parent = 0, Qt::WindowFlags f = 0);
-    virtual ~CDetectResult();
+    CFaceDetecter(QWidget * parent = 0, Qt::WindowFlags f = 0);
+    virtual ~CFaceDetecter();
+    void startDetect(const QString &strImgPath, const enumItemType type);
 
 private:
     void initWindow();
@@ -33,4 +34,4 @@ private:
     QStackedWidget *m_pStacked;
 };
 
-#endif // CDETECTRESULT_H
+#endif // CFACEDETECTER_H

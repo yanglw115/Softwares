@@ -1,6 +1,6 @@
-﻿#include "CDetectResult.h"
+﻿#include "CFaceDetecter.h"
 
-CDetectResult::CDetectResult(QWidget * parent, Qt::WindowFlags f)
+CFaceDetecter::CFaceDetecter(QWidget * parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
     this->resize(800, 600);
@@ -8,12 +8,17 @@ CDetectResult::CDetectResult(QWidget * parent, Qt::WindowFlags f)
 }
 
 
-CDetectResult::~CDetectResult()
+CFaceDetecter::~CFaceDetecter()
 {
 
 }
 
-void CDetectResult::initWindow()
+void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType type)
+{
+
+}
+
+void CFaceDetecter::initWindow()
 {
     m_pHLayoutMain = new QHBoxLayout;
     m_pVLayoutLeft = new QVBoxLayout;

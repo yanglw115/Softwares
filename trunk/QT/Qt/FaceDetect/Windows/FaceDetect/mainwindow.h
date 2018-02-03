@@ -9,7 +9,10 @@
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QPixmap>
+
 #include "CLabelImageDrag.h"
+#include "glob.h"
+#include "CFaceDetecter.h"
 
 class MainWindow : public QMainWindow
 {
@@ -18,15 +21,36 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+private slots:
+    void slotSelectNewPhoto();
+    void slotResetAllParameters();
+    void slotResetPimplesParas();
+    void slotResetBlackheadsParas();
+    void slotResetFaceColoreParas();
+    void slotResetPoreParas();
+    void slotResetCoarseparas();
+
+    void slotDetectAll();
+    void slotDetectPimples();
+    void slotDetectBlackheads();
+    void slotDetectFaceColor();
+    void slotDetectPore();
+    void slotDetectCoarseness();
+
+    void slotParamsChangedPimples();
+    void slotParamsChangedBlackheads();
+    void slotParamsChangedFaceColor();
+    void slotParamsChangedPore();
+    void slotParamsChangedCoarse();
+
+    void slotCurDetecterDestroyed();
 private:
     void initWidgets();
-    void resetAllParameters();
-    void resetPimplesParas();
-    void resetBlackheadsParas();
-    void resetFaceColoreParas();
-    void resetPoreParas();
-    void resetCoarseparas();
+    void startDetectItems(const enumItemType type);
 private:
+    int m_paramsChanges;
+    QString m_strDetectedImage; // current detected image
+    CFaceDetecter *m_pCurDetecter;
     QSplitter *m_pSplitter;
     QWidget *m_pWidgetLeft;
     QWidget *m_pWidgetRight;
@@ -34,7 +58,6 @@ private:
     QHBoxLayout *m_pHLayoutBrowse;
     QVBoxLayout *m_pVLayoutRight;
 
-    QPixmap m_pixmap;
     CLabelImageDrag *m_pLabelImage;
     QLineEdit *m_pEditPhoto;
     QPushButton *m_pButtonBrowse;
