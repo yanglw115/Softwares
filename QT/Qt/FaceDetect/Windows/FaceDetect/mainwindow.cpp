@@ -1,8 +1,13 @@
-﻿#include "mainwindow.h"
+﻿
+#include <QFileDialog>
+#include <QMessageBox>
+
+#include "mainwindow.h"
 #include "vs_charset.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
+    , m_paramsChanges(0x0)
 {
     this->setFixedSize(900, 600);
     initWidgets();
@@ -11,6 +16,15 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
 
+}
+
+void MainWindow::slotSelectNewPhoto()
+{
+    QString strFilePath = QFileDialog::getOpenFileName(this, tr("选择图片"), "Desktop", "Images(*.jpg *.png)");
+
+    if (!strFilePath.isEmpty()) {
+        m_pLabelImage->changePixmap(strFilePath);
+    }
 }
 
 void MainWindow::initWidgets()
@@ -31,12 +45,13 @@ void MainWindow::initWidgets()
     m_pEditPhoto = new QLineEdit(this);
     m_pVLayoutLeft = new QVBoxLayout;
     m_pHLayoutBrowse = new QHBoxLayout;
-    m_pixmap.load(":/images/photo.jpg");
+
+    connect(m_pLabelImage, SIGNAL(sigPixmapChanged(QString)),
+            m_pEditPhoto, SLOT(setText(QString)));
+    connect(m_pButtonBrowse, SIGNAL(clicked(bool)), this, SLOT(slotSelectNewPhoto()));
     m_pLabelImage->setFixedWidth(300);
     m_pLabelImage->setFixedHeight(500);
-    m_pixmap = m_pixmap.scaled(m_pLabelImage->width(), m_pLabelImage->height(), Qt::KeepAspectRatio);
-    //m_pLabelImage->setScaledContents(true);
-    m_pLabelImage->setPixmap(m_pixmap);
+    m_pLabelImage->changePixmap(":/images/photo.jpg");
     m_pHLayoutBrowse->addWidget(m_pButtonBrowse);
     m_pHLayoutBrowse->addWidget(m_pEditPhoto);
     m_pVLayoutLeft->addWidget(m_pLabelImage);
@@ -49,7 +64,10 @@ void MainWindow::initWidgets()
      *****************************************************/
     m_pGroupAll = new QGroupBox(tr("所有特征"), this);
     m_pButtonResetAll = new QPushButton(tr("恢复所有参数值"), this);
+    connect(m_pButtonResetAll, SIGNAL(clicked(bool)),
+            this, SLOT(slotResetAllParameters()));
     m_pButtonDetectAll = new QPushButton(tr("开始检测"), this);
+    connect(m_pButtonDetectAll, SIGNAL(clicked(bool)), this, SLOT(slotDetectAll()));
     m_pHLayoutAll = new QHBoxLayout;
     m_pHLayoutAll->addWidget(m_pButtonResetAll);
     m_pHLayoutAll->addWidget(m_pButtonDetectAll);
@@ -73,8 +91,16 @@ void MainWindow::initWidgets()
     m_pEditMaxColorPimple = new QLineEdit(this);
     m_pEditMinRatioPimple = new QLineEdit(this);
     m_pEditMaxRatioPimple = new QLineEdit(this);
+    connect(m_pEditMinSizePimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
+    connect(m_pEditMaxSizePimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
+    connect(m_pEditMinColorPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
+    connect(m_pEditMaxColorPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
+    connect(m_pEditMinRatioPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
+    connect(m_pEditMaxRatioPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
     m_pButtonResetPimples = new QPushButton(tr("恢复默认"), this);
     m_pButtonDetectPimples = new QPushButton(tr("开始检测"), this);
+    connect(m_pButtonResetPimples, SIGNAL(clicked(bool)), this, SLOT(slotResetPimplesParas()));
+    connect(m_pButtonDetectPimples, SIGNAL(clicked(bool)), this, SLOT(slotDetectPimples()));
     m_pGridPimples->addWidget(m_pLabelMinSizePimple, 0, 0, Qt::AlignRight);
     m_pGridPimples->addWidget(m_pLabelMaxSizePimple, 1, 0, Qt::AlignRight);
     m_pGridPimples->addWidget(m_pEditMinSizePimple, 0, 1, Qt::AlignRight);
@@ -107,8 +133,14 @@ void MainWindow::initWidgets()
     m_pEditMaxColorBlackheads = new QLineEdit(this);
     m_pEditMinRatioBlackheads = new QLineEdit(this);
     m_pEditMaxRatioBlackheads = new QLineEdit(this);
+    connect(m_pEditMaxSizeBlackheads, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedBlackheads()));
+    connect(m_pEditMaxColorBlackheads, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedBlackheads()));
+    connect(m_pEditMinRatioBlackheads, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedBlackheads()));
+    connect(m_pEditMaxRatioBlackheads, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedBlackheads()));
     m_pButtonResetBlackheads = new QPushButton(tr("恢复默认"), this);
     m_pButtonDetectBlackheads = new QPushButton(tr("开始检测"), this);
+    connect(m_pButtonResetBlackheads, SIGNAL(clicked(bool)), this, SLOT(slotResetBlackheadsParas()));
+    connect(m_pButtonDetectBlackheads, SIGNAL(clicked(bool)), this, SLOT(slotDetectBlackheads()));
     m_pGridBlackheads->addWidget(m_pLabelMaxSizeBlackheads, 0, 0, 2, 1, Qt::AlignRight);
     m_pGridBlackheads->addWidget(m_pEditMaxSizeBlackheads, 0, 1, 2, 1, Qt::AlignRight);
 
@@ -142,8 +174,16 @@ void MainWindow::initWidgets()
     m_pEditXiaoMai = new QLineEdit(this);
     m_pEditAnHei = new QLineEdit(this);
     m_pEditYouHei = new QLineEdit(this);
+    connect(m_pEditTouBai, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
+    connect(m_pEditBaiXi, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
+    connect(m_pEditZiRan, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
+    connect(m_pEditXiaoMai, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
+    connect(m_pEditAnHei, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
+    connect(m_pEditYouHei, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
     m_pButtonResetFaceColor = new QPushButton(tr("恢复默认"), this);
     m_pButtonDetectFaceColor = new QPushButton(tr("开始检测"), this);
+    connect(m_pButtonResetFaceColor, SIGNAL(clicked(bool)), this, SLOT(slotResetFaceColoreParas()));
+    connect(m_pButtonDetectFaceColor, SIGNAL(clicked(bool)), this, SLOT(slotDetectFaceColor()));
     m_pGridFaceColor->addWidget(m_pLabelTouBai, 0, 0, 1, 1, Qt::AlignCenter);
     m_pGridFaceColor->addWidget(m_pEditTouBai, 1, 0, 1, 1, Qt::AlignCenter);
     m_pGridFaceColor->addWidget(m_pLabelBaiXi, 0, 1, 1, 1, Qt::AlignCenter);
@@ -170,8 +210,12 @@ void MainWindow::initWidgets()
     m_pLabelSmoothPore = new QLabel(tr(">细腻"), this);
     m_pEditRoughPore = new QLineEdit(this);
     m_pEditNormalPore = new QLineEdit(this);
+    connect(m_pEditRoughPore, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPore()));
+    connect(m_pEditNormalPore, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPore()));
     m_pButtonResetPore = new QPushButton(tr("恢复默认"), this);
     m_pButtonDetectPore = new QPushButton(tr("开始检测"), this);
+    connect(m_pButtonResetPore, SIGNAL(clicked(bool)), this, SLOT(slotResetPoreParas()));
+    connect(m_pButtonDetectPore, SIGNAL(clicked(bool)), this, SLOT(slotDetectPore()));
     m_pGridPore->setSpacing(5);
     m_pGridPore->addWidget(m_pLabelRoughPore, 0, 0, Qt::AlignRight);
     m_pGridPore->addWidget(m_pEditRoughPore, 0, 1, Qt::AlignCenter);
@@ -192,8 +236,12 @@ void MainWindow::initWidgets()
     m_pLabelSmoothCoarse = new QLabel(tr(">光滑"), this);
     m_pEditRoughCoarse = new QLineEdit(this);
     m_pEditNormalCoarse = new QLineEdit(this);
+    connect(m_pEditRoughCoarse, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedCoarse()));
+    connect(m_pEditNormalCoarse, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedCoarse()));
     m_pButtonResetCoarse = new QPushButton(tr("恢复默认"), this);
     m_pButtonDetectCoarse = new QPushButton(tr("开始检测"), this);
+    connect(m_pButtonResetCoarse, SIGNAL(clicked(bool)), this, SLOT(slotResetCoarseparas()));
+    connect(m_pButtonDetectCoarse, SIGNAL(clicked(bool)), this, SLOT(slotDetectCoarseness()));
     m_pGridCoarse->setSpacing(5);
     m_pGridCoarse->addWidget(m_pLabelRoughCoarse, 0, 0, Qt::AlignRight);
     m_pGridCoarse->addWidget(m_pEditRoughCoarse, 0, 1, Qt::AlignCenter);
@@ -214,20 +262,48 @@ void MainWindow::initWidgets()
     m_pWidgetRight->setLayout(m_pVLayoutRight);
 
     this->setCentralWidget(m_pSplitter);
-    resetAllParameters();
+    slotResetAllParameters();
 
 }
 
-void MainWindow::resetAllParameters()
+void MainWindow::startDetectItems(const enumItemType type)
 {
-    resetPimplesParas();
-    resetBlackheadsParas();
-    resetFaceColoreParas();
-    resetPoreParas();
-    resetCoarseparas();
+    /**
+     * 1、同一张图片，检测结果由用户关闭窗口进行关闭；
+     * 2、同一张图片，参数改变之后，重新检测时结果在原检测结果窗口基础上进行刷新；
+     * 3、更换图片之后，检测时重新生成一个新的检测结果窗口；
+     */
+    if ((m_pEditPhoto->text() != m_strDetectedImage) || !m_pCurDetecter) {
+        m_paramsChanges = 0x0;
+        m_strDetectedImage = m_pEditPhoto->text();
+        CFaceDetecter *pDetecter = new CFaceDetecter(this);
+        pDetecter->setAttribute(Qt::WA_DeleteOnClose);
+        m_pCurDetecter = pDetecter;
+        connect(m_pCurDetecter, SIGNAL(destroyed(QObject*)),
+                this, SLOT(slotCurDetecterDestroyed()));
+        m_pCurDetecter->startDetect(m_strDetectedImage, type);
+    } else {
+        if (m_paramsChanges) {
+            if ((TYPE_ALL == type) || (m_paramsChanges & type)) {
+                m_pCurDetecter->startDetect(m_strDetectedImage, type);
+                return;
+            }
+        }
+        QMessageBox::warning(this, tr("面部特征检测"),
+                             tr("图片和对应检测参数均未改变，无需重新检测!"));
+    }
 }
 
-void MainWindow::resetPimplesParas()
+void MainWindow::slotResetAllParameters()
+{
+    slotResetPimplesParas();
+    slotResetBlackheadsParas();
+    slotResetFaceColoreParas();
+    slotResetPoreParas();
+    slotResetCoarseparas();
+}
+
+void MainWindow::slotResetPimplesParas()
 {
     m_pEditMinSizePimple->setText(QString("%1").arg(20));
     m_pEditMaxSizePimple->setText(QString("%1").arg(250));
@@ -237,7 +313,7 @@ void MainWindow::resetPimplesParas()
     m_pEditMaxRatioPimple->setText(QString("%1").arg(2.5));
 }
 
-void MainWindow::resetBlackheadsParas()
+void MainWindow::slotResetBlackheadsParas()
 {
     m_pEditMaxSizeBlackheads->setText(QString("%1").arg(20));
     m_pEditMaxColorBlackheads->setText(QString("%1").arg(255));
@@ -245,7 +321,7 @@ void MainWindow::resetBlackheadsParas()
     m_pEditMaxRatioBlackheads->setText(QString("%1").arg(2.5));
 }
 
-void MainWindow::resetFaceColoreParas()
+void MainWindow::slotResetFaceColoreParas()
 {
     m_pEditTouBai->setText(QString("%1").arg(55));
     m_pEditBaiXi->setText(QString("%1").arg(45));
@@ -255,14 +331,74 @@ void MainWindow::resetFaceColoreParas()
     m_pEditYouHei->setText(QString("%1").arg(-255));
 }
 
-void MainWindow::resetPoreParas()
+void MainWindow::slotResetPoreParas()
 {
     m_pEditRoughPore->setText(QString("%1").arg(150));
     m_pEditNormalPore->setText(QString("%1").arg(60));
 }
 
-void MainWindow::resetCoarseparas()
+void MainWindow::slotResetCoarseparas()
 {
     m_pEditRoughCoarse->setText(QString("%1").arg(33));
     m_pEditNormalCoarse->setText(QString("%1").arg(15));
+}
+
+void MainWindow::slotDetectAll()
+{
+    startDetectItems(TYPE_ALL);
+}
+
+void MainWindow::slotDetectPimples()
+{
+    startDetectItems(TYPE_PIMPLES);
+}
+
+void MainWindow::slotDetectBlackheads()
+{
+    startDetectItems(TYPE_BLACKHEADS);
+}
+
+void MainWindow::slotDetectFaceColor()
+{
+    startDetectItems(TYPE_FACE_COLORE);
+}
+
+void MainWindow::slotDetectPore()
+{
+    startDetectItems(TYPE_PORE);
+}
+
+void MainWindow::slotDetectCoarseness()
+{
+    startDetectItems(TYPE_COARSENESS);
+}
+
+void MainWindow::slotParamsChangedPimples()
+{
+    m_paramsChanges |= TYPE_PIMPLES;
+}
+
+void MainWindow::slotParamsChangedBlackheads()
+{
+    m_paramsChanges |= TYPE_BLACKHEADS;
+}
+
+void MainWindow::slotParamsChangedFaceColor()
+{
+    m_paramsChanges |= TYPE_FACE_COLORE;
+}
+
+void MainWindow::slotParamsChangedPore()
+{
+    m_paramsChanges |= TYPE_PORE;
+}
+
+void MainWindow::slotParamsChangedCoarse()
+{
+    m_paramsChanges |= TYPE_COARSENESS;
+}
+
+void MainWindow::slotCurDetecterDestroyed()
+{
+    m_pCurDetecter = NULL;
 }

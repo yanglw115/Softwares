@@ -7,14 +7,7 @@
 #include <QLineEdit>
 #include <QPixmap>
 
-enum enumItemType {
-    TYPE_ALL = 0,
-    TYPE_PIMPLES,
-    TYPE_BLACKHEADS,
-    TYPE_FACE_COLORE,
-    TYPE_PORE,
-    TYPE_COARSENESS
-};
+#include "glob.h"
 
 class CResultDetail : public QWidget
 {

@@ -15,14 +15,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     CLabelImageDrag.cpp \
-    CDetectResult.cpp \
-    CResultDetail.cpp
+    CResultDetail.cpp \
+    CFaceDetecter.cpp
 
 HEADERS  += mainwindow.h \
     vs_charset.h \
     CLabelImageDrag.h \
-    CDetectResult.h \
-    CResultDetail.h
+    CResultDetail.h \
+    glob.h \
+    CFaceDetecter.h
 
 RESOURCES += \
     resource.qrc
