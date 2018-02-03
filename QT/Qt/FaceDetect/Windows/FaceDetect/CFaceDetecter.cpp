@@ -1,10 +1,16 @@
-﻿#include "CFaceDetecter.h"
+﻿#include <QFileInfo>
+#include <QMessageBox>
+
+#include "CFaceDetecter.h"
+#include "faceDetect/faceLandmarkDetect.h"
 
 CFaceDetecter::CFaceDetecter(QWidget * parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
+    this->hide();
     this->resize(800, 600);
     initWindow();
+    m_pObjResult = new CObjectResult(this);
 }
 
 
@@ -15,7 +21,13 @@ CFaceDetecter::~CFaceDetecter()
 
 void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType type)
 {
-
+    QFileInfo fileInfo(strImgPath);
+    if (faceDetect(fileInfo.fileName(), fileInfo.absoluteFilePath())) {
+        QMessageBox::information(this, "test", "Detect face!");
+    } else {
+        QMessageBox::information(this, "test", "Cannot detect face!");
+    }
+    this->show();
 }
 
 void CFaceDetecter::initWindow()
@@ -38,11 +50,18 @@ void CFaceDetecter::initWindow()
     m_pListWidget->addItem(tr("黑头"));
     m_pListWidget->addItem(tr("毛孔粗大度"));
     m_pListWidget->addItem(tr("皮肤光滑度"));
-    //m_pListWidget->item(0)->setHidden(true);
-    CResultDetail *pDetail = new CResultDetail(TYPE_PORE, this);
+    m_pDetailPimples = new CResultDetail(TYPE_PIMPLES, this);
+    m_pDetailBlackheads = new CResultDetail(TYPE_BLACKHEADS, this);
+    m_pDetailFaceColor = new CResultDetail(TYPE_FACE_COLORE, this);
+    m_pDetailPore = new CResultDetail(TYPE_PORE, this);
+    m_pDetailCoarse = new CResultDetail(TYPE_COARSENESS, this);
     m_pStacked = new QStackedWidget(this);
-    m_pStacked->addWidget(pDetail);
-    pDetail->setImagePath(":/images/photo.jpg");
+    m_pStacked->addWidget(m_pDetailPimples);
+    m_pStacked->addWidget(m_pDetailBlackheads);
+    m_pStacked->addWidget(m_pDetailFaceColor);
+    m_pStacked->addWidget(m_pDetailPore);
+    m_pStacked->addWidget(m_pDetailCoarse);
+    connect(m_pListWidget, SIGNAL(currentRowChanged(int)), m_pStacked, SLOT(setCurrentIndex(int)));
 
     m_pVLayoutLeft->addWidget(m_pLabelResult, 0, Qt::AlignHCenter);
     m_pVLayoutLeft->addWidget(m_pLineLeft);
