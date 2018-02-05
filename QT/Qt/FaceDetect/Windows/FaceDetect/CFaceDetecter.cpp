@@ -8,7 +8,7 @@ CFaceDetecter::CFaceDetecter(QWidget * parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
     this->hide();
-    this->resize(800, 600);
+    this->setFixedSize(800, 600);
     initWindow();
     m_pObjResult = new CObjectResult(this);
 }
@@ -23,7 +23,7 @@ void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType ty
 {
     QFileInfo fileInfo(strImgPath);
     if (faceDetect(fileInfo.fileName().toStdString(), fileInfo.absoluteFilePath().toStdString())) {
-        qDebug() << "Detect face from image file: " << strImgPath;
+        qDebug() << "Detected face from image file: " << strImgPath;
     } else {
         if (TYPE_ALL == type) {
             QMessageBox::critical(this, tr("面部特征检测"), tr("检测失败，没有检测到人脸，请确认图片!"));

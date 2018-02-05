@@ -52,6 +52,3 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/libs/debug/  -ldlib -lo
          -lopencv_flann331d -lopencv_highgui331d -lopencv_imgcodecs331d -lopencv_imgproc331d -lopencv_ml331d \
          -lopencv_objdetect331d -lopencv_photo331d -lopencv_shape331d -lopencv_stitching331d -lopencv_superres331d \
          -lopencv_ts331d -lopencv_video331d -lopencv_videoio331d -lopencv_videostab331d
-
-INCLUDEPATH += $$PWD/libs/debug
-DEPENDPATH += $$PWD/libs/debug
