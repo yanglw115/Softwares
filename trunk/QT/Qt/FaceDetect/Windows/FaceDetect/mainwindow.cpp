@@ -276,7 +276,7 @@ void MainWindow::startDetectItems(const enumItemType type)
     if ((m_pEditPhoto->text() != m_strDetectedImage) || !m_pCurDetecter) {
         m_paramsChanges = 0x0;
         m_strDetectedImage = m_pEditPhoto->text();
-        CFaceDetecter *pDetecter = new CFaceDetecter(this);
+        CFaceDetecter *pDetecter = new CFaceDetecter;
         pDetecter->setAttribute(Qt::WA_DeleteOnClose);
         m_pCurDetecter = pDetecter;
         connect(m_pCurDetecter, SIGNAL(destroyed(QObject*)),
