@@ -74,13 +74,13 @@ private:
     QLabel *m_pLabelMinSizePimple;
     QLabel *m_pLabelMaxSizePimple;
     QLabel *m_pLabelMinColorPimple;
-    QLabel *m_pLabelMaxColorDiffPimple;
+    QLabel *m_pLabelMinColorDiffPimple;
     QLabel *m_pLabelMinRatioPimple;
     QLabel *m_pLabelMaxRatioPimple;
     QLineEdit *m_pEditMinSizePimple;
     QLineEdit *m_pEditMaxSizePimple;
     QLineEdit *m_pEditMinColorPimple;
-    QLineEdit *m_pEditMaxColorPimple;
+    QLineEdit *m_pEditMinRGDiffPimple;
     QLineEdit *m_pEditMinRatioPimple;
     QLineEdit *m_pEditMaxRatioPimple;
     QPushButton *m_pButtonResetPimples;
@@ -111,7 +111,7 @@ private:
     QLineEdit *m_pEditBaiXi;
     QLineEdit *m_pEditZiRan;
     QLineEdit *m_pEditXiaoMai;
-    QLineEdit *m_pEditAnHei;
+    QLineEdit *m_pEditAnChen;
     QLineEdit *m_pEditYouHei;
     QPushButton *m_pButtonResetFaceColor;
     QPushButton *m_pButtonDetectFaceColor;

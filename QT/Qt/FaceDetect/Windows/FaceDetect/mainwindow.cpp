@@ -82,19 +82,19 @@ void MainWindow::initWidgets()
     m_pLabelMinSizePimple = new QLabel(tr("最小面积:"), this);
     m_pLabelMaxSizePimple = new QLabel(tr("最大面积:"), this);
     m_pLabelMinColorPimple = new QLabel(tr("L最小值(HLS):"), this);
-    m_pLabelMaxColorDiffPimple = new QLabel(tr("最大RG差值(BGR):"), this);
+    m_pLabelMinColorDiffPimple = new QLabel(tr("最小RG差值(BGR):"), this);
     m_pLabelMinRatioPimple = new QLabel(tr("最小长宽比:"), this);
     m_pLabelMaxRatioPimple = new QLabel(tr("最大长宽比:"), this);
     m_pEditMinSizePimple = new QLineEdit(this);
     m_pEditMaxSizePimple = new QLineEdit(this);
     m_pEditMinColorPimple = new QLineEdit(this);
-    m_pEditMaxColorPimple = new QLineEdit(this);
+    m_pEditMinRGDiffPimple = new QLineEdit(this);
     m_pEditMinRatioPimple = new QLineEdit(this);
     m_pEditMaxRatioPimple = new QLineEdit(this);
     connect(m_pEditMinSizePimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
     connect(m_pEditMaxSizePimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
     connect(m_pEditMinColorPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
-    connect(m_pEditMaxColorPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
+    connect(m_pEditMinRGDiffPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
     connect(m_pEditMinRatioPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
     connect(m_pEditMaxRatioPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
     m_pButtonResetPimples = new QPushButton(tr("恢复默认"), this);
@@ -107,9 +107,9 @@ void MainWindow::initWidgets()
     m_pGridPimples->addWidget(m_pEditMaxSizePimple, 1, 1, Qt::AlignRight);
 
     m_pGridPimples->addWidget(m_pLabelMinColorPimple, 0, 2, Qt::AlignRight);
-    m_pGridPimples->addWidget(m_pLabelMaxColorDiffPimple, 1, 2, Qt::AlignRight);
+    m_pGridPimples->addWidget(m_pLabelMinColorDiffPimple, 1, 2, Qt::AlignRight);
     m_pGridPimples->addWidget(m_pEditMinColorPimple, 0, 3, Qt::AlignRight);
-    m_pGridPimples->addWidget(m_pEditMaxColorPimple, 1, 3, Qt::AlignRight);
+    m_pGridPimples->addWidget(m_pEditMinRGDiffPimple, 1, 3, Qt::AlignRight);
 
     m_pGridPimples->addWidget(m_pLabelMinRatioPimple, 0, 4, Qt::AlignRight);
     m_pGridPimples->addWidget(m_pLabelMaxRatioPimple, 1, 4, Qt::AlignRight);
@@ -172,13 +172,13 @@ void MainWindow::initWidgets()
     m_pEditBaiXi = new QLineEdit(this);
     m_pEditZiRan = new QLineEdit(this);
     m_pEditXiaoMai = new QLineEdit(this);
-    m_pEditAnHei = new QLineEdit(this);
+    m_pEditAnChen = new QLineEdit(this);
     m_pEditYouHei = new QLineEdit(this);
     connect(m_pEditTouBai, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
     connect(m_pEditBaiXi, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
     connect(m_pEditZiRan, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
     connect(m_pEditXiaoMai, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
-    connect(m_pEditAnHei, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
+    connect(m_pEditAnChen, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
     connect(m_pEditYouHei, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
     m_pButtonResetFaceColor = new QPushButton(tr("恢复默认"), this);
     m_pButtonDetectFaceColor = new QPushButton(tr("开始检测"), this);
@@ -193,7 +193,7 @@ void MainWindow::initWidgets()
     m_pGridFaceColor->addWidget(m_pLabelXiaoMai, 0, 3, 1, 1, Qt::AlignCenter);
     m_pGridFaceColor->addWidget(m_pEditXiaoMai, 1, 3, 1, 1, Qt::AlignCenter);
     m_pGridFaceColor->addWidget(m_pLabelAnHei, 0, 4, 1, 1, Qt::AlignCenter);
-    m_pGridFaceColor->addWidget(m_pEditAnHei, 1, 4, 1, 1, Qt::AlignCenter);
+    m_pGridFaceColor->addWidget(m_pEditAnChen, 1, 4, 1, 1, Qt::AlignCenter);
     m_pGridFaceColor->addWidget(m_pLabelYouHei, 0, 5, 1, 1, Qt::AlignCenter);
     m_pGridFaceColor->addWidget(m_pEditYouHei, 1, 5, 1, 1, Qt::AlignCenter);
     m_pGridFaceColor->addWidget(m_pButtonResetFaceColor, 0, 6, 2, 1, Qt::AlignCenter);
@@ -298,7 +298,30 @@ void MainWindow::startDetectItems(const enumItemType type)
 
 void MainWindow::setObjResultParamValue(CObjectResult &obj)
 {
-    //obj.m_objPimples.
+    obj.m_objPimples.m_dMinAreaSize = m_pEditMinSizePimple->text().toDouble();
+    obj.m_objPimples.m_dMaxAreaSize = m_pEditMaxSizePimple->text().toDouble();
+    obj.m_objPimples.m_nMinLColorValue = m_pEditMinColorPimple->text().toInt();
+    obj.m_objPimples.m_nMinRGDiffValue = m_pEditMinRGDiffPimple->text().toInt();
+    obj.m_objPimples.m_dMinRatio = m_pEditMinRatioPimple->text().toInt();
+    obj.m_objPimples.m_dMaxRatio = m_pEditMaxRatioPimple->text().toInt();
+
+    obj.m_objBlackheads.m_dMaxAreaSize = m_pEditMaxSizeBlackheads->text().toDouble();
+    obj.m_objBlackheads.m_nMaxColor = m_pEditMaxColorBlackheads->text().toInt();
+    obj.m_objBlackheads.m_dMinRatio = m_pEditMinRatioBlackheads->text().toDouble();
+    obj.m_objBlackheads.m_dMaxRatio = m_pEditMaxRatioBlackheads->text().toDouble();
+
+    obj.m_objFaceColor.m_nTouBai = m_pEditTouBai->text().toInt();
+    obj.m_objFaceColor.m_nBaiXi = m_pEditBaiXi->text().toInt();
+    obj.m_objFaceColor.m_nZiRan = m_pEditZiRan->text().toInt();
+    obj.m_objFaceColor.m_nXiaoMai = m_pEditXiaoMai->text().toInt();
+    obj.m_objFaceColor.m_nAnChen = m_pEditAnChen->text().toInt();
+    obj.m_objFaceColor.m_nYouHei = m_pEditYouHei->text().toInt();
+
+    obj.m_objPore.m_nRough = m_pEditRoughPore->text().toInt();
+    obj.m_objPore.m_nNormal = m_pEditNormalPore->text().toInt();
+
+    obj.m_objCoarse.m_nRough = m_pEditRoughCoarse->text().toInt();
+    obj.m_objCoarse.m_nNormal = m_pEditNormalCoarse->text().toInt();
 }
 
 void MainWindow::slotResetAllParameters()
@@ -315,7 +338,7 @@ void MainWindow::slotResetPimplesParas()
     m_pEditMinSizePimple->setText(QString("%1").arg(20));
     m_pEditMaxSizePimple->setText(QString("%1").arg(250));
     m_pEditMinColorPimple->setText(QString("%1").arg(20));
-    m_pEditMaxColorPimple->setText(QString("%1").arg(20));
+    m_pEditMinRGDiffPimple->setText(QString("%1").arg(20));
     m_pEditMinRatioPimple->setText(QString("%1").arg(0.3));
     m_pEditMaxRatioPimple->setText(QString("%1").arg(2.5));
 }
@@ -334,7 +357,7 @@ void MainWindow::slotResetFaceColoreParas()
     m_pEditBaiXi->setText(QString("%1").arg(45));
     m_pEditZiRan->setText(QString("%1").arg(25));
     m_pEditXiaoMai->setText(QString("%1").arg(10));
-    m_pEditAnHei->setText(QString("%1").arg(-30));
+    m_pEditAnChen->setText(QString("%1").arg(-30));
     m_pEditYouHei->setText(QString("%1").arg(-255));
 }
 
