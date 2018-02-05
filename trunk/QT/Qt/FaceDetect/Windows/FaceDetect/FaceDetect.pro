@@ -39,14 +39,49 @@ HEADERS  += mainwindow.h \
 RESOURCES += \
     resource.qrc
 
-win32: LIBS += -L$$PWD/libs/ -ldlib -lopencv_calib3d331 -lopencv_core331 -lopencv_dnn331 \
-            -lopencv_features2d331 -lopencv_ffmpeg331_64 -lopencv_flann331 -lopencv_highgui331 \
-            -lopencv_imgcodecs331 -lopencv_imgproc331 -lopencv_ml331 -lopencv_objdetect331 \
-            -lopencv_photo331 -lopencv_shape331 -lopencv_stitching331 -lopencv_superres331 \
-            -lopencv_video331 -lopencv_videoio331 -lopencv_videostab331
+QMAKE_CXXFLAGS += -DDLIB_JPEG_SUPPORT
+
+
+win32: LIBS += -L$$PWD/libs -ldlib
+win32: LIBS += -L$$PWD/libs -lopencv_calib3d331
+win32: LIBS += -L$$PWD/libs -lopencv_core331
+win32: LIBS += -L$$PWD/libs -lopencv_dnn331
+win32: LIBS += -L$$PWD/libs -lopencv_features2d331
+win32: LIBS += -L$$PWD/libs -lopencv_flann331
+win32: LIBS += -L$$PWD/libs -lopencv_highgui331
+win32: LIBS += -L$$PWD/libs -lopencv_imgcodecs331
+win32: LIBS += -L$$PWD/libs -lopencv_imgproc331
+win32: LIBS += -L$$PWD/libs -lopencv_ml331
+win32: LIBS += -L$$PWD/libs -lopencv_objdetect331
+win32: LIBS += -L$$PWD/libs -lopencv_photo331
+win32: LIBS += -L$$PWD/libs -lopencv_shape331
+win32: LIBS += -L$$PWD/libs -lopencv_stitching331
+win32: LIBS += -L$$PWD/libs -lopencv_superres331
+win32: LIBS += -L$$PWD/libs -lopencv_ts331
+win32: LIBS += -L$$PWD/libs -lopencv_video331
+win32: LIBS += -L$$PWD/libs -lopencv_videoio331
+win32: LIBS += -L$$PWD/libs -lopencv_videostab331
+
 
 INCLUDEPATH += $$PWD/include
 DEPENDPATH += $$PWD/libs
 
 win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/dlib.lib
-
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_calib3d331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_core331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_dnn331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_features2d331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_flann331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_highgui331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_imgcodecs331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_imgproc331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_ml331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_objdetect331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_photo331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_shape331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_stitching331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_superres331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_ts331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_video331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_videoio331.lib
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/libs/opencv_videostab331.lib

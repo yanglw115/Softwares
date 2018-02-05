@@ -19,6 +19,7 @@ public:
     CFaceDetecter(QWidget * parent = 0, Qt::WindowFlags f = 0);
     virtual ~CFaceDetecter();
     void startDetect(const QString &strImgPath, const enumItemType type);
+    CObjectResult& getObjResultRef() { return *m_pObjResult; }
 
 private:
     void initWindow();
