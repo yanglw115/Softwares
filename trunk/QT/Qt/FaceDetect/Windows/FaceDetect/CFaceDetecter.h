@@ -12,18 +12,29 @@
 #include "vs_charset.h"
 #include "CResultDetail.h"
 #include "CObjectResult.h"
+#include "faceDetect/faceLandmarkDetect.h"
 
 class CFaceDetecter: public QWidget
 {
 public:
     CFaceDetecter(QWidget * parent = 0, Qt::WindowFlags f = 0);
     virtual ~CFaceDetecter();
-    void startDetect(const QString &strImgPath, const enumItemType type);
+    void startDetect(const QString &strImgPath, const enumItemType type, const QWidget *const pWidgetMain);
     CObjectResult& getObjResultRef() { return *m_pObjResult; }
 
 private:
     void initWindow();
+    void detectPimples();
+    void detectBlackheads();
+    void detectFaceColor();
+    void detectPore();
+    void detectCoarseness();
 private:
+    vectorContours m_vectorFace;
+    bool m_bHasFace;
+    cv::Rect m_rectFace;
+    QString m_strImageName;
+    QString m_strImagePath;
     CObjectResult *m_pObjResult;
     QHBoxLayout *m_pHLayoutMain;
     QVBoxLayout *m_pVLayoutLeft;
