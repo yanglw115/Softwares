@@ -281,10 +281,12 @@ void MainWindow::startDetectItems(const enumItemType type)
         m_pCurDetecter = pDetecter;
         connect(m_pCurDetecter, SIGNAL(destroyed(QObject*)),
                 this, SLOT(slotCurDetecterDestroyed()));
+        setObjResultParamValue(m_pCurDetecter->getObjResultRef());
         m_pCurDetecter->startDetect(m_strDetectedImage, type);
     } else {
         if (m_paramsChanges) {
             if ((TYPE_ALL == type) || (m_paramsChanges & type)) {
+                setObjResultParamValue(m_pCurDetecter->getObjResultRef());
                 m_pCurDetecter->startDetect(m_strDetectedImage, type);
                 return;
             }
@@ -292,6 +294,11 @@ void MainWindow::startDetectItems(const enumItemType type)
         QMessageBox::warning(this, tr("面部特征检测"),
                              tr("图片和对应检测参数均未改变，无需重新检测!"));
     }
+}
+
+void MainWindow::setObjResultParamValue(CObjectResult &obj)
+{
+    //obj.m_objPimples.
 }
 
 void MainWindow::slotResetAllParameters()

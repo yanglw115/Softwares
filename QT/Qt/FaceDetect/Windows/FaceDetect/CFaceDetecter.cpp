@@ -22,10 +22,14 @@ CFaceDetecter::~CFaceDetecter()
 void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType type)
 {
     QFileInfo fileInfo(strImgPath);
-    if (faceDetect(fileInfo.fileName(), fileInfo.absoluteFilePath())) {
-        QMessageBox::information(this, "test", "Detect face!");
+    if (faceDetect(fileInfo.fileName().toStdString(), fileInfo.absoluteFilePath().toStdString())) {
+        qDebug() << "Detect face from image file: " << strImgPath;
     } else {
-        QMessageBox::information(this, "test", "Cannot detect face!");
+        if (TYPE_ALL == type) {
+            QMessageBox::critical(this, tr("面部特征检测"), tr("检测失败，没有检测到人脸，请确认图片!"));
+            this->deleteLater();
+            return;
+        }
     }
     this->show();
 }

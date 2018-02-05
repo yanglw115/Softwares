@@ -13,6 +13,7 @@
 #include "CLabelImageDrag.h"
 #include "glob.h"
 #include "CFaceDetecter.h"
+#include "CObjectResult.h"
 
 class MainWindow : public QMainWindow
 {
@@ -47,6 +48,7 @@ private slots:
 private:
     void initWidgets();
     void startDetectItems(const enumItemType type);
+    void setObjResultParamValue(CObjectResult &obj);
 private:
     int m_paramsChanges;
     QString m_strDetectedImage; // current detected image
