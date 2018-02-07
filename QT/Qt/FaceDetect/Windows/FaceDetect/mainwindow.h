@@ -50,7 +50,8 @@ private:
     void startDetectItems(const enumItemType type);
     void setObjResultParamValue(CObjectResult &obj);
 private:
-    int m_paramsChanges;
+    int m_paramsChanges; // 改变了的参数
+    int m_paramDetected; // 已检测过的项目
     QString m_strDetectedImage; // current detected image
     CFaceDetecter *m_pCurDetecter;
     QSplitter *m_pSplitter;
