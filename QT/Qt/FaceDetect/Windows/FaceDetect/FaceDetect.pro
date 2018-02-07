@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = FaceDetect
 TEMPLATE = app
 
+RC_FILE = resources/icons/mainIcon.rc
 
 SOURCES += main.cpp\
         mainwindow.cpp \

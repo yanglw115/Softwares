@@ -67,8 +67,8 @@ using namespace dlib;
 static bool g_bShapePredictorInited = false;
 static shape_predictor g_sp;
 
-const static string g_strCascadeName = "D:\\CureFaceParser\\data\\cascades\\lbpcascades\\lbpcascade_frontalface_improved.xml";
-const static string g_strFaceLandmarks = "D:\\CureFaceParser\\data\\shape_predictor_68_face_landmarks.dat";
+const static string g_strCascadeName = ".\\resources\\data\\cascades\\lbpcascades\\lbpcascade_frontalface_improved.xml";
+const static string g_strFaceLandmarks = ".\\resources\\data\\shape_predictor_68_face_landmarks.dat";
 HANDLE  g_hMutex = NULL;
 #define PTHREAD_MUTEX_LOCK() WaitForSingleObject(g_hMutex, INFINITE)
 #define PTHREAD_MUTEX_UNLOCK() ReleaseMutex(g_hMutex)
