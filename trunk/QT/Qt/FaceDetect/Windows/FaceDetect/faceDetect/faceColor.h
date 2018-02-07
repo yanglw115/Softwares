@@ -2,6 +2,7 @@
 #define __FACE_COLOR_H__
 
 #include "faceGlobal.h"
+#include "CObjectResult.h"
 
 #define Use_ITA
 
@@ -36,6 +37,7 @@ typedef enum {
 	Type_Color_YouHei = 5
 } enumFaceColorType;
 
-enumFaceColorType getFaceColorType(const string &, const cv::Mat &, const cv::Rect &);
+enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &matSrc, bool bHasFace,
+                                   const cv::Rect &rectFace, CObjectResult *pObjResult);
 
 #endif // __FACE_COLOR_H__

@@ -7,6 +7,7 @@
 
 #include <QString>
 #include <QtDebug>
+#include <QDir>
 #include <QDateTime>
 
 using namespace cv;
@@ -29,7 +30,9 @@ using namespace cv;
 #define MIN_COLOR_DIFF_G_R 20
 #define MAX_COLOR_BLACKHEADS 255
 
-int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, CObjectResult &objResult, Mat &matOut)
+static const string stdstrPoreType[] = {"细腻", "一般", "粗大"};
+
+int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, CObjectResult *objResult, Mat &matOut)
 {
 	Mat bw;
 	vectorContours vectorSpots;
@@ -66,13 +69,15 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, COb
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
 	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-    //qDebug() << strImageName << ": Detected contours counts：" << to_string(vectorSpots.size());
+    qDebug() << strImageName.c_str() << ": Detected contours counts: " << vectorSpots.size();
+    qDebug() << "MinArea: " << objResult->m_objPimples.m_dMinAreaSize;
+    qDebug() << "MaxArea: " << objResult->m_objPimples.m_dMaxAreaSize;
 	double areaSize = 0.0;
 	for (size_t i = 0; i < vectorSpots.size(); ++i)	{
-        //qDebug() << strImageName << ": Contour area size: " << to_string(fabs(contourArea(vectorSpots[i])));
+        qDebug() << strImageName.c_str() << ": Contour area size: " << fabs(contourArea(vectorSpots[i]));
 		/* 这里的值也需要调试 */
 		areaSize = fabs(contourArea(vectorSpots[i]));
-        if (areaSize > objResult.m_objPimples.m_dMinAreaSize && areaSize < objResult.m_objPimples.m_dMaxAreaSize) {
+        if (areaSize > objResult->m_objPimples.m_dMinAreaSize && areaSize < objResult->m_objPimples.m_dMaxAreaSize) {
 			//Rect minRect = boundingRect(Mat(vectorSpots[i]));
 			Rect minRect = minAreaRect(Mat(vectorSpots[i])).boundingRect();
 			/* 这里通过minAreaRect可能取到的矩形已经超出了图片边界，一般是最外的轮廓，所以要进行先处理 */
@@ -99,16 +104,23 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, COb
 
 			/* 这里根据颜色值进行一次过滤 */
 			//if (color[0] < 10 & color[1] > 70 & color[2] > 50) { // HSV
-            if (((int)(meanColorHLS[2]) >= objResult.m_objPimples.m_nMinLColorValue)
-                    && (meanColor[2] - meanColor[1] > objResult.m_objPimples.m_nMinRGDiffValue)) { // HLS的L值;RGB的G与B值差；
+            qDebug() << "mean HLS L: " << meanColorHLS[2];
+            qDebug() << "RG differ: " << meanColor[2] - meanColor[1];
+            qDebug() << "MinL: " << objResult->m_objPimples.m_nMinLColorValue;
+            qDebug() << "MaxRG diff: " << objResult->m_objPimples.m_nMinRGDiffValue;
+            if (((int)(meanColorHLS[2]) >= objResult->m_objPimples.m_nMinLColorValue)
+                    && (meanColor[2] - meanColor[1] > objResult->m_objPimples.m_nMinRGDiffValue)) { // HLS的L值;RGB的G与B值差；
 
 #endif // WITH_SPOTS_AS_PIMPLES
 				double ratio = minRect.width * 1.0 / minRect.height;
-                if ((ratio < objResult.m_objPimples.m_dMaxRatio) && (ratio > objResult.m_objPimples.m_dMinRatio)) {
+                qDebug() << "Ratio: " << ratio;
+                qDebug() << "MinRatio: " << objResult->m_objPimples.m_dMinRatio;
+                qDebug() << "MaxRatio: " << objResult->m_objPimples.m_dMaxRatio;
+                if ((ratio < objResult->m_objPimples.m_dMaxRatio) && (ratio > objResult->m_objPimples.m_dMinRatio)) {
                     Point2f center;
                     float radius = 0;
                     minEnclosingCircle(Mat(vectorSpots[i]), center, radius);
-                    circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
+                    circle(matOut, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
 #ifdef With_Debug_Show
 					Point2f center;
 					float radius = 0;
@@ -146,7 +158,7 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, COb
 }
 
 
-int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, CObjectResult &objResult, Mat &matOut)
+int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, CObjectResult *objResult, Mat &matOut)
 {
 	Mat bw;
 	vectorContours vectorSpots;
@@ -188,7 +200,7 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, 
         //qDebug() << strImageName << ": Contour area size: " << to_string(fabs(contourArea(vectorSpots[i])));
 		/* 这里的值也需要调试 */
 		areaSize = fabs(contourArea(vectorSpots[i]));
-        if (areaSize < objResult.m_objBlackheads.m_dMaxAreaSize) {
+        if (areaSize < objResult->m_objBlackheads.m_dMaxAreaSize) {
 			//Rect minRect = boundingRect(Mat(vectorSpots[i]));
 			Rect minRect = minAreaRect(Mat(vectorSpots[i])).boundingRect();
 			/* 这里通过minAreaRect可能取到的矩形已经超出了图片边界，一般是最外的轮廓，所以要进行先处理 */
@@ -209,9 +221,9 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, 
 			Scalar color = mean(imgroi);
 
 			/* 这里根据颜色值进行一次过滤 */
-            if ((int)(color[0] + color[1] + color[2]) / 3 <= objResult.m_objBlackheads.m_nMaxColor) {
+            if ((int)(color[0] + color[1] + color[2]) / 3 <= objResult->m_objBlackheads.m_nMaxColor) {
 				double ratio = minRect.width * 1.0 / minRect.height;
-                if ((ratio < objResult.m_objBlackheads.m_dMaxRatio) && (ratio > objResult.m_objBlackheads.m_dMinRatio)) {
+                if ((ratio < objResult->m_objBlackheads.m_dMaxRatio) && (ratio > objResult->m_objBlackheads.m_dMinRatio)) {
                     Point2f center;
                     float radius = 0;
                     minEnclosingCircle(Mat(vectorSpots[i]), center, radius);
@@ -251,7 +263,7 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, 
 }
 
 bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
-                   const vectorContours &faceContours, const enumItemType type, CObjectResult &objResult)
+                   const vectorContours &faceContours, const enumItemType type, CObjectResult *objResult)
 {
 	int nPimples = -1;
 	int nBlackHeadsNose = 0;
@@ -259,16 +271,23 @@ bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
     vector<int> vectorIntResult;
     vectorIntResult.resize(INDEX_VALUE_MAX);
 
+    qDebug() << objResult->m_objPimples.m_dMaxAreaSize;
+    qDebug() << objResult->m_objPimples.m_dMinAreaSize;
+
     if (!bHasFace && (TYPE_ALL == type)) {
         qCritical() << "Cannot detect all items without face.";
         return false;
     }
 
-    QString strImagePimple = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(strImageName)
+    //stringstream ss;
+    //ss << g_strImgTmpDir << strImageName << "pimples." << QDateTime::currentSecsSinceEpoch() << ".jpg";
+    QDir dir(".");
+    dir.mkpath(QString("%1%2").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0]));
+    QString strImagePimple = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
             .arg("pimples.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
-    QString strImageBlackheads = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(strImageName)
+    QString strImageBlackheads = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
             .arg("blackheads.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
-    QString strImagePore = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(strImageName)
+    QString strImagePore = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
             .arg("pore.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
     Mat matPimples, matBlackheads, matPore;
     matSrc.copyTo(matPimples);
@@ -289,21 +308,22 @@ bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
             /* 将画了轮廓的原图按照mask拷贝到masked；这里的mask只有轮廓部分颜色值是1，即只拷贝原图这块的内容到masked */
             matSrc.copyTo(masked, mask);
             /* imgSrc始终保持不变 */
-            drawContours(matPimples, faceContours, i, Scalar(0, 255, 0), -1);
+            drawContours(matPimples, faceContours, i, Scalar(0, 255, 0), 1);
             nPimples = findPimples(strImageName, matSrc, masked, objResult, matPimples);
+            qDebug() << "Detect pimples: " << nPimples;
             vectorIntResult[i] = nPimples;
 
             if (INDEX_CONTOUR_LEFT == i) {
-                drawContours(matPore, faceContours, i, Scalar(0, 255, 0), -1);
+                drawContours(matPore, faceContours, i, Scalar(0, 255, 0), 1);
                 nBlackHeadsFace = findBlackHeads(strImageName, matSrc, masked, objResult, matPore);
                 vectorIntResult[INDEX_VALUE_PORE_LEFT] = nBlackHeadsFace;
             } else if (INDEX_CONTOUR_RIGHT == i) {
-                drawContours(matPore, faceContours, i, Scalar(0, 255, 0), -1);
+                drawContours(matPore, faceContours, i, Scalar(0, 255, 0), 1);
                 nBlackHeadsFace = findBlackHeads(strImageName, matSrc, masked, objResult, matPore);
                 vectorIntResult[INDEX_VALUE_PORE_RIGHT] = nBlackHeadsFace;
                 nBlackHeadsFace += vectorIntResult[INDEX_VALUE_PORE_LEFT];
             } else if (INDEX_CONTOUR_NOSE == i) {
-                drawContours(matBlackheads, faceContours, i, Scalar(0, 255, 0), -1);
+                drawContours(matBlackheads, faceContours, i, Scalar(0, 255, 0), 1);
                 nBlackHeadsNose = findBlackHeads(strImageName, matSrc, masked, objResult, matBlackheads);
                 vectorIntResult[INDEX_VALUE_BLACKHEADS] = nBlackHeadsNose;
             }
@@ -318,12 +338,53 @@ bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
             vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_SMOOTH;
         }
 
-        imwrite(strImagePimple, matPimples);
-        imwrite(strImageBlackheads, matBlackheads);
-        imwrite(strImagePore, matPore);
-        #copy data to objResult;
-    } else {
+        imwrite(strImagePimple.toStdString(), matPimples);
+        imwrite(strImageBlackheads.toStdString(), matBlackheads);
+        imwrite(strImagePore.toStdString(), matPore);
 
+        objResult->m_objPimples.m_strImgPath = strImagePimple;
+        objResult->m_objPimples.m_strLeft = QString("%1").arg(vectorIntResult[INDEX_VALUE_LEFT]);
+        objResult->m_objPimples.m_strRight = QString("%1").arg(vectorIntResult[INDEX_VALUE_RIGHT]);
+        objResult->m_objPimples.m_strForehead = QString("%1").arg(vectorIntResult[INDEX_VALUE_FOREHEAD]);
+        objResult->m_objPimples.m_strJaw = QString("%1").arg(vectorIntResult[INDEX_VALUE_JAW]);
+        objResult->m_objPimples.m_strNose = QString("%1").arg(vectorIntResult[INDEX_VALUE_NOSE]);
+
+        objResult->m_objBlackheads.m_strImgPath = strImageBlackheads;
+        objResult->m_objBlackheads.m_strCounts = QString("%1").arg(vectorIntResult[INDEX_VALUE_BLACKHEADS]);
+
+        objResult->m_objPore.m_strImgPath = strImagePore;
+        objResult->m_objPore.m_strLeft = QString("%1").arg(vectorIntResult[INDEX_VALUE_PORE_LEFT]);
+        objResult->m_objPore.m_strRight = QString("%1").arg(vectorIntResult[INDEX_VALUE_PORE_RIGHT]);
+        objResult->m_objPore.m_strPoreType = QString("%1").arg(stdstrPoreType[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str());
+
+    } else {
+        Mat matMask;
+        matSrc.copyTo(matMask);
+
+        switch (type) {
+        case TYPE_PIMPLES:
+            nPimples = findPimples(strImageName, matSrc, matMask, objResult, matPimples);
+            objResult->m_objPimples.m_strImgPath = strImagePimple;
+            objResult->m_objPimples.m_strLeft = QString("%1").arg(nPimples);
+            imwrite(strImagePimple.toStdString(), matPimples);
+            break;
+        case TYPE_BLACKHEADS:
+            nBlackHeadsNose = findBlackHeads(strImageName, matSrc, matMask, objResult, matBlackheads);
+            objResult->m_objBlackheads.m_strImgPath = strImageBlackheads;
+            objResult->m_objBlackheads.m_strCounts = QString("%1").arg(nBlackHeadsNose);
+            imwrite(strImageBlackheads.toStdString(), matBlackheads);
+            break;
+        case TYPE_PORE:
+            nBlackHeadsFace = findBlackHeads(strImageName, matSrc, matMask, objResult, matPore);
+            objResult->m_objPore.m_strImgPath = strImagePore;
+            objResult->m_objPore.m_strLeft = QString("%1").arg(nBlackHeadsFace);
+            objResult->m_objPore.m_strRight = QString("");
+            objResult->m_objPore.m_strPoreType = QString("无面部检测结果");
+            imwrite(strImagePore.toStdString(), matPore);
+            break;
+        default:
+            break;
+        }
     }
 
 #ifdef WITH_SPOTS_AS_PIMPLES
