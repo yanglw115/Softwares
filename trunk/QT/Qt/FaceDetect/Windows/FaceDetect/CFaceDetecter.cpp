@@ -2,6 +2,7 @@
 #include <QMessageBox>
 
 #include "CFaceDetecter.h"
+#include "vs_charset.h"
 
 CFaceDetecter::CFaceDetecter(QWidget * parent, Qt::WindowFlags f)
     : QWidget(parent, f)
@@ -18,17 +19,17 @@ CFaceDetecter::~CFaceDetecter()
 
 }
 
-void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType type, const QWidget *const pWidgetMain)
+void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType type, QWidget *pWidgetMain)
 {
     QFileInfo fileInfo(strImgPath);
-    enumTypeResult nHasFace = false;
+    enumTypeResult nHasFace = TYPE_ERROR;
     m_strImageName = fileInfo.fileName();
     m_strImagePath = fileInfo.absoluteFilePath();
-    cv::Mat matSrc = cv::imread(m_strImagePath);
+    cv::Mat matSrc = cv::imread(m_strImagePath.toStdString());
     if ((matSrc.cols > 1280 && matSrc.rows > 720) ||
             (matSrc.rows > 1280 && matSrc.cols > 720)) {
         if (matSrc.cols > matSrc.rows) {
-            cv::resize(matSrc, matSrc, cv::Size(1280, 1280 * matSrc.rows / matSrc.cols);
+            cv::resize(matSrc, matSrc, cv::Size(1280, 1280 * matSrc.rows / matSrc.cols));
         } else {
             cv::resize(matSrc, matSrc, cv::Size(1280 * matSrc.cols / matSrc.rows, 1280));
         }
@@ -63,22 +64,22 @@ void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType ty
 
     switch (type) {
     case TYPE_ALL:
-        detectPimples();
+        detectAll(matSrc);
         break;
     case TYPE_PIMPLES:
-
+        detectPimples(matSrc);
         break;
     case TYPE_BLACKHEADS:
-
+        detectBlackheads(matSrc);
         break;
     case TYPE_FACE_COLORE:
-
+        detectFaceColor(matSrc);
         break;
     case TYPE_PORE:
-
+        detectPore(matSrc);
         break;
     case TYPE_COARSENESS:
-
+        detectCoarseness(matSrc);
         break;
     default:
         break;
@@ -103,8 +104,8 @@ void CFaceDetecter::initWindow()
     m_pListWidget = new QListWidget(this);
     m_pListWidget->setSpacing(5);
     m_pListWidget->addItem(tr("痘痘"));
-    m_pListWidget->addItem(tr("肤色"));
     m_pListWidget->addItem(tr("黑头"));
+    m_pListWidget->addItem(tr("肤色"));
     m_pListWidget->addItem(tr("毛孔粗大度"));
     m_pListWidget->addItem(tr("皮肤光滑度"));
     m_pDetailPimples = new CResultDetail(TYPE_PIMPLES, this);
@@ -134,7 +135,57 @@ void CFaceDetecter::initWindow()
     this->setLayout(m_pHLayoutMain);
 }
 
-void CFaceDetecter::detectPimples()
+void CFaceDetecter::detectAll(const cv::Mat &srcMat)
 {
+    detectPimples(srcMat);
+    detectBlackheads(srcMat);
+    detectFaceColor(srcMat);
+    detectPore(srcMat);
+    detectCoarseness(srcMat);
+}
 
+void CFaceDetecter::detectPimples(const cv::Mat &srcMat)
+{
+    findFaceSpots(m_strImageName.toStdString(), srcMat,
+                  m_bHasFace, m_vectorFace, TYPE_PIMPLES, m_pObjResult);
+    m_pDetailPimples->setImagePath(m_pObjResult->m_objPimples.m_strImgPath);
+    m_pDetailPimples->setData(m_pObjResult->m_objPimples.m_strLeft, m_pObjResult->m_objPimples.m_strRight,
+                              m_pObjResult->m_objPimples.m_strForehead, m_pObjResult->m_objPimples.m_strJaw,
+                              m_pObjResult->m_objPimples.m_strNose);
+}
+
+void CFaceDetecter::detectBlackheads(const cv::Mat &srcMat)
+{
+    findFaceSpots(m_strImageName.toStdString(), srcMat,
+                  m_bHasFace, m_vectorFace, TYPE_BLACKHEADS, m_pObjResult);
+    m_pDetailBlackheads->setImagePath(m_pObjResult->m_objBlackheads.m_strImgPath);
+    m_pDetailBlackheads->setData(m_pObjResult->m_objBlackheads.m_strCounts);
+}
+
+void CFaceDetecter::detectFaceColor(const cv::Mat &srcMat)
+{
+    getFaceColorType(m_strImageName.toStdString(), srcMat, m_bHasFace, m_rectFace, m_pObjResult);
+    m_pDetailFaceColor->setImagePath(m_pObjResult->m_objFaceColor.m_strImgPath);
+    m_pDetailFaceColor->setData(m_pObjResult->m_objFaceColor.m_strColorType,
+                                m_pObjResult->m_objFaceColor.m_strColorValue);
+}
+
+void CFaceDetecter::detectPore(const cv::Mat &srcMat)
+{
+    findFaceSpots(m_strImageName.toStdString(), srcMat,
+                  m_bHasFace, m_vectorFace, TYPE_PORE, m_pObjResult);
+    m_pDetailPore->setImagePath(m_pObjResult->m_objPore.m_strImgPath);
+    m_pDetailPore->setData(m_pObjResult->m_objPore.m_strPoreType, m_pObjResult->m_objPore.m_strLeft,
+                           m_pObjResult->m_objPore.m_strRight);
+}
+
+void CFaceDetecter::detectCoarseness(const cv::Mat &srcMat)
+{
+    cv::Rect rect;
+    if (m_bHasFace) {
+        rect = cv::Rect(m_vectorFace[INDEX_CONTOUR_FACE][0], m_vectorFace[INDEX_CONTOUR_FACE][2]);
+    }
+    getFaceCoarseness(m_strImageName.toStdString(), srcMat, m_bHasFace, rect, m_pObjResult);
+    m_pDetailCoarse->setImagePath(m_pObjResult->m_objCoarse.m_strImgPath);
+    m_pDetailCoarse->setData(m_pObjResult->m_objCoarse.m_strCoarseType, m_pObjResult->m_objCoarse.m_strValue);
 }

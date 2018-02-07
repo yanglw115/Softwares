@@ -13,22 +13,26 @@
 #include "CResultDetail.h"
 #include "CObjectResult.h"
 #include "faceDetect/faceLandmarkDetect.h"
+#include "faceDetect/faceSpotsDetect.h"
+#include "faceDetect/faceColor.h"
+#include "faceDetect/faceTamura.h"
 
 class CFaceDetecter: public QWidget
 {
 public:
     CFaceDetecter(QWidget * parent = 0, Qt::WindowFlags f = 0);
     virtual ~CFaceDetecter();
-    void startDetect(const QString &strImgPath, const enumItemType type, const QWidget *const pWidgetMain);
+    void startDetect(const QString &strImgPath, const enumItemType type, QWidget *pWidgetMain);
     CObjectResult& getObjResultRef() { return *m_pObjResult; }
 
 private:
     void initWindow();
-    void detectPimples();
-    void detectBlackheads();
-    void detectFaceColor();
-    void detectPore();
-    void detectCoarseness();
+    void detectAll(const cv::Mat &srcMat);
+    void detectPimples(const cv::Mat &srcMat);
+    void detectBlackheads(const cv::Mat &srcMat);
+    void detectFaceColor(const cv::Mat &srcMat);
+    void detectPore(const cv::Mat &srcMat);
+    void detectCoarseness(const cv::Mat &srcMat);
 private:
     vectorContours m_vectorFace;
     bool m_bHasFace;

@@ -10,5 +10,7 @@ enum enumItemType {
     TYPE_COARSENESS = 0x10
 };
 
+#define g_strImgTmpDir "./tmp/"
+
 #endif // GLOB
 
