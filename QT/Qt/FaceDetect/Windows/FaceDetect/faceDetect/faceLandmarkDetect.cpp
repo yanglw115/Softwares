@@ -239,7 +239,7 @@ enumTypeResult faceLandmarkDetect(const string &strImageName, const cv::Mat &mat
 	matSrc.copyTo(matDebug);
 
 	for (uint i = 0; i < shape.num_parts(); ++i) {
-		cv::circle(matDebug, cv::Point(shape.part(i).x(), shape.part(i).y()), 5, cv::Scalar(0, 255, 0), 2, cv::FILLED);
+        cv::circle(matDebug, cv::Point(shape.part(i).x(), shape.part(i).y()), 5, cv::Scalar(0, 255, 255), 2, cv::FILLED);
 	}
 	cv::namedWindow("68点区域", cv::WINDOW_NORMAL);
 	cv::imshow("68点区域", matDebug);
