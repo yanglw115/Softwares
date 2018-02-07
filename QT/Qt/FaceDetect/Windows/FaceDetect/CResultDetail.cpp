@@ -41,7 +41,7 @@ CResultDetail::CResultDetail(enumItemType type, QWidget *parent)
         m_pLabelItem->setText(tr("黑头："));
         m_pGridData->addWidget(m_pEditTop, 0, 0);
         break;
-    case TYPE_FACE_COLORE:
+    case TYPE_FACE_COLOR:
         m_pEditMiddle1 = new QLineEdit(this);
         m_pLabelItem->setText(tr("肤色："));
         m_pGridData->addWidget(m_pEditTop, 0, 0);

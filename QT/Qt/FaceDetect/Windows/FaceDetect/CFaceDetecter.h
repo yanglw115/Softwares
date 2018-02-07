@@ -17,6 +17,14 @@
 #include "faceDetect/faceColor.h"
 #include "faceDetect/faceTamura.h"
 
+enum enumRowItem {
+    ROW_PIMPLES = 0,
+    ROW_BLACKHEADS,
+    ROW_FACE_COLOR,
+    ROW_PORE,
+    ROW_COARSENESS
+};
+
 class CFaceDetecter: public QWidget
 {
 public:
@@ -33,6 +41,7 @@ private:
     void detectFaceColor(const cv::Mat &srcMat);
     void detectPore(const cv::Mat &srcMat);
     void detectCoarseness(const cv::Mat &srcMat);
+    void showListItems(const enumItemType type);
 private:
     vectorContours m_vectorFace;
     bool m_bHasFace;

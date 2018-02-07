@@ -68,23 +68,30 @@ void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType ty
         break;
     case TYPE_PIMPLES:
         detectPimples(matSrc);
+        m_pListWidget->setCurrentRow(ROW_PIMPLES);
         break;
     case TYPE_BLACKHEADS:
         detectBlackheads(matSrc);
+        m_pListWidget->setCurrentRow(ROW_BLACKHEADS);
         break;
-    case TYPE_FACE_COLORE:
+    case TYPE_FACE_COLOR:
         detectFaceColor(matSrc);
+        m_pListWidget->setCurrentRow(ROW_FACE_COLOR);
         break;
     case TYPE_PORE:
         detectPore(matSrc);
+        m_pListWidget->setCurrentRow(ROW_PORE);
         break;
     case TYPE_COARSENESS:
         detectCoarseness(matSrc);
+        m_pListWidget->setCurrentRow(ROW_COARSENESS);
         break;
     default:
         break;
     }
+    showListItems(type);
     this->show();
+    this->activateWindow();
     pWidgetMain->setDisabled(false); // 主界面使能打开
 }
 
@@ -101,6 +108,7 @@ void CFaceDetecter::initWindow()
     m_pLineRight->setFrameShape(QFrame::HLine);
     m_pLineMiddle = new QFrame(this);
     m_pLineMiddle->setFrameShape(QFrame::VLine);
+
     m_pListWidget = new QListWidget(this);
     m_pListWidget->setSpacing(5);
     m_pListWidget->addItem(tr("痘痘"));
@@ -108,9 +116,15 @@ void CFaceDetecter::initWindow()
     m_pListWidget->addItem(tr("肤色"));
     m_pListWidget->addItem(tr("毛孔粗大度"));
     m_pListWidget->addItem(tr("皮肤光滑度"));
+    m_pListWidget->item(ROW_PIMPLES)->setHidden(true);
+    m_pListWidget->item(ROW_BLACKHEADS)->setHidden(true);
+    m_pListWidget->item(ROW_FACE_COLOR)->setHidden(true);
+    m_pListWidget->item(ROW_PORE)->setHidden(true);
+    m_pListWidget->item(ROW_COARSENESS)->setHidden(true);
+
     m_pDetailPimples = new CResultDetail(TYPE_PIMPLES, this);
     m_pDetailBlackheads = new CResultDetail(TYPE_BLACKHEADS, this);
-    m_pDetailFaceColor = new CResultDetail(TYPE_FACE_COLORE, this);
+    m_pDetailFaceColor = new CResultDetail(TYPE_FACE_COLOR, this);
     m_pDetailPore = new CResultDetail(TYPE_PORE, this);
     m_pDetailCoarse = new CResultDetail(TYPE_COARSENESS, this);
     m_pStacked = new QStackedWidget(this);
@@ -119,6 +133,7 @@ void CFaceDetecter::initWindow()
     m_pStacked->addWidget(m_pDetailFaceColor);
     m_pStacked->addWidget(m_pDetailPore);
     m_pStacked->addWidget(m_pDetailCoarse);
+    m_pStacked->setHidden(true);
     connect(m_pListWidget, SIGNAL(currentRowChanged(int)), m_pStacked, SLOT(setCurrentIndex(int)));
 
     m_pVLayoutLeft->addWidget(m_pLabelResult, 0, Qt::AlignHCenter);
@@ -188,4 +203,32 @@ void CFaceDetecter::detectCoarseness(const cv::Mat &srcMat)
     getFaceCoarseness(m_strImageName.toStdString(), srcMat, m_bHasFace, rect, m_pObjResult);
     m_pDetailCoarse->setImagePath(m_pObjResult->m_objCoarse.m_strImgPath);
     m_pDetailCoarse->setData(m_pObjResult->m_objCoarse.m_strCoarseType, m_pObjResult->m_objCoarse.m_strValue);
+}
+
+void CFaceDetecter::showListItems(const enumItemType type)
+{
+    if (m_pStacked->isHidden()) {
+        m_pStacked->show();
+    }
+    if (type & TYPE_PIMPLES) {
+        if (m_pListWidget->item(ROW_PIMPLES)->isHidden()) {
+            m_pListWidget->item(ROW_PIMPLES)->setHidden(false);
+        }
+    } else if (type & TYPE_BLACKHEADS) {
+        if (m_pListWidget->item(ROW_BLACKHEADS)->isHidden()) {
+            m_pListWidget->item(ROW_BLACKHEADS)->setHidden(false);
+        }
+    } else if (type & TYPE_FACE_COLOR) {
+        if (m_pListWidget->item(ROW_FACE_COLOR)->isHidden()) {
+            m_pListWidget->item(ROW_FACE_COLOR)->setHidden(false);
+        }
+    } else if (type & TYPE_PORE) {
+        if (m_pListWidget->item(ROW_PORE)->isHidden()) {
+            m_pListWidget->item(ROW_PORE)->setHidden(false);
+        }
+    } else if (type & TYPE_COARSENESS) {
+        if (m_pListWidget->item(ROW_COARSENESS)->isHidden()) {
+            m_pListWidget->item(ROW_COARSENESS)->setHidden(false);
+        }
+    }
 }

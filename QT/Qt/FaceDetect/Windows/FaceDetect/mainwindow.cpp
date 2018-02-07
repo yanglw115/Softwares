@@ -395,7 +395,7 @@ void MainWindow::slotDetectBlackheads()
 
 void MainWindow::slotDetectFaceColor()
 {
-    startDetectItems(TYPE_FACE_COLORE);
+    startDetectItems(TYPE_FACE_COLOR);
 }
 
 void MainWindow::slotDetectPore()
@@ -420,7 +420,7 @@ void MainWindow::slotParamsChangedBlackheads()
 
 void MainWindow::slotParamsChangedFaceColor()
 {
-    m_paramsChanges |= TYPE_FACE_COLORE;
+    m_paramsChanges |= TYPE_FACE_COLOR;
 }
 
 void MainWindow::slotParamsChangedPore()
