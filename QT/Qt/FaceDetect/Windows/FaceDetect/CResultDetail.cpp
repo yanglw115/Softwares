@@ -8,7 +8,7 @@ CResultDetail::CResultDetail(enumItemType type, QWidget *parent)
     , m_type(type)
 {
     m_pLabelImage = new QLabel(this);
-    m_pLabelImage->setFixedSize(360, 540);
+    m_pLabelImage->setFixedSize(500, 500);
     m_pLabelItem = new QLabel(this);
     m_pEditTop = new QLineEdit(this);
 
@@ -18,7 +18,7 @@ CResultDetail::CResultDetail(enumItemType type, QWidget *parent)
 
     m_pVLayoutMain->addWidget(m_pLabelImage, 0, Qt::AlignHCenter);
     m_pVLayoutMain->addLayout(m_pHLayoutData);
-    m_pHLayoutData->addStretch(1);
+    //m_pHLayoutData->addStretch(1);
     m_pHLayoutData->addWidget(m_pLabelItem);
     m_pHLayoutData->addLayout(m_pGridData);
     m_pHLayoutData->addStretch(1);

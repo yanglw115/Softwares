@@ -118,15 +118,15 @@ public:
         QString m_strImgPath;
         QString m_strValue;
         QString m_strCoarseType;
-        int m_nRough;
-        int m_nNormal;
+        double m_dRough;
+        double m_dNormal;
         CCoarseness &operator = (const CCoarseness &obj)
         {
             m_strImgPath = obj.m_strImgPath;
             m_strValue = obj.m_strValue;
             m_strCoarseType = obj.m_strCoarseType;
-            m_nRough = obj.m_nRough;
-            m_nNormal = obj.m_nNormal;
+            m_dRough = obj.m_dRough;
+            m_dNormal = obj.m_dNormal;
         }
     };
 

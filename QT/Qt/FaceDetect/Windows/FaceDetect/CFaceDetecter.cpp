@@ -8,7 +8,7 @@ CFaceDetecter::CFaceDetecter(QWidget * parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
     this->hide();
-    this->setFixedSize(800, 600);
+    this->setFixedSize(800, 700);
     initWindow();
     m_pObjResult = new CObjectResult(this);
 }
@@ -164,9 +164,9 @@ void CFaceDetecter::detectPimples(const cv::Mat &srcMat)
     findFaceSpots(m_strImageName.toStdString(), srcMat,
                   m_bHasFace, m_vectorFace, TYPE_PIMPLES, m_pObjResult);
     m_pDetailPimples->setImagePath(m_pObjResult->m_objPimples.m_strImgPath);
-    m_pDetailPimples->setData(m_pObjResult->m_objPimples.m_strLeft, m_pObjResult->m_objPimples.m_strRight,
-                              m_pObjResult->m_objPimples.m_strForehead, m_pObjResult->m_objPimples.m_strJaw,
-                              m_pObjResult->m_objPimples.m_strNose);
+    m_pDetailPimples->setData(m_pObjResult->m_objPimples.m_strForehead, m_pObjResult->m_objPimples.m_strRight,
+                              m_pObjResult->m_objPimples.m_strNose, m_pObjResult->m_objPimples.m_strLeft,
+                              m_pObjResult->m_objPimples.m_strJaw);
 }
 
 void CFaceDetecter::detectBlackheads(const cv::Mat &srcMat)
@@ -214,19 +214,23 @@ void CFaceDetecter::showListItems(const enumItemType type)
         if (m_pListWidget->item(ROW_PIMPLES)->isHidden()) {
             m_pListWidget->item(ROW_PIMPLES)->setHidden(false);
         }
-    } else if (type & TYPE_BLACKHEADS) {
+    }
+    if (type & TYPE_BLACKHEADS) {
         if (m_pListWidget->item(ROW_BLACKHEADS)->isHidden()) {
             m_pListWidget->item(ROW_BLACKHEADS)->setHidden(false);
         }
-    } else if (type & TYPE_FACE_COLOR) {
+    }
+    if (type & TYPE_FACE_COLOR) {
         if (m_pListWidget->item(ROW_FACE_COLOR)->isHidden()) {
             m_pListWidget->item(ROW_FACE_COLOR)->setHidden(false);
         }
-    } else if (type & TYPE_PORE) {
+    }
+    if (type & TYPE_PORE) {
         if (m_pListWidget->item(ROW_PORE)->isHidden()) {
             m_pListWidget->item(ROW_PORE)->setHidden(false);
         }
-    } else if (type & TYPE_COARSENESS) {
+    }
+    if (type & TYPE_COARSENESS) {
         if (m_pListWidget->item(ROW_COARSENESS)->isHidden()) {
             m_pListWidget->item(ROW_COARSENESS)->setHidden(false);
         }
