@@ -3,4 +3,8 @@
         <file alias="photo.png">resources/photo.png</file>
         <file alias="photo.jpg">resources/photo.jpg</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file alias="main.png">resources/icons/myIcon.png</file>
+        <file alias="result.png">resources/icons/result.png</file>
+    </qresource>
 </RCC>
