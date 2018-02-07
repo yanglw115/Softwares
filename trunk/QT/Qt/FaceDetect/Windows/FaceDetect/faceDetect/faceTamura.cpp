@@ -41,7 +41,7 @@ double getFaceCoarseness(const string strImageName, const cv::Mat& matSrc, bool 
         vectorShape[2] = Point(rectFace.x + rectFace.width, rectFace.y + rectFace.height);
         vectorShape[3] = Point(rectFace.x + rectFace.width, rectFace.y);
         faceContours.push_back(vectorShape);
-        drawContours(matOutput, faceContours, 0, Scalar(255, 255, 0), 1);
+        drawContours(matOutput, faceContours, 0, Scalar(0, 255, 0), 1);
     } else {
         matSrc.copyTo(matFace);
     }

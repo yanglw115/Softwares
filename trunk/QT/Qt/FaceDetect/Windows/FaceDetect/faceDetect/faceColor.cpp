@@ -14,7 +14,7 @@
 
 using namespace cv;
 
-static const char *g_colorString[] = {
+static const string g_colorString[] = {
     "透白",
     "白皙",
     "自然",
@@ -89,7 +89,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &ma
         mask = 0;
         /* 这里取的是向量数据第5索引，即整个面部的正中矩形 */
         drawContours(mask, faceContours, 0, Scalar(255), -1);
-        drawContours(matOutput, faceContours, 0, Scalar(255, 255, 0), 1);
+        drawContours(matOutput, faceContours, 0, Scalar(0, 255, 0), 1);
 
         matSrc.copyTo(imageFace, mask);
         /* 只取脸部代表颜色的关键区域 */
@@ -131,7 +131,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &ma
 
     imwrite(strPathFaceColor.toStdString(), matOutput);
     pObjResult->m_objFaceColor.m_strImgPath = strPathFaceColor;
-    pObjResult->m_objFaceColor.m_strColorType = QString(g_colorString[type]);
+    pObjResult->m_objFaceColor.m_strColorType = QString(g_colorString[type].c_str());
     pObjResult->m_objFaceColor.m_strColorValue = QString("%1").arg(maxColorValue);
 
 #if 0
