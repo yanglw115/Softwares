@@ -174,7 +174,7 @@ enumTypeResult faceLandmarkDetect(const string &strImageName, const cv::Mat &mat
 	//pyramid_up(img); 手动去掉
 
     if (matSrc.empty()) {
-        qCritical() << "Image file is not supported: " << QString(strImagePath.c_str());
+        qCritical() << "Image file is not supported: " << strImageName.c_str();
         return TYPE_ERROR;
     }
 

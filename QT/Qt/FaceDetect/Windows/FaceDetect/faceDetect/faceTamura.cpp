@@ -7,16 +7,66 @@
 using namespace cv;
 using namespace std;
 
-double getFaceCoarseness(const Mat& matSrc, Rect rect)
+#include <QDir>
+#include <QDateTime>
+
+#include "glob.h"
+
+static string g_stdstrCoarseList[] = {
+    "粗糙",
+    "一般",
+    "光滑"
+};
+
+double getFaceCoarseness(const string strImageName, const cv::Mat& matSrc, bool bHasFace,
+                         cv::Rect &rectFace, CObjectResult *pObjResult)
 {
-	Mat matFace(matSrc, rect);
+    Mat matFace;
+    QDir dir(".");
+    dir.mkpath(QString("%1%2").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0]));
+    QString strPathCoarse = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
+            .arg("faceCoareness.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
+    Mat matOutput;
+    matSrc.copyTo(matOutput);
+
+    if (bHasFace) {
+        Mat matTmp(matSrc, rectFace);
+        matTmp.copyTo(matFace);
+
+        vectorContours faceContours;
+        vector<Point> vectorShape;
+        vectorShape.resize(4);
+        vectorShape[0] = Point(rectFace.x, rectFace.y);
+        vectorShape[1] = Point(rectFace.x, rectFace.y + rectFace.height);
+        vectorShape[2] = Point(rectFace.x + rectFace.width, rectFace.y + rectFace.height);
+        vectorShape[3] = Point(rectFace.x + rectFace.width, rectFace.y);
+        faceContours.push_back(vectorShape);
+        drawContours(matOutput, faceContours, 0, Scalar(255, 255, 0), 1);
+    } else {
+        matSrc.copyTo(matFace);
+    }
+
 	cvtColor(matFace, matFace, COLOR_BGR2GRAY);
 	double fCoarseness = tamuraCalCoarseness(matFace);
 	//double fContrast = tamuraCalContrast(matFace);
 	//double fDirectionality = tamuraCalDirectionality(matFace);
-	cout << "Data rect: " << rect << endl;
+    //cout << "Data rect: " << rect << endl;
 
-#ifdef With_Debug
+    string strType;
+    if (fCoarseness > pObjResult->m_objCoarse.m_nRough) {
+        strType = g_stdstrCoarseList[0];
+    } else if (fCoarseness > pObjResult->m_objCoarse.m_nNormal) {
+        strType = g_stdstrCoarseList[1];
+    } else {
+        strType = g_stdstrCoarseList[2];
+    }
+
+    imwrite(strPathCoarse.toStdString(), matOutput);
+    pObjResult->m_objCoarse.m_strImgPath = strPathCoarse;
+    pObjResult->m_objCoarse.m_strCoarseType = QString(strType.c_str());
+    pObjResult->m_objCoarse.m_strValue = QString("%1").arg(fCoarseness);
+
+#ifdef With_Debug_Show
 	Mat matDebug;
 	matSrc.copyTo(matDebug);
 	//putText(matDebug, format("%f:%f:%f", fCoarseness, fContrast, fDirectionality), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.3, Scalar(0, 0, 255), 2);
@@ -26,7 +76,7 @@ double getFaceCoarseness(const Mat& matSrc, Rect rect)
 	namedWindow("皮肤粗糙度：", WINDOW_NORMAL);
 	imshow("皮肤粗糙度：", matDebug);
 	waitKey();
-#endif // With_Debug
+#endif // With_Debug_Show
 
 	//return fCoarseness + fContrast;
 	return fCoarseness;

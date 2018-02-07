@@ -1,24 +1,26 @@
 ﻿
 #include "faceColor.h"
 
-#ifdef With_Debug
-#include "opencv2/highgui/highgui.hpp"    
-#endif // With_Debug
 #include "opencv2/imgproc/imgproc.hpp"    
-#include <iostream>    
+#include "faceGlobal.h"
+#include "glob.h"
+
+#include <iostream>
 #include <stdio.h>
 #include <math.h>
-#include "faceGlobal.h"
+
+#include <QDir>
+#include <QDateTime>
 
 using namespace cv;
 
 static const char *g_colorString[] = {
-	"tou bai",
-	"bai xi",
-	"zi ran",
-	"xiao mai",
-	"an chen",
-	"you hei"
+    "透白",
+    "白皙",
+    "自然",
+    "小麦",
+    "暗沉",
+    "幽默"
 };
 
 MatND getHistogram(Mat &image)
@@ -46,44 +48,60 @@ Mat getHistogramImage(const string &strImageName, Mat &image, double *pColorValu
         //<< ", max value: " << to_string(maxValue);
 	*pColorValue = maxPoint.y;
 
-#ifdef With_Debug
+#ifdef With_Debug_Show
 	for (int i = 0; i < 256; i++) {
 		float value = hist.at<float>(i);
 		int intensity = saturate_cast<int>(256 - 256 * (value / maxValue));
 		rectangle(showImage, Point(i, 256 - 1), Point((i + 1) - 1, intensity), Scalar(0, 0, 255));
 	}
-#endif // With_Debug
+#endif // With_Debug_Show
 
 	return showImage;
 }
 
-enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &imageSrc, const cv::Rect &rectFace)
+enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &matSrc, bool bHasFace,
+                                   const cv::Rect &rectFace, CObjectResult *pObjResult)
 {
 	double maxColorValue = -1;
 	enumFaceColorType type = Type_Color_TouBai;
 
-	vectorContours faceContours;
-	vector<Point> vectorShape;
-	vectorShape.resize(4);
-	vectorShape[0] = Point(rectFace.x, rectFace.y);
-	vectorShape[1] = Point(rectFace.x, rectFace.y + rectFace.height);
-	vectorShape[2] = Point(rectFace.x + rectFace.width, rectFace.y + rectFace.height);
-	vectorShape[3] = Point(rectFace.x + rectFace.width, rectFace.y);
-	faceContours.push_back(vectorShape);
+    QDir dir(".");
+    dir.mkpath(QString("%1%2").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0]));
+    QString strPathFaceColor = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
+            .arg("faceColor.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
+    Mat matOutput;
+    matSrc.copyTo(matOutput);
 
-	Mat imageFace(imageSrc.size(), CV_8UC3);
-	Mat mask(imageSrc.size(), CV_8UC1);
-	mask = 0;
-	/* 这里取的是向量数据第5索引，即整个面部的正中矩形 */
-	drawContours(mask, faceContours, 0, Scalar(255), -1);
+    Mat imageColor;
 
-	imageSrc.copyTo(imageFace, mask);
-	/* 只取脸部代表颜色的关键区域 */
-	Mat imageColor(imageFace, rectFace);
-	if (!imageColor.data) {
-        //qWarning() << strImageName << ": Fail to load the image";
-		return type;
-	}
+    if (bHasFace) {
+        vectorContours faceContours;
+        vector<Point> vectorShape;
+        vectorShape.resize(4);
+        vectorShape[0] = Point(rectFace.x, rectFace.y);
+        vectorShape[1] = Point(rectFace.x, rectFace.y + rectFace.height);
+        vectorShape[2] = Point(rectFace.x + rectFace.width, rectFace.y + rectFace.height);
+        vectorShape[3] = Point(rectFace.x + rectFace.width, rectFace.y);
+        faceContours.push_back(vectorShape);
+
+        Mat imageFace(matSrc.size(), CV_8UC3);
+        Mat mask(matSrc.size(), CV_8UC1);
+        mask = 0;
+        /* 这里取的是向量数据第5索引，即整个面部的正中矩形 */
+        drawContours(mask, faceContours, 0, Scalar(255), -1);
+        drawContours(matOutput, faceContours, 0, Scalar(255, 255, 0), 1);
+
+        matSrc.copyTo(imageFace, mask);
+        /* 只取脸部代表颜色的关键区域 */
+        Mat matImageTemp(imageFace, rectFace);
+        matImageTemp.copyTo(imageColor);
+        if (!imageColor.data) {
+            qWarning() << strImageName.c_str() << ": Fail to load the image";
+            return type;
+        }
+    } else {
+        matSrc.copyTo(imageColor);
+    }
 
 #ifdef Use_ITA
 	Mat imageTemp(imageColor.size(), CV_8UC3);
@@ -97,31 +115,36 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
    	Mat imageResult = getHistogramImage(strImageName, imageColor, &maxColorValue);
 #endif // Use_ITA
 
-	if (maxColorValue >= TouBai) {
+    if (maxColorValue >= pObjResult->m_objFaceColor.m_nTouBai) {
 		type = Type_Color_TouBai;
-	} else if (maxColorValue >= BaiXi) {
+    } else if (maxColorValue >= pObjResult->m_objFaceColor.m_nBaiXi) {
 		type = Type_Color_BaiXi;
-	} else if (maxColorValue >= ZiRan) {
+    } else if (maxColorValue >= pObjResult->m_objFaceColor.m_nZiRan) {
 		type = Type_Color_ZiRan;
-	} else if (maxColorValue >= XiaoMai) {
+    } else if (maxColorValue >= pObjResult->m_objFaceColor.m_nXiaoMai) {
 		type = Type_Color_XiaoMai;
-	} else if (maxColorValue >= AnChen) {
+    } else if (maxColorValue >= pObjResult->m_objFaceColor.m_nAnChen) {
 		type = Type_Color_AnChen;
 	} else {
 		type = Type_Color_YouHei;
 	}
 
+    imwrite(strPathFaceColor.toStdString(), matOutput);
+    pObjResult->m_objFaceColor.m_strImgPath = strPathFaceColor;
+    pObjResult->m_objFaceColor.m_strColorType = QString(g_colorString[type]);
+    pObjResult->m_objFaceColor.m_strColorValue = QString("%1").arg(maxColorValue);
+
 #if 0
-	Mat matOutput;
-	imageSrc.copyTo(matOutput);
-	putText(matOutput, format("%s:%4f", pStrColorString, maxColorValue), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
-	imwrite("../../../images/pics/bak_" + strImageName, matOutput);
+    Mat matOutputput;
+    matSrc.copyTo(matOutputput);
+    putText(matOutputput, format("%s:%4f", pStrColorString, maxColorValue), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
+    imwrite("../../../images/pics/bak_" + strImageName, matOutputput);
 #endif
-#ifdef With_Debug
+#ifdef With_Debug_Show
 	const char *pStrColorString = g_colorString[type];
 	namedWindow("image original:", WINDOW_NORMAL);
-	putText(imageSrc, format("%s", pStrColorString), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
-	imshow("image original:", imageSrc);
+    putText(matSrc, format("%s", pStrColorString), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
+    imshow("image original:", matSrc);
 	namedWindow("image face pre:", WINDOW_NORMAL);
 	imshow("image face pre:", imageColor);
 #ifndef Use_ITA
@@ -129,7 +152,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &im
 	imshow("showImage", imageResult);
 #endif // Use_ITA
 	waitKey(0);
-#endif // With_Debug
+#endif // With_Debug_Show
 
 	return type;
 }
