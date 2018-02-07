@@ -9,6 +9,7 @@ CFaceDetecter::CFaceDetecter(QWidget * parent, Qt::WindowFlags f)
 {
     this->hide();
     this->setFixedSize(800, 700);
+    this->setWindowTitle(tr("Detection details"));
     initWindow();
     m_pObjResult = new CObjectResult(this);
 }
