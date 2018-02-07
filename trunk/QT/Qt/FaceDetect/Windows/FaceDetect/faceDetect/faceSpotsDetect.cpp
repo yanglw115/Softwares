@@ -120,7 +120,7 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, COb
                     Point2f center;
                     float radius = 0;
                     minEnclosingCircle(Mat(vectorSpots[i]), center, radius);
-                    circle(matOut, center, (int)(radius + 1), Scalar(0, 255, 255), 1, 8);
+                    circle(matOut, center, (int)(radius + 1), Scalar(139, 0, 0), 2, 8);
 #ifdef With_Debug_Show
 					Point2f center;
 					float radius = 0;
@@ -133,7 +133,7 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, COb
 						//putText(matTest, format("c(%d:%d),s(%s)", (int)meanColorHLS[2], (int)(meanColor[2] - meanColor[1]), strSize.substr(0, 3).c_str()), cv::Point2f(20, 20), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 0, 255), 1);
 						putText(matTest, format("c(%d:%d),s(%s)", (int)meanColorHLS[2], (int)(meanColor[2] - meanColor[1]), strSize.substr(0, 3).c_str()), cv::Point2f(20, 20), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
 						rectangle(matTest, minRect, Scalar(0, 255, 0));
-                        circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 255), 1, 8);
+                        circle(matTest, center, (int)(radius + 1), Scalar(139, 0, 0), 2, 8);
 						namedWindow("当前斑点：", WINDOW_NORMAL);
 						imshow("当前斑点：", matTest);
 						waitKey();
@@ -227,7 +227,7 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, 
                     Point2f center;
                     float radius = 0;
                     minEnclosingCircle(Mat(vectorSpots[i]), center, radius);
-                    circle(matOut, center, (int)(radius + 1), Scalar(0, 255, 255), 1, 8);
+                    circle(matOut, center, (int)(radius + 1), Scalar(139, 0, 0), 2, 8);
 #ifdef With_Debug_Show
 					Point2f center;
 					float radius = 0;
@@ -240,7 +240,7 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, 
 						//putText(matTest, format("color(%d:%d:%d), areaSize(%s)", color[0], color[1], color[2], strSize.substr(0, 3).c_str()), cv::Point2f(center.x, center.y - radius), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
 						putText(matTest, format("color(%d:%d:%d-%d), areaSize(%s)", (int)color[0], (int)color[1], (int)color[2], (int)(color[0] + color[1] + color[2]) / 3, strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
 						rectangle(matTest, minRect, Scalar(0, 255, 0));
-                        //circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 255), 1, 8);
+                        //circle(matTest, center, (int)(radius + 1), Scalar(139, 0, 0), 2, 8);
 						namedWindow("当前黑头：", WINDOW_NORMAL);
 						imshow("当前黑头：", matTest);
 						waitKey();

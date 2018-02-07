@@ -53,9 +53,9 @@ double getFaceCoarseness(const string strImageName, const cv::Mat& matSrc, bool 
     //cout << "Data rect: " << rect << endl;
 
     string strType;
-    if (fCoarseness > pObjResult->m_objCoarse.m_nRough) {
+    if (fCoarseness > pObjResult->m_objCoarse.m_dRough) {
         strType = g_stdstrCoarseList[0];
-    } else if (fCoarseness > pObjResult->m_objCoarse.m_nNormal) {
+    } else if (fCoarseness > pObjResult->m_objCoarse.m_dNormal) {
         strType = g_stdstrCoarseList[1];
     } else {
         strType = g_stdstrCoarseList[2];

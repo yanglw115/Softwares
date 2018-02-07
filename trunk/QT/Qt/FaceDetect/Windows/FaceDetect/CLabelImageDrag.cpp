@@ -6,6 +6,7 @@
 #include <QPixmap>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QtDebug>
 
 CLabelImageDrag::CLabelImageDrag(QWidget *parent, Qt::WindowFlags f)
     : QLabel(parent, f)
@@ -27,6 +28,7 @@ CLabelImageDrag::~CLabelImageDrag()
 void CLabelImageDrag::changePixmap(const QString &strPath)
 {
     QPixmap pixmap;
+    qDebug() << "Selected image path: " << strPath;
     if (pixmap.load(strPath)) {
         pixmap = pixmap.scaled(this->width(), this->height(), Qt::KeepAspectRatio);
         this->setPixmap(pixmap);

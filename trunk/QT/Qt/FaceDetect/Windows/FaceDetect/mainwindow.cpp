@@ -87,12 +87,19 @@ void MainWindow::initWidgets()
     m_pLabelMinColorDiffPimple = new QLabel(tr("最小RG差值(BGR):"), this);
     m_pLabelMinRatioPimple = new QLabel(tr("最小长宽比:"), this);
     m_pLabelMaxRatioPimple = new QLabel(tr("最大长宽比:"), this);
+
     m_pEditMinSizePimple = new QLineEdit(this);
     m_pEditMaxSizePimple = new QLineEdit(this);
     m_pEditMinColorPimple = new QLineEdit(this);
     m_pEditMinRGDiffPimple = new QLineEdit(this);
     m_pEditMinRatioPimple = new QLineEdit(this);
     m_pEditMaxRatioPimple = new QLineEdit(this);
+    m_pEditMinSizePimple->setValidator(new QIntValidator(0, 500, this));
+    m_pEditMaxSizePimple->setValidator(new QIntValidator(1, 500, this));
+    m_pEditMinColorPimple->setValidator(new QIntValidator(0, 255, this));
+    m_pEditMinRGDiffPimple->setValidator(new QIntValidator(0, 255, this));
+    m_pEditMinRatioPimple->setValidator(new QDoubleValidator(0.0, 1.0, 1, this));
+    m_pEditMaxRatioPimple->setValidator(new QDoubleValidator(1.0, 10.0, 1, this));
     connect(m_pEditMinSizePimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
     connect(m_pEditMaxSizePimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
     connect(m_pEditMinColorPimple, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPimples()));
@@ -135,6 +142,10 @@ void MainWindow::initWidgets()
     m_pEditMaxColorBlackheads = new QLineEdit(this);
     m_pEditMinRatioBlackheads = new QLineEdit(this);
     m_pEditMaxRatioBlackheads = new QLineEdit(this);
+    m_pEditMaxSizeBlackheads->setValidator(new QIntValidator(0, 500, this));
+    m_pEditMaxColorBlackheads->setValidator(new QIntValidator(1, 255, this));
+    m_pEditMinRatioBlackheads->setValidator(new QDoubleValidator(0.0, 1.0, 1, this));
+    m_pEditMaxRatioBlackheads->setValidator(new QDoubleValidator(1.0, 10.0, 1, this));
     connect(m_pEditMaxSizeBlackheads, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedBlackheads()));
     connect(m_pEditMaxColorBlackheads, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedBlackheads()));
     connect(m_pEditMinRatioBlackheads, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedBlackheads()));
@@ -176,6 +187,12 @@ void MainWindow::initWidgets()
     m_pEditXiaoMai = new QLineEdit(this);
     m_pEditAnChen = new QLineEdit(this);
     m_pEditYouHei = new QLineEdit(this);
+    m_pEditTouBai->setValidator(new QIntValidator(this));
+    m_pEditBaiXi->setValidator(new QIntValidator(this));
+    m_pEditZiRan->setValidator(new QDoubleValidator(this));
+    m_pEditXiaoMai->setValidator(new QIntValidator(this));
+    m_pEditAnChen->setValidator(new QIntValidator(this));
+    m_pEditYouHei->setValidator(new QIntValidator(this));
     connect(m_pEditTouBai, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
     connect(m_pEditBaiXi, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
     connect(m_pEditZiRan, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedFaceColor()));
@@ -212,6 +229,8 @@ void MainWindow::initWidgets()
     m_pLabelSmoothPore = new QLabel(tr(">细腻"), this);
     m_pEditRoughPore = new QLineEdit(this);
     m_pEditNormalPore = new QLineEdit(this);
+    m_pEditRoughPore->setValidator(new QIntValidator(0, 100000, this));
+    m_pEditNormalPore->setValidator(new QIntValidator(0, 100000, this));
     connect(m_pEditRoughPore, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPore()));
     connect(m_pEditNormalPore, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedPore()));
     m_pButtonResetPore = new QPushButton(tr("恢复默认"), this);
@@ -238,6 +257,8 @@ void MainWindow::initWidgets()
     m_pLabelSmoothCoarse = new QLabel(tr(">光滑"), this);
     m_pEditRoughCoarse = new QLineEdit(this);
     m_pEditNormalCoarse = new QLineEdit(this);
+    m_pEditRoughCoarse->setValidator(new QDoubleValidator(0.0, 100000, 5, this));
+    m_pEditNormalCoarse->setValidator(new QDoubleValidator(0.0, 100000, 5, this));
     connect(m_pEditRoughCoarse, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedCoarse()));
     connect(m_pEditNormalCoarse, SIGNAL(textChanged(QString)), this, SLOT(slotParamsChangedCoarse()));
     m_pButtonResetCoarse = new QPushButton(tr("恢复默认"), this);
@@ -325,8 +346,8 @@ void MainWindow::setObjResultParamValue(CObjectResult &obj)
     obj.m_objPore.m_nRough = m_pEditRoughPore->text().toInt();
     obj.m_objPore.m_nNormal = m_pEditNormalPore->text().toInt();
 
-    obj.m_objCoarse.m_nRough = m_pEditRoughCoarse->text().toInt();
-    obj.m_objCoarse.m_nNormal = m_pEditNormalCoarse->text().toInt();
+    obj.m_objCoarse.m_dRough = m_pEditRoughCoarse->text().toDouble();
+    obj.m_objCoarse.m_dNormal = m_pEditNormalCoarse->text().toDouble();
 }
 
 void MainWindow::slotResetAllParameters()
