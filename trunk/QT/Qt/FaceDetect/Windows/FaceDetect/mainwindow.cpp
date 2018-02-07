@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_paramDetected(0x0)
 {
     this->setFixedSize(900, 600);
+    this->setAttribute(Qt::WA_DeleteOnClose);
     initWidgets();
 }
 
@@ -283,6 +284,7 @@ void MainWindow::startDetectItems(const enumItemType type)
         m_pCurDetecter = pDetecter;
         connect(m_pCurDetecter, SIGNAL(destroyed(QObject*)),
                 this, SLOT(slotCurDetecterDestroyed()));
+        connect(this, SIGNAL(destroyed(QObject*)), pDetecter, SLOT(deleteLater()));
         setObjResultParamValue(m_pCurDetecter->getObjResultRef());
         m_pCurDetecter->startDetect(m_strDetectedImage, type, this);
         m_paramDetected |= type;
