@@ -8,6 +8,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_paramsChanges(0x0)
+    , m_paramDetected(0x0)
 {
     this->setFixedSize(900, 600);
     initWidgets();
@@ -275,6 +276,7 @@ void MainWindow::startDetectItems(const enumItemType type)
      */
     if ((m_pEditPhoto->text() != m_strDetectedImage) || !m_pCurDetecter) {
         m_paramsChanges = 0x0;
+        m_paramDetected = 0x0;
         m_strDetectedImage = m_pEditPhoto->text();
         CFaceDetecter *pDetecter = new CFaceDetecter;
         pDetecter->setAttribute(Qt::WA_DeleteOnClose);
@@ -283,13 +285,14 @@ void MainWindow::startDetectItems(const enumItemType type)
                 this, SLOT(slotCurDetecterDestroyed()));
         setObjResultParamValue(m_pCurDetecter->getObjResultRef());
         m_pCurDetecter->startDetect(m_strDetectedImage, type, this);
+        m_paramDetected |= type;
     } else {
-        if (m_paramsChanges) {
-            if ((TYPE_ALL == type) || (m_paramsChanges & type)) {
-                //setObjResultParamValue(m_pCurDetecter->getObjResultRef());
-                m_pCurDetecter->startDetect(m_strDetectedImage, type, this);
-                return;
-            }
+        if ((m_paramsChanges & type) || !(m_paramDetected & type)) { // 参数改变了或者还没有检测过
+            //setObjResultParamValue(m_pCurDetecter->getObjResultRef());
+            m_pCurDetecter->startDetect(m_strDetectedImage, type, this);
+            m_paramsChanges &= (~type); // 检测过的不再检测
+            m_paramDetected |= type;
+            return;
         }
         QMessageBox::warning(this, tr("面部特征检测"),
                              tr("图片和对应检测参数均未改变，无需重新检测!"));
