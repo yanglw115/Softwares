@@ -17,8 +17,8 @@ public:
     virtual ~CResultDetail();
     void setImagePath(const QString &strImagePath);
     void setData(const QString &strData);
-    void setData(const QString &strData1, const QString &strData2);
-    void setData(const QString &strData1, const QString &strData2, const QString &strData3);
+    void setData(const QString &strType, const QString &strData);
+    void setData(const QString &strType, const QString &strData1, const QString &strData2);
     void setData(const QString &strData1, const QString &strData2, const QString &strData3,
                  const QString &strData4, const QString &strData5);
 signals:

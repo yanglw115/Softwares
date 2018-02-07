@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "vs_charset.h"
+
 class CObjectResult : public QObject
 {
     Q_OBJECT
@@ -70,6 +72,7 @@ public:
     public:
         QString m_strImgPath;
         QString m_strColorType;
+        QString m_strColorValue;
         int m_nTouBai;
         int m_nBaiXi;
         int m_nZiRan;
@@ -80,6 +83,7 @@ public:
         {
             m_strImgPath = obj.m_strImgPath;
             m_strColorType = obj.m_strColorType;
+            m_strColorValue = obj.m_strColorValue;
             m_nTouBai = obj.m_nTouBai;
             m_nBaiXi = obj.m_nBaiXi;
             m_nZiRan = obj.m_nZiRan;

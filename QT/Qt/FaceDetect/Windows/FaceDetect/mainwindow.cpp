@@ -282,12 +282,12 @@ void MainWindow::startDetectItems(const enumItemType type)
         connect(m_pCurDetecter, SIGNAL(destroyed(QObject*)),
                 this, SLOT(slotCurDetecterDestroyed()));
         setObjResultParamValue(m_pCurDetecter->getObjResultRef());
-        m_pCurDetecter->startDetect(m_strDetectedImage, type);
+        m_pCurDetecter->startDetect(m_strDetectedImage, type, this);
     } else {
         if (m_paramsChanges) {
             if ((TYPE_ALL == type) || (m_paramsChanges & type)) {
-                setObjResultParamValue(m_pCurDetecter->getObjResultRef());
-                m_pCurDetecter->startDetect(m_strDetectedImage, type);
+                //setObjResultParamValue(m_pCurDetecter->getObjResultRef());
+                m_pCurDetecter->startDetect(m_strDetectedImage, type, this);
                 return;
             }
         }
@@ -302,8 +302,8 @@ void MainWindow::setObjResultParamValue(CObjectResult &obj)
     obj.m_objPimples.m_dMaxAreaSize = m_pEditMaxSizePimple->text().toDouble();
     obj.m_objPimples.m_nMinLColorValue = m_pEditMinColorPimple->text().toInt();
     obj.m_objPimples.m_nMinRGDiffValue = m_pEditMinRGDiffPimple->text().toInt();
-    obj.m_objPimples.m_dMinRatio = m_pEditMinRatioPimple->text().toInt();
-    obj.m_objPimples.m_dMaxRatio = m_pEditMaxRatioPimple->text().toInt();
+    obj.m_objPimples.m_dMinRatio = m_pEditMinRatioPimple->text().toDouble();
+    obj.m_objPimples.m_dMaxRatio = m_pEditMaxRatioPimple->text().toDouble();
 
     obj.m_objBlackheads.m_dMaxAreaSize = m_pEditMaxSizeBlackheads->text().toDouble();
     obj.m_objBlackheads.m_nMaxColor = m_pEditMaxColorBlackheads->text().toInt();
