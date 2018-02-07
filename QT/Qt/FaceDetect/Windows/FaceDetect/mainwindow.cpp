@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setFixedSize(900, 600);
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setWindowTitle(tr("iFace tools"));
+    this->setWindowIcon(QIcon(":/icons/main.png"));
     initWidgets();
 }
 
