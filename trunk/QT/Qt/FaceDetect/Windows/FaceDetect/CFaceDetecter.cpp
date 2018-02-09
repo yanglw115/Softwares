@@ -67,6 +67,7 @@ void CFaceDetecter::startDetect(const QString &strImgPath, const enumItemType ty
     switch (type) {
     case TYPE_ALL:
         detectAll(matSrc);
+        m_pListWidget->setCurrentRow(ROW_PIMPLES);
         break;
     case TYPE_PIMPLES:
         detectPimples(matSrc);

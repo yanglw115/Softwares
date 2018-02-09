@@ -5,7 +5,18 @@
 
 CResultDetail::CResultDetail(enumItemType type, QWidget *parent)
     : QWidget(parent)
+    , m_pLabelImage(NULL)
+    , m_pLabelItem(NULL)
+    , m_pEditTop(NULL)
+    , m_pEditMiddle1(NULL)
+    , m_pEditMiddle2(NULL)
+    , m_pEditMiddle3(NULL)
+    , m_pEditBottom(NULL)
+    , m_pVLayoutMain(NULL)
+    , m_pHLayoutData(NULL)
+    , m_pGridData(NULL)
     , m_type(type)
+    , m_strImagePath("")
 {
     m_pLabelImage = new QLabel(this);
     m_pLabelImage->setFixedSize(500, 500);
@@ -63,6 +74,22 @@ CResultDetail::CResultDetail(enumItemType type, QWidget *parent)
         break;
     default:
         break;
+    }
+
+    if (m_pEditTop) {
+        m_pEditTop->setReadOnly(true);
+    }
+    if (m_pEditMiddle1) {
+        m_pEditMiddle1->setReadOnly(true);
+    }
+    if (m_pEditMiddle2) {
+        m_pEditMiddle2->setReadOnly(true);
+    }
+    if (m_pEditMiddle3) {
+        m_pEditMiddle3->setReadOnly(true);
+    }
+    if (m_pEditBottom) {
+        m_pEditBottom->setReadOnly(true);
     }
 
     this->setLayout(m_pVLayoutMain);

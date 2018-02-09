@@ -10,7 +10,11 @@ enum enumItemType {
     TYPE_COARSENESS = 0x10
 };
 
-#define g_strImgTmpDir "./tmp/"
+#define g_tmpDirPimples "./tmp/pimples/"
+#define g_tmpDirBlackheads "./tmp/blackheads/"
+#define g_tmpDirFaceColor "./tmp/color/"
+#define g_tmpDirPore "./tmp/pore/"
+#define g_tmpDirCoarse "./tmp/coarse/"
 
 #endif // GLOB
 
