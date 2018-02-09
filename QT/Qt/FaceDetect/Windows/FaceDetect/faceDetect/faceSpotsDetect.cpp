@@ -345,25 +345,31 @@ bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
             vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_SMOOTH;
         }
 
-        putText(matPore, format("%s:%d", stdstrPoreTypePY[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str(), nBlackHeadsFace), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
-        imwrite(strImagePimple.toStdString(), matPimples);
-        imwrite(strImageBlackheads.toStdString(), matBlackheads);
-        imwrite(strImagePore.toStdString(), matPore);
+        if (type & TYPE_PIMPLES) {
+            imwrite(strImagePimple.toStdString(), matPimples);
+            objResult->m_objPimples.m_strImgPath = strImagePimple;
+            objResult->m_objPimples.m_strLeft = QString("%1").arg(vectorIntResult[INDEX_VALUE_LEFT]);
+            objResult->m_objPimples.m_strRight = QString("%1").arg(vectorIntResult[INDEX_VALUE_RIGHT]);
+            objResult->m_objPimples.m_strForehead = QString("%1").arg(vectorIntResult[INDEX_VALUE_FOREHEAD]);
+            objResult->m_objPimples.m_strJaw = QString("%1").arg(vectorIntResult[INDEX_VALUE_JAW]);
+            objResult->m_objPimples.m_strNose = QString("%1").arg(vectorIntResult[INDEX_VALUE_NOSE]);
+        }
 
-        objResult->m_objPimples.m_strImgPath = strImagePimple;
-        objResult->m_objPimples.m_strLeft = QString("%1").arg(vectorIntResult[INDEX_VALUE_LEFT]);
-        objResult->m_objPimples.m_strRight = QString("%1").arg(vectorIntResult[INDEX_VALUE_RIGHT]);
-        objResult->m_objPimples.m_strForehead = QString("%1").arg(vectorIntResult[INDEX_VALUE_FOREHEAD]);
-        objResult->m_objPimples.m_strJaw = QString("%1").arg(vectorIntResult[INDEX_VALUE_JAW]);
-        objResult->m_objPimples.m_strNose = QString("%1").arg(vectorIntResult[INDEX_VALUE_NOSE]);
+        if (type & TYPE_BLACKHEADS) {
+            imwrite(strImageBlackheads.toStdString(), matBlackheads);
+            objResult->m_objBlackheads.m_strImgPath = strImageBlackheads;
+            objResult->m_objBlackheads.m_strCounts = QString("%1").arg(vectorIntResult[INDEX_VALUE_BLACKHEADS]);
+        }
 
-        objResult->m_objBlackheads.m_strImgPath = strImageBlackheads;
-        objResult->m_objBlackheads.m_strCounts = QString("%1").arg(vectorIntResult[INDEX_VALUE_BLACKHEADS]);
-
-        objResult->m_objPore.m_strImgPath = strImagePore;
-        objResult->m_objPore.m_strLeft = QString("%1").arg(vectorIntResult[INDEX_VALUE_PORE_LEFT]);
-        objResult->m_objPore.m_strRight = QString("%1").arg(vectorIntResult[INDEX_VALUE_PORE_RIGHT]);
-        objResult->m_objPore.m_strPoreType = QString("%1").arg(stdstrPoreType[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str());
+        if (type & TYPE_PORE) {
+            putText(matPore, format("%s:%d", stdstrPoreTypePY[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str(), nBlackHeadsFace),
+                    Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
+            imwrite(strImagePore.toStdString(), matPore);
+            objResult->m_objPore.m_strImgPath = strImagePore;
+            objResult->m_objPore.m_strLeft = QString("%1").arg(vectorIntResult[INDEX_VALUE_PORE_LEFT]);
+            objResult->m_objPore.m_strRight = QString("%1").arg(vectorIntResult[INDEX_VALUE_PORE_RIGHT]);
+            objResult->m_objPore.m_strPoreType = QString("%1").arg(stdstrPoreType[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str());
+        }
 
     } else {
         Mat matMask;
