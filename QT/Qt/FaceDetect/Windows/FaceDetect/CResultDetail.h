@@ -25,11 +25,8 @@ signals:
 
 public slots:
 private:
-    enumItemType m_type;
-    QString m_strImagePath;
     QLabel *m_pLabelImage;
     QLabel *m_pLabelItem;
-    QPixmap m_pixmap;
     QLineEdit *m_pEditTop;
     QLineEdit *m_pEditMiddle1;
     QLineEdit *m_pEditMiddle2;
@@ -39,6 +36,10 @@ private:
     QVBoxLayout *m_pVLayoutMain;
     QHBoxLayout *m_pHLayoutData;
     QGridLayout *m_pGridData;
+
+    enumItemType m_type;
+    QString m_strImagePath;
+    QPixmap m_pixmap;
 };
 
 #endif // CRESULTDETAIL_H

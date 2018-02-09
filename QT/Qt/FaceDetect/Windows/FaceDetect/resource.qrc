@@ -7,4 +7,11 @@
         <file alias="main.png">resources/icons/myIcon.png</file>
         <file alias="result.png">resources/icons/result.png</file>
     </qresource>
+    <qresource prefix="/qss">
+        <file alias="darkOrange.qss">resources/styles/darkOrange.qss</file>
+        <file alias="material-blue.qss">resources/styles/material-blue.qss</file>
+        <file alias="Style_Blue.qss">resources/styles/Style_Blue.qss</file>
+        <file alias="Style_Gray.qss">resources/styles/Style_Gray.qss</file>
+        <file alias="QTDark.qss">resources/styles/QTDark.qss</file>
+    </qresource>
 </RCC>

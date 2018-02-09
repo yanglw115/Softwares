@@ -31,6 +31,7 @@ using namespace cv;
 #define MAX_COLOR_BLACKHEADS 255
 
 static const string stdstrPoreType[] = {"细腻", "一般", "粗大"};
+static const string stdstrPoreTypePY[] = {"XiNi", "YiBan", "CuDa"};
 
 int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, CObjectResult *objResult, Mat &matOut)
 {
@@ -45,6 +46,8 @@ int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask, COb
 	srcImg.copyTo(matDebug);
 	namedWindow("自适应阈值化之前", WINDOW_NORMAL);
 	imshow("自适应阈值化之前", bw);
+#else
+    Q_UNUSED(srcImg);
 #endif // With_Debug_Show
 
 	/* 自适应阈值化：图像分割，去除一定范围内的像素 */
@@ -170,6 +173,8 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, 
 	srcImg.copyTo(matDebug);
 	namedWindow("自适应阈值化之前", WINDOW_NORMAL);
 	imshow("自适应阈值化之前", bw);
+#else
+    Q_UNUSED(srcImg);
 #endif // With_Debug_Show
 
 	/* 自适应阈值化：图像分割，去除一定范围内的像素 */
@@ -194,7 +199,7 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask, 
 	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
 	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-    //qDebug() << strImageName << ": Detected contours counts：" << to_string(vectorSpots.size());
+    qDebug() << strImageName.c_str() << ": Detected contours counts：" << vectorSpots.size();
 	double areaSize = 0.0;
 	for (size_t i = 0; i < vectorSpots.size(); ++i) {
         //qDebug() << strImageName << ": Contour area size: " << to_string(fabs(contourArea(vectorSpots[i])));
@@ -282,13 +287,15 @@ bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
     //stringstream ss;
     //ss << g_strImgTmpDir << strImageName << "pimples." << QDateTime::currentSecsSinceEpoch() << ".jpg";
     QDir dir(".");
-    dir.mkpath(QString("%1%2").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0]));
-    QString strImagePimple = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
-            .arg("pimples.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
-    QString strImageBlackheads = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
-            .arg("blackheads.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
-    QString strImagePore = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
-            .arg("pore.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
+    dir.mkpath(QString("%1%2").arg(QString(g_tmpDirPimples)));//.arg(QString(strImageName.c_str()).split(".")[0]));
+    dir.mkpath(QString("%1%2").arg(QString(g_tmpDirBlackheads)));
+    dir.mkpath(QString("%1%2").arg(QString(g_tmpDirPore)));
+    QString strImagePimple = QString("%1%2_%3%4").arg(QString(g_tmpDirPimples)).arg(QString(strImageName.c_str()).split(".")[0])
+            /*.arg("pimples.")*/.arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
+    QString strImageBlackheads = QString("%1%2_%3%4").arg(QString(g_tmpDirBlackheads)).arg(QString(strImageName.c_str()).split(".")[0])
+            /*.arg("blackheads.")*/.arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
+    QString strImagePore = QString("%1%2_%3%4").arg(QString(g_tmpDirPore)).arg(QString(strImageName.c_str()).split(".")[0])
+            /*.arg("pore.")*/.arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
     Mat matPimples, matBlackheads, matPore;
     matSrc.copyTo(matPimples);
     matSrc.copyTo(matBlackheads);
@@ -338,6 +345,7 @@ bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
             vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_SMOOTH;
         }
 
+        putText(matPore, format("%s:%d", stdstrPoreTypePY[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str(), nBlackHeadsFace), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
         imwrite(strImagePimple.toStdString(), matPimples);
         imwrite(strImageBlackheads.toStdString(), matBlackheads);
         imwrite(strImagePore.toStdString(), matPore);
@@ -380,6 +388,7 @@ bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
             objResult->m_objPore.m_strLeft = QString("%1").arg(nBlackHeadsFace);
             objResult->m_objPore.m_strRight = QString("");
             objResult->m_objPore.m_strPoreType = QString("无面部检测结果");
+            putText(matPore, format("%s:%d", stdstrPoreTypePY[vectorIntResult[INDEX_VALUE_PORE_TYPE]].c_str(), nBlackHeadsFace), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
             imwrite(strImagePore.toStdString(), matPore);
             break;
         default:

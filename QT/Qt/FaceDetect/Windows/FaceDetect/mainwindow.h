@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -9,6 +9,7 @@
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QPixmap>
+#include <QFileSystemWatcher>
 
 #include "CLabelImageDrag.h"
 #include "glob.h"
@@ -22,6 +23,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void registerFileWatcher(const QString &strFilePath);
+public slots:
+    void slotWatchedFileChanged(const QString &strFilePath);
 private slots:
     void slotSelectNewPhoto();
     void slotResetAllParameters();
@@ -53,6 +57,7 @@ private:
     int m_paramsChanges; // 改变了的参数
     int m_paramDetected; // 已检测过的项目
     QString m_strDetectedImage; // current detected image
+    QFileSystemWatcher *m_pFileSystemWatcher;
     CFaceDetecter *m_pCurDetecter;
     QSplitter *m_pSplitter;
     QWidget *m_pWidgetLeft;

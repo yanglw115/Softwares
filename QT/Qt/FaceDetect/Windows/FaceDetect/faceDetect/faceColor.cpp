@@ -20,7 +20,15 @@ static const string g_colorString[] = {
     "自然",
     "小麦",
     "暗沉",
-    "幽默"
+    "黝黑"
+};
+static const string g_colorStringPY[] = {
+    "TouBai",
+    "BaiXi",
+    "ZiRan",
+    "XiaoMai",
+    "AnChen",
+    "YouHei"
 };
 
 MatND getHistogram(Mat &image)
@@ -44,8 +52,8 @@ Mat getHistogramImage(const string &strImageName, Mat &image, double *pColorValu
 	double maxValue = 0;
 	Point maxPoint;
 	minMaxLoc(hist, 0, &maxValue, 0, &maxPoint);
-    //qWarning() << strImageName << ": Color max point：" << "(" << to_string(maxPoint.x) << ", " << to_string(maxPoint.y) << ")"
-        //<< ", max value: " << to_string(maxValue);
+    qWarning() << strImageName.c_str() << ": Color max point：" << "(" << maxPoint.x << ", " << maxPoint.y << ")"
+        << ", max value: " << maxValue;
 	*pColorValue = maxPoint.y;
 
 #ifdef With_Debug_Show
@@ -66,9 +74,9 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &ma
 	enumFaceColorType type = Type_Color_TouBai;
 
     QDir dir(".");
-    dir.mkpath(QString("%1%2").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0]));
-    QString strPathFaceColor = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
-            .arg("faceColor.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
+    dir.mkpath(QString("%1").arg(QString(g_tmpDirFaceColor)));//.arg(QString(strImageName.c_str()).split(".")[0]));
+    QString strPathFaceColor = QString("%1%2_%3%4").arg(QString(g_tmpDirFaceColor)).arg(QString(strImageName.c_str()).split(".")[0])
+            /*.arg("faceColor.")*/.arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
     Mat matOutput;
     matSrc.copyTo(matOutput);
 
@@ -129,6 +137,7 @@ enumFaceColorType getFaceColorType(const string &strImageName, const cv::Mat &ma
 		type = Type_Color_YouHei;
 	}
 
+    putText(matOutput, format("%s:%f", g_colorStringPY[type].c_str(), maxColorValue), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
     imwrite(strPathFaceColor.toStdString(), matOutput);
     pObjResult->m_objFaceColor.m_strImgPath = strPathFaceColor;
     pObjResult->m_objFaceColor.m_strColorType = QString(g_colorString[type].c_str());

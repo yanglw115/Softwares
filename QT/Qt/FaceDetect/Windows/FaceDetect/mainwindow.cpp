@@ -1,6 +1,7 @@
 ﻿
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QApplication>
 
 #include "mainwindow.h"
 #include "vs_charset.h"
@@ -19,6 +20,32 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+
+}
+
+void MainWindow::registerFileWatcher(const QString &strFilePath)
+{
+    m_pFileSystemWatcher = new QFileSystemWatcher(this);
+    connect(m_pFileSystemWatcher, SIGNAL(fileChanged(QString)), this, SLOT(slotWatchedFileChanged(QString)));
+    if (m_pFileSystemWatcher->addPath(strFilePath)) {
+        qDebug() << "File watch set success: " << strFilePath;
+    } else {
+        qWarning() << "File watch set failed: " << strFilePath;
+    }
+}
+
+void MainWindow::slotWatchedFileChanged(const QString &strFilePath)
+{
+    QFile file(strFilePath);
+    if (file.open(QIODevice::ReadOnly)) {
+        QTextStream textStream(&file);
+        QString strStyle;
+        strStyle = textStream.readAll();
+        qApp->setStyleSheet(strStyle);
+        qDebug() << "Update style sheet success!";
+    } else {
+       qWarning() << "Open file failed, cannot set style sheet!";
+    }
 
 }
 
@@ -397,8 +424,8 @@ void MainWindow::slotResetPoreParas()
 
 void MainWindow::slotResetCoarseparas()
 {
-    m_pEditRoughCoarse->setText(QString("%1").arg(33));
-    m_pEditNormalCoarse->setText(QString("%1").arg(15));
+    m_pEditRoughCoarse->setText(QString("%1").arg(33.0));
+    m_pEditNormalCoarse->setText(QString("%1").arg(15.0));
 }
 
 void MainWindow::slotDetectAll()

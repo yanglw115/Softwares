@@ -18,14 +18,20 @@ static string g_stdstrCoarseList[] = {
     "光滑"
 };
 
+static string g_stdstrCoarseListPY[] = {
+    "CuCao",
+    "YiBan",
+    "GuangHua"
+};
+
 double getFaceCoarseness(const string strImageName, const cv::Mat& matSrc, bool bHasFace,
                          cv::Rect &rectFace, CObjectResult *pObjResult)
 {
     Mat matFace;
     QDir dir(".");
-    dir.mkpath(QString("%1%2").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0]));
-    QString strPathCoarse = QString("%1%2/%3%4%5").arg(QString(g_strImgTmpDir)).arg(QString(strImageName.c_str()).split(".")[0])
-            .arg("faceCoareness.").arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
+    dir.mkpath(QString("%1%2").arg(QString(g_tmpDirCoarse)));//.arg(QString(strImageName.c_str()).split(".")[0]));
+    QString strPathCoarse = QString("%1%2_%3%4").arg(QString(g_tmpDirCoarse)).arg(QString(strImageName.c_str()).split(".")[0])
+            /*.arg("faceCoareness.")*/.arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
     Mat matOutput;
     matSrc.copyTo(matOutput);
 
@@ -52,15 +58,19 @@ double getFaceCoarseness(const string strImageName, const cv::Mat& matSrc, bool 
 	//double fDirectionality = tamuraCalDirectionality(matFace);
     //cout << "Data rect: " << rect << endl;
 
-    string strType;
+    string strType, strTypePY;
     if (fCoarseness > pObjResult->m_objCoarse.m_dRough) {
         strType = g_stdstrCoarseList[0];
+        strTypePY = g_stdstrCoarseListPY[0];
     } else if (fCoarseness > pObjResult->m_objCoarse.m_dNormal) {
         strType = g_stdstrCoarseList[1];
+        strTypePY = g_stdstrCoarseListPY[1];
     } else {
         strType = g_stdstrCoarseList[2];
+        strTypePY = g_stdstrCoarseListPY[2];
     }
 
+    putText(matOutput, format("%s:%f", strTypePY.c_str(), fCoarseness), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.2, Scalar(0, 0, 255), 3);
     imwrite(strPathCoarse.toStdString(), matOutput);
     pObjResult->m_objCoarse.m_strImgPath = strPathCoarse;
     pObjResult->m_objCoarse.m_strCoarseType = QString(strType.c_str());
