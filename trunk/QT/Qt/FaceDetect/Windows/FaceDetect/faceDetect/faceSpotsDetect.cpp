@@ -287,9 +287,9 @@ bool findFaceSpots(const string &strImageName, const Mat &matSrc, bool bHasFace,
     //stringstream ss;
     //ss << g_strImgTmpDir << strImageName << "pimples." << QDateTime::currentSecsSinceEpoch() << ".jpg";
     QDir dir(".");
-    dir.mkpath(QString("%1%2").arg(QString(g_tmpDirPimples)));//.arg(QString(strImageName.c_str()).split(".")[0]));
-    dir.mkpath(QString("%1%2").arg(QString(g_tmpDirBlackheads)));
-    dir.mkpath(QString("%1%2").arg(QString(g_tmpDirPore)));
+    dir.mkpath(QString("%1").arg(QString(g_tmpDirPimples)));//.arg(QString(strImageName.c_str()).split(".")[0]));
+    dir.mkpath(QString("%1").arg(QString(g_tmpDirBlackheads)));
+    dir.mkpath(QString("%1").arg(QString(g_tmpDirPore)));
     QString strImagePimple = QString("%1%2_%3%4").arg(QString(g_tmpDirPimples)).arg(QString(strImageName.c_str()).split(".")[0])
             /*.arg("pimples.")*/.arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
     QString strImageBlackheads = QString("%1%2_%3%4").arg(QString(g_tmpDirBlackheads)).arg(QString(strImageName.c_str()).split(".")[0])

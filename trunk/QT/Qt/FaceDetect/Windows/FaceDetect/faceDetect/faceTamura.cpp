@@ -29,7 +29,7 @@ double getFaceCoarseness(const string strImageName, const cv::Mat& matSrc, bool 
 {
     Mat matFace;
     QDir dir(".");
-    dir.mkpath(QString("%1%2").arg(QString(g_tmpDirCoarse)));//.arg(QString(strImageName.c_str()).split(".")[0]));
+    dir.mkpath(QString("%1").arg(QString(g_tmpDirCoarse)));//.arg(QString(strImageName.c_str()).split(".")[0]));
     QString strPathCoarse = QString("%1%2_%3%4").arg(QString(g_tmpDirCoarse)).arg(QString(strImageName.c_str()).split(".")[0])
             /*.arg("faceCoareness.")*/.arg(QDateTime::currentSecsSinceEpoch()).arg(".jpg");
     Mat matOutput;
