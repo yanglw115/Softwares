@@ -28,7 +28,8 @@ int main(int argc, char *argv[])
 
 #if 1
     MainWindow w;
-    QString strQssFile = "../FaceDetect/resources/styles/myStyle.qss";
+    //QString strQssFile = "../FaceDetect/resources/styles/myStyle.qss";
+    QString strQssFile = ":/qss/myStyle.qss";
 #if 1
     //QString strQssFile = "../FaceDetect/resources/styles/QUIStyles/qss/bf.css";
     //QString strQssFile = "../FaceDetect/resources/styles/QUIStyles/qss/black.css";
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
     //QString strQssFile = ":/qss/silvery.css";
     //QString strQssFile = ":/qss/test.css";
 #endif
-    w.registerFileWatcher(strQssFile);
+    //w.registerFileWatcher(strQssFile);
     w.slotWatchedFileChanged(strQssFile);
     w.show();
 #endif

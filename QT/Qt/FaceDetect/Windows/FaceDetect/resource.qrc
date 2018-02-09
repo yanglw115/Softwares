@@ -13,5 +13,6 @@
         <file alias="Style_Blue.qss">resources/styles/Style_Blue.qss</file>
         <file alias="Style_Gray.qss">resources/styles/Style_Gray.qss</file>
         <file alias="QTDark.qss">resources/styles/QTDark.qss</file>
+        <file alias="myStyle.qss">resources/styles/myStyle.qss</file>
     </qresource>
 </RCC>
