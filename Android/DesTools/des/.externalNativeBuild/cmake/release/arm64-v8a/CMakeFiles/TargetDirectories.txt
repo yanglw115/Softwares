@@ -1,0 +1,3 @@
+D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/JNIDes.dir
+D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/rebuild_cache.dir

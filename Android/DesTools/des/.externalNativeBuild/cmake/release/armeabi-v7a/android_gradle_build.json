@@ -1,0 +1,54 @@
+
+{
+	"buildFiles" : 
+	[
+		"D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/CMakeLists.txt"
+	],
+	"cFileExtensions" : [ "c" ],
+	"cleanCommands" : 
+	[
+		"D:\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Qt\\projects\\TaoCodeSVN\\SoftWareProgramming\\trunk\\Android\\DesTools\\des\\.externalNativeBuild\\cmake\\release\\armeabi-v7a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"JNIDes-Release-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "JNIDes",
+			"buildCommand" : "D:\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Qt\\projects\\TaoCodeSVN\\SoftWareProgramming\\trunk\\Android\\DesTools\\des\\.externalNativeBuild\\cmake\\release\\armeabi-v7a --target JNIDes",
+			"buildType" : "release",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=armv7-none-linux-androideabi --gcc-toolchain=D:/Android/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64 --sysroot=D:/Android/sdk/ndk-bundle/sysroot  -DJNIDes_EXPORTS -isystem D:\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include -isystem D:\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\libs\\armeabi-v7a\\include -isystem D:\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include\\backward  -isystem D:/Android/sdk/ndk-bundle/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=15 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security   -Os -DNDEBUG  -fPIC    -c ",
+					"src" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/src/main/cpp/com_jni_utils_des_DesTools.cpp",
+					"workingDirectory" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/armeabi-v7a"
+				},
+				
+				{
+					"flags" : "  --target=armv7-none-linux-androideabi --gcc-toolchain=D:/Android/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64 --sysroot=D:/Android/sdk/ndk-bundle/sysroot -DJNIDes_EXPORTS  -isystem D:/Android/sdk/ndk-bundle/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=15 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -Os -DNDEBUG  -fPIC      -c ",
+					"src" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/src/main/cpp/hm_encrypt.c",
+					"workingDirectory" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/armeabi-v7a"
+				},
+				
+				{
+					"flags" : "  --target=armv7-none-linux-androideabi --gcc-toolchain=D:/Android/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64 --sysroot=D:/Android/sdk/ndk-bundle/sysroot -DJNIDes_EXPORTS  -isystem D:/Android/sdk/ndk-bundle/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=15 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -Os -DNDEBUG  -fPIC      -c ",
+					"src" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/src/main/cpp/jw_des.c",
+					"workingDirectory" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/armeabi-v7a"
+				}
+			],
+			"output" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/build/intermediates/cmake/release/obj/armeabi-v7a/libJNIDes.so",
+			"toolchain" : "423535169"
+		}
+	},
+	"toolchains" : 
+	{
+		"423535169" : 
+		{
+			"cCompilerExecutable" : "D:/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "D:/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+		}
+	}
+}
