@@ -1,0 +1,9 @@
+# ninja log v5
+0	177	0	CMakeFiles/JNIDes.dir/src/main/cpp/com_jni_utils_des_DesTools.cpp.o	dbdc0523358ac942
+78	242	0	CMakeFiles/JNIDes.dir/src/main/cpp/jw_des.c.o	63e178a21c33194e
+37	394	0	CMakeFiles/JNIDes.dir/src/main/cpp/hm_encrypt.c.o	fe755c8a86aff1e7
+394	564	0	../../../../build/intermediates/cmake/release/obj/x86_64/libJNIDes.so	282afb65c1bacf91
+2	223	0	CMakeFiles/JNIDes.dir/src/main/cpp/com_jni_utils_des_DesTools.cpp.o	dbdc0523358ac942
+110	327	0	CMakeFiles/JNIDes.dir/src/main/cpp/jw_des.c.o	63e178a21c33194e
+47	506	0	CMakeFiles/JNIDes.dir/src/main/cpp/hm_encrypt.c.o	fe755c8a86aff1e7
+507	679	0	../../../../build/intermediates/cmake/release/obj/x86_64/libJNIDes.so	282afb65c1bacf91

@@ -1,0 +1,54 @@
+
+{
+	"buildFiles" : 
+	[
+		"D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/CMakeLists.txt"
+	],
+	"cFileExtensions" : [ "c" ],
+	"cleanCommands" : 
+	[
+		"D:\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Qt\\projects\\TaoCodeSVN\\SoftWareProgramming\\trunk\\Android\\DesTools\\des\\.externalNativeBuild\\cmake\\release\\x86_64 --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"JNIDes-Release-x86_64" : 
+		{
+			"abi" : "x86_64",
+			"artifactName" : "JNIDes",
+			"buildCommand" : "D:\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Qt\\projects\\TaoCodeSVN\\SoftWareProgramming\\trunk\\Android\\DesTools\\des\\.externalNativeBuild\\cmake\\release\\x86_64 --target JNIDes",
+			"buildType" : "release",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=x86_64-none-linux-android --gcc-toolchain=D:/Android/sdk/ndk-bundle/toolchains/x86_64-4.9/prebuilt/windows-x86_64 --sysroot=D:/Android/sdk/ndk-bundle/sysroot  -DJNIDes_EXPORTS -isystem D:\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include -isystem D:\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\libs\\x86_64\\include -isystem D:\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include\\backward  -isystem D:/Android/sdk/ndk-bundle/sysroot/usr/include/x86_64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security   -O2 -DNDEBUG  -fPIC    -c ",
+					"src" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/src/main/cpp/com_jni_utils_des_DesTools.cpp",
+					"workingDirectory" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/x86_64"
+				},
+				
+				{
+					"flags" : "  --target=x86_64-none-linux-android --gcc-toolchain=D:/Android/sdk/ndk-bundle/toolchains/x86_64-4.9/prebuilt/windows-x86_64 --sysroot=D:/Android/sdk/ndk-bundle/sysroot -DJNIDes_EXPORTS  -isystem D:/Android/sdk/ndk-bundle/sysroot/usr/include/x86_64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -O2 -DNDEBUG  -fPIC      -c ",
+					"src" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/src/main/cpp/hm_encrypt.c",
+					"workingDirectory" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/x86_64"
+				},
+				
+				{
+					"flags" : "  --target=x86_64-none-linux-android --gcc-toolchain=D:/Android/sdk/ndk-bundle/toolchains/x86_64-4.9/prebuilt/windows-x86_64 --sysroot=D:/Android/sdk/ndk-bundle/sysroot -DJNIDes_EXPORTS  -isystem D:/Android/sdk/ndk-bundle/sysroot/usr/include/x86_64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -O2 -DNDEBUG  -fPIC      -c ",
+					"src" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/src/main/cpp/jw_des.c",
+					"workingDirectory" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/.externalNativeBuild/cmake/release/x86_64"
+				}
+			],
+			"output" : "D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/des/build/intermediates/cmake/release/obj/x86_64/libJNIDes.so",
+			"toolchain" : "423535169"
+		}
+	},
+	"toolchains" : 
+	{
+		"423535169" : 
+		{
+			"cCompilerExecutable" : "D:/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "D:/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+		}
+	}
+}

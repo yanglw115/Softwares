@@ -1,0 +1,3 @@
+D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/native-lib.dir
+D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/edit_cache.dir
+D:/Qt/projects/TaoCodeSVN/SoftWareProgramming/trunk/Android/DesTools/app/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/rebuild_cache.dir
