@@ -130,7 +130,7 @@ void Dialog::on_m_pButtonArpSend_clicked()
 {
     ui->m_pTableIP->clear();
     QString strOut;
-    for (int i = 1; i < 3; ++i) {
+    for (int i = 1; i < 255; ++i) {
         QString strIP = ui->m_pLineIP->text() + QString("%1").arg(i);
         if (getMacByArp(strIP, strOut)) {
             int row = ui->m_pTableIP->rowCount();
