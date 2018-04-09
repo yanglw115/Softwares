@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Macao_Router_app_control_test
 TEMPLATE = app
+RC_FILE = logo.rc
 
 
 SOURCES += main.cpp\
