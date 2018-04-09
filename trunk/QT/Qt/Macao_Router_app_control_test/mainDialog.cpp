@@ -2,10 +2,18 @@
 #include "ui_mainDialog.h"
 
 #include "jw_des.h"
+
 #include <QtDebug>
 #include <QHostAddress>
 #include <QJsonObject>
 #include <QJsonDocument>
+
+
+#include <winsock2.h>
+#include <iphlpapi.h>
+
+#pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "ws2_32.lib")
 
 #define UDP_PORT 9559
 #define TCP_PORT 9559
@@ -108,10 +116,116 @@ void Dialog::slotReadUdpSocket()
 
 void Dialog::slotHandleTcpSocketError(QAbstractSocket::SocketError socketError)
 {
+    Q_UNUSED(socketError);
     qDebug() << "Tcp socket error: " << m_pTcpSocket->errorString();
 }
 
 void Dialog::slotHandleUdpSocketError(QAbstractSocket::SocketError socketError)
 {
+    Q_UNUSED(socketError);
     qDebug() << "Udp socket error: " << m_pUdpSocket->errorString();
+}
+
+void Dialog::on_m_pButtonArpSend_clicked()
+{
+    ui->m_pTableIP->clear();
+    QString strOut;
+    for (int i = 1; i < 3; ++i) {
+        QString strIP = ui->m_pLineIP->text() + QString("%1").arg(i);
+        if (getMacByArp(strIP, strOut)) {
+            int row = ui->m_pTableIP->rowCount();
+            QTableWidgetItem *newItemIP = new QTableWidgetItem(strIP);
+            QTableWidgetItem *newItemMac = new QTableWidgetItem(strOut);
+            ui->m_pTableIP->insertRow(row);
+            ui->m_pTableIP->setItem(row, 0, newItemIP);
+            ui->m_pTableIP->setItem(row, 1, newItemMac);
+        }
+    }
+    qDebug() << "Get ip mac finish!";
+}
+
+bool Dialog::getMacByArp(const QString strIP, QString &strOut)
+{
+    DWORD dwRetVal;
+    IPAddr DestIp = 0;
+    IPAddr SrcIp = 0;       /* default for src ip */
+    ULONG MacAddr[2];       /* for 6-byte hardware addresses */
+    ULONG PhysAddrLen = 6;  /* default to length of six bytes */
+
+    const char *SrcIpString = NULL;//"192.168.1.140";
+    //SrcIp = inet_addr(SrcIpString);
+    int i = 0;
+
+    BYTE *bPhysAddr;
+
+
+    DestIp = inet_addr(strIP.toUtf8().data());
+    strOut.clear();
+
+    memset(&MacAddr, 0xff, sizeof (MacAddr));
+
+    qDebug("Sending ARP request for IP address: (%ld)%s", DestIp, strIP.toUtf8().data());
+
+    dwRetVal = SendARP(DestIp, SrcIp, &MacAddr, &PhysAddrLen);
+
+    if (dwRetVal == NO_ERROR) {
+        bPhysAddr = (BYTE *) & MacAddr;
+        if (PhysAddrLen) {
+            for (i = 0; i < (int) PhysAddrLen; i++) {
+                if (i == (PhysAddrLen - 1)) {
+                    strOut.append(QString::asprintf("%.2X ", (int) bPhysAddr[i]));
+                    //qDebug("%.2X", (int) bPhysAddr[i]);
+                } else {
+                    strOut.append(QString::asprintf("%.2X:", (int) bPhysAddr[i]));
+                    //qDebug("%.2X:", (int) bPhysAddr[i]);
+                }
+            }
+            qDebug() << "Get its mac:" << strOut;
+            return true;
+        } else {
+            qDebug("Warning: SendArp completed successfully, but returned length=0\n");
+            return false;
+        }
+    } else {
+        qDebug("Error: SendArp failed with error: %d", dwRetVal);
+        switch (dwRetVal) {
+        case ERROR_GEN_FAILURE:
+            qDebug(" (ERROR_GEN_FAILURE)\n");
+            break;
+        case ERROR_INVALID_PARAMETER:
+            qDebug(" (ERROR_INVALID_PARAMETER)\n");
+            break;
+        case ERROR_INVALID_USER_BUFFER:
+            qDebug(" (ERROR_INVALID_USER_BUFFER)\n");
+            break;
+        case ERROR_BAD_NET_NAME:
+            qDebug(" (ERROR_GEN_FAILURE)\n");
+            break;
+        case ERROR_BUFFER_OVERFLOW:
+            qDebug(" (ERROR_BUFFER_OVERFLOW)\n");
+            break;
+        case ERROR_NOT_FOUND:
+            qDebug(" (ERROR_NOT_FOUND)\n");
+            break;
+        default:
+            qDebug("\n");
+            break;
+        }
+    }
+    return false;
+}
+
+void Dialog::on_m_pEditFilter_textChanged(const QString &arg1)
+{
+//    QList<QTableWidgetItem*> listItems = ui->m_pTableIP->findItems(arg1, Qt::MatchContains);
+//    foreach (item, listItems) {
+//        ui->m_pTableIP->showRow(ui->m_pTableIP->row(item));
+//    }
+    for (int i = 0; i < ui->m_pTableIP->rowCount(); ++i) {
+        if (ui->m_pTableIP->item(i, 1)->text().contains(arg1, Qt::CaseInsensitive)) {
+            ui->m_pTableIP->showRow(i);
+        } else {
+            ui->m_pTableIP->hideRow(i);
+        }
+    }
 }

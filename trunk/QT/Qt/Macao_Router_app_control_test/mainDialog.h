@@ -28,6 +28,12 @@ private slots:
     void slotHandleTcpSocketError(QAbstractSocket::SocketError socketError);
     void slotHandleUdpSocketError(QAbstractSocket::SocketError socketError);
 
+    void on_m_pButtonArpSend_clicked();
+
+    void on_m_pEditFilter_textChanged(const QString &arg1);
+
+private:
+    bool getMacByArp(const QString strIP, QString &strOut);
 private:
     Ui::Dialog *ui;
     QTcpSocket *m_pTcpSocket;
