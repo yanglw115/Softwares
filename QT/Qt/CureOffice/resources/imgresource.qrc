@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/AccumulationFund.png</file>
+        <file>images/Clocking-in.png</file>
+        <file>images/Employ.png</file>
+        <file>images/FirstPage.png</file>
+        <file>images/Salary.png</file>
+        <file>images/SocialSecurity.png</file>
+        <file>images/Staff.png</file>
+        <file>images/Statics.png</file>
+        <file>images/Structure.png</file>
+    </qresource>
+</RCC>
