@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xlsx
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,10 +14,15 @@ RC_FILE = logo.rc
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    cure_salary.cpp \
+    xlsx/xlsx_sheet_model.cpp
 
 HEADERS  += mainwindow.h \
-    msvs_charset.h
+    msvs_charset.h \
+    cure_salary.h \
+    xlsx/xlsx_sheet_model.h \
+    xlsx/xlsx_sheet_model_p.h
 
 RESOURCES += \
     resources/imgresource.qrc

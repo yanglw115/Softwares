@@ -31,7 +31,21 @@ void MainWindow::initMainWindow()
     //m_pListOffice->setFixedWidth(this->width() / 10);
     //m_pListOffice->setResizeMode(QListView::Adjust);
 
+    m_pWidgetSalary = new CureSalary(this);
+
     m_pStackedOffice = new QStackedWidget(this);
+
+    m_pStackedOffice->addWidget(m_pWidgetSalary);
+    m_pStackedOffice->addWidget(new QWidget(this));
+    m_pStackedOffice->addWidget(new QWidget(this));
+    m_pStackedOffice->addWidget(new QWidget(this));
+    m_pStackedOffice->addWidget(new QWidget(this));
+    m_pStackedOffice->addWidget(new QWidget(this));
+    m_pStackedOffice->addWidget(new QWidget(this));
+    m_pStackedOffice->addWidget(new QWidget(this));
+    m_pStackedOffice->addWidget(new QWidget(this));
+
+    connect(m_pListOffice, SIGNAL(currentRowChanged(int)), m_pStackedOffice, SLOT(setCurrentIndex(int)));
     m_pHLayoutOffice = new QHBoxLayout;
     m_pWidgetOffice = new QWidget;
 
