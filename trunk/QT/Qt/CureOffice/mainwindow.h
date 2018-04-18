@@ -7,6 +7,8 @@
 #include <QLayout>
 #include <QResizeEvent>
 
+#include "cure_salary.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -24,6 +26,7 @@ private:
     QListWidget *m_pListOffice;
     QStackedWidget *m_pStackedOffice;
     QHBoxLayout *m_pHLayoutOffice;
+    CureSalary *m_pWidgetSalary;
 };
 
 #endif // MAINWINDOW_H
