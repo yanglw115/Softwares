@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     this->setWindowTitle(g_strTitle);
-    this->setMinimumSize(600, 400);
+    this->setMinimumSize(800, 600);
 
     initMainWindow();
 }
