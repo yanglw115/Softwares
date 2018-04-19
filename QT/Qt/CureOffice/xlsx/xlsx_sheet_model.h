@@ -39,7 +39,7 @@ class SheetModel : public QAbstractTableModel
     Q_OBJECT
     Q_DECLARE_PRIVATE(SheetModel)
 public:
-    explicit SheetModel(Worksheet *sheet, QObject *parent = 0);
+    explicit SheetModel(Worksheet *sheet, QObject *parent = 0, const int nStartRow = 1);
     ~SheetModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -56,6 +56,7 @@ public slots:
 
 private:
     SheetModelPrivate * const d_ptr;
+    int m_nStartRow;
 };
 
 QT_END_NAMESPACE_XLSX

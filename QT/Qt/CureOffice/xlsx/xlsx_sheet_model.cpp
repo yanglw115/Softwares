@@ -49,10 +49,12 @@ SheetModelPrivate::SheetModelPrivate(SheetModel *p)
 /*!
  * Creates a model object with the given \a sheet and \a parent.
  */
-SheetModel::SheetModel(Worksheet *sheet, QObject *parent)
+/* 增加excel数据读取的起始行，必须要大于等于1(起始行从1计起) */
+SheetModel::SheetModel(Worksheet *sheet, QObject *parent, const int nStartRow)
     :QAbstractTableModel(parent), d_ptr(new SheetModelPrivate(this))
 {
     d_ptr->sheet = sheet;
+    m_nStartRow = nStartRow;
 }
 
 /*!
@@ -66,7 +68,7 @@ SheetModel::~SheetModel()
 int SheetModel::rowCount(const QModelIndex &/*parent*/) const
 {
     Q_D(const SheetModel);
-    return d->sheet->dimension().lastRow();
+    return d->sheet->dimension().lastRow() - m_nStartRow - 1;
 }
 
 
@@ -80,7 +82,8 @@ Qt::ItemFlags SheetModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return Qt::NoItemFlags;
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    //return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
 QVariant SheetModel::data(const QModelIndex &index, int role) const
@@ -90,10 +93,10 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    Cell *cell = d->sheet->cellAt(index.row()+1, index.column()+1);
+    Cell *cell = d->sheet->cellAt(index.row()+m_nStartRow, index.column()+1);
     if (!cell)
         return QVariant();
-    QVariant userFriendlyValue = d->sheet->read(index.row()+1, index.column()+1);
+    QVariant userFriendlyValue = d->sheet->read(index.row()+m_nStartRow, index.column()+1);
 
     if (role == Qt::DisplayRole) {
         if (cell->isDateTime())
@@ -169,6 +172,8 @@ static QString col_to_name(int col_num)
 
 QVariant SheetModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+#if 0
+    /* A-Z,AA-AZ…… */
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal)
             return col_to_name(section + 1);
@@ -176,6 +181,18 @@ QVariant SheetModel::headerData(int section, Qt::Orientation orientation, int ro
             return QString::number(section + 1);
     }
     return QVariant();
+#else
+    Q_D(const SheetModel);
+    /* 读取excel */
+    if (role == Qt::DisplayRole) {
+        if (orientation == Qt::Horizontal) {
+            Cell *cell = d->sheet->cellAt(m_nStartRow - 1, section + 1);
+            return cell->value();
+        } else
+            return QString::number(section + 1);
+    }
+    return QVariant();
+#endif
 }
 
 bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -186,7 +203,7 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
         return false;
 
     if (role == Qt::EditRole) {
-        if (d->sheet->write(index.row()+1, index.column()+1, value) == 0)
+        if (d->sheet->write(index.row()+m_nStartRow, index.column()+1, value) == 0)
             return true;
     }
 

@@ -28,6 +28,7 @@ public slots:
 private:
     void initWidgets();
     void freeXlsxDocument();
+    void saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow);
 private:
     QLabel *m_pLabelOpenExcel;
     QLineEdit *m_pEditOpenedExcel;

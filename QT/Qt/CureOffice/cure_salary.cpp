@@ -43,7 +43,9 @@ void CureSalary::slotOpenExcel()
                 QString strSheetName = m_pXlsxDoc->sheetNames()[0];
                 Worksheet *pWorksheet = dynamic_cast<Worksheet*>(m_pXlsxDoc->sheet(strSheetName));
                 if (pWorksheet) {
-                    m_pTableExcel->setModel(new SheetModel(pWorksheet, m_pTableExcel));
+                    int nStartRow = 5;
+                    //saveSalaryExcelHead(pWorksheet, nStartRow);
+                    m_pTableExcel->setModel(new SheetModel(pWorksheet, m_pTableExcel, nStartRow));
                     foreach (CellRange range, pWorksheet->mergedCells())
                         m_pTableExcel->setSpan(range.firstRow()-1, range.firstColumn()-1, range.rowCount(), range.columnCount());
                     m_bStateOpenExcel = true;
@@ -90,6 +92,7 @@ void CureSalary::freeXlsxDocument()
     if (m_pXlsxDoc) {
         SheetModel *pModel = dynamic_cast<SheetModel*>(m_pTableExcel->model());
         if (pModel) {
+            m_pTableExcel->clearSpans();
             m_pTableExcel->setModel(NULL);
             delete pModel;
             pModel = NULL;
@@ -101,5 +104,33 @@ void CureSalary::freeXlsxDocument()
         delete m_pXlsxDoc;
         m_pXlsxDoc = NULL;
     }
+}
+
+void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow)
+{
+    QString strSaveFileName = "Salary_201808.xlsx";
+    Document *pDoc = new Document;
+    pDoc->addSheet(tr("工资明细"));
+
+    Format format;
+    format.setFont(QFont("宋体", 10, QFont::Bold));
+    format.setPatternBackgroundColor(Qt::yellow);
+    format.setTextWarp(true); // 自动换行
+    format.setVerticalAlignment(Format::AlignVCenter);
+    format.setHorizontalAlignment(Format::AlignHCenter);
+    format.setBorderStyle(Format::BorderThin); // 边框为实线
+
+    for (int i = 0; i < pWorksheet->dimension().lastColumn(); ++i) {
+        Cell *pCell = pWorksheet->cellAt(nStartRow - 1, i + 1);
+        if (!pCell->value().isNull()) {
+            pDoc->write(1, i + 1, pCell->value(), format);
+        }
+    }
+    if (QFile::exists(strSaveFileName)) {
+        QFile::remove(strSaveFileName);
+    }
+    pDoc->saveAs(strSaveFileName);
+    delete pDoc;
+    pDoc = NULL;
 }
 
