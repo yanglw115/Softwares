@@ -41,6 +41,7 @@ void MainWindow::slotWatchedFileChanged(const QString &strFilePath)
         QTextStream textStream(&file);
         QString strStyle;
         strStyle = textStream.readAll();
+        file.close();
         qApp->setStyleSheet(strStyle);
         qDebug() << "Update style sheet success!";
     } else {
