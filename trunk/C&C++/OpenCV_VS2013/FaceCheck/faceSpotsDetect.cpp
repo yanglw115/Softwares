@@ -12,7 +12,6 @@ using namespace cv;
 #define MIN_SIZE_PIMPLES 20 // 痘痘的最小尺寸
 #define MAX_SIZE_PIMPLES 250
 #define MAX_SIZE_BLACKHEADS 20 // 黑头的最大尺寸
-#define MAX_SIZE_OIL 500000
 
 #define MAX_RATIO 2.5 // 矩形长宽比最大值
 #define MIN_RATIO 0.3 // 矩形长宽比最小值
@@ -27,7 +26,10 @@ using namespace cv;
 #define MIN_COLOR_PIMPLES 20
 #define MIN_COLOR_DIFF_G_R 20
 #define MAX_COLOR_BLACKHEADS 255
-#define MIN_COLOR_OIL 204 // 255 * 0.8
+#define MIN_COLOR_OIL 190
+
+#define OIL_LEVEL_LOW 10.0
+#define OIL_LEVEL_OVER 40.0
 
 int findPimples(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 {
@@ -252,23 +254,33 @@ int findBlackHeads(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 
 float getMoistureAndOil(const string &strImageName, const Mat &srcImg, Mat &imgMask)
 {
-	Mat bw;
-	vectorContours vectorSpots;
-	cvtColor(imgMask, bw, COLOR_BGR2GRAY);
-	int nTotolSize = 0;
-
-#if 1
 	int bins = 256;
 	int histSize[] = {bins};
 	int dims = 1;
-	float range[] = {0, 256};
+	float range[] = {0, 255};
 	const float *ranges[] = {range};
 	MatND lightHist;
 	int channelsLight[] = {1};
 	int nTotalHigh = 0;
 	int nTotalPoints = 0;
-	calcHist(&srcImg, 1, channelsLight, Mat(), lightHist, dims, histSize, ranges, true, false);
+	float fPercent = 0.0;
+	Mat bw;
 
+	cvtColor(imgMask, bw, COLOR_BGR2HLS);
+	calcHist(&bw, 1, channelsLight, Mat(), lightHist, dims, histSize, ranges, true, false);
+
+	for (int i = 0; i < 256; ++i) {
+		float binValue = lightHist.at<float>(i);
+		if (i >= MIN_COLOR_OIL) {
+			nTotalHigh += (int)binValue;
+		}
+		nTotalPoints += (int)binValue;
+	}
+	if (nTotalPoints) {
+		fPercent = nTotalHigh * 100.0 / nTotalPoints;
+	}
+	LOG(INFO) << "Oil percent: " << fPercent;
+#if 0
 	int size = 256;
 	int scale = 1;
 	Mat dstMat(size * scale, size, CV_8U, Scalar(0));
@@ -276,103 +288,18 @@ float getMoistureAndOil(const string &strImageName, const Mat &srcImg, Mat &imgM
 	minMaxLoc(lightHist, &minValue, &maxValue, 0, 0);
 	LOG(INFO) << "MaxValue: " << maxValue;
 	int hpt = saturate_cast<int>(0.9 * size);
-	LOG(INFO) << "######################" << strImageName;
+	//LOG(INFO) << "######################" << strImageName;
 	for (int i = 0; i < 256; ++i) {
 		float binValue = lightHist.at<float>(i);
-		nTotalPoints += binValue;
-		if (binValue >= MIN_COLOR_OIL) {
-			nTotalHigh += binValue;
-		}
 		LOG(INFO) << "i: " << i << ", value:" << binValue;
 		int realValue = saturate_cast<int>(binValue * hpt / maxValue);
 		rectangle(dstMat, Point(i * scale, size - 1), Point((i + 1) * scale - 1, size - realValue), Scalar(255));
 	}
-	float fPercent = nTotalHigh / nTotalPoints * 100;
-	LOG(INFO) << "Percent: " << fPercent;
-	LOG(INFO) << "######################";
+	//LOG(INFO) << "######################";
 	imshow("油份反光直方图：", dstMat);
 	waitKey(0);
-	return fPercent;
 #endif
-
-	/* 自适应阈值化：图像分割，去除一定范围内的像素 */
-	/* bw必须是单通道的8bit图像 */
-	/* 第1个参数是输入图像，第2个参数是输出图像，第3个参数是满足条件的最大像素值，第4个参数是所用算法，
-	第6个参数是用来计算阈值的块大小(必须是奇数)，第7个参数是需要从加权平均值减去的一个常量 */
-	adaptiveThreshold(bw, bw, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 5); // 目前调试这里使用15是最优的，可以再调试
-
-#if 1
-	namedWindow("自适应阈值化之后", WINDOW_NORMAL);
-	imshow("自适应阈值化之后", bw);
-#endif // With_Debug
-
-	/* 膨胀操作：前两个参数是输入与输出；参数3：膨胀操作的核，NULL时为3*3；参数4：锚的位置，下面代表位于中心；参数5：迭代使用dilate的次数 */
-	//dilate(bw, bw, Mat(), Point(-1, -1), 1);
-
-	/* 查找轮廓:必须是8位单通道图像，参数4：可以提取最外层及所有轮廓 */
-	findContours(bw, vectorSpots, RETR_LIST, CHAIN_APPROX_SIMPLE); // 这里提取的轮廓可能有重复，需要处理
-
-	LOG(INFO) << strImageName << ": Detected contours counts：" << to_string(vectorSpots.size());
-	double areaSize = 0.0;
-	for (size_t i = 0; i < vectorSpots.size(); ++i) {
-		//LOG(INFO) << strImageName << ": Contour area size: " << to_string(fabs(contourArea(vectorSpots[i])));
-		/* 这里的值也需要调试 */
-		areaSize = fabs(contourArea(vectorSpots[i]));
-		if (areaSize < MAX_SIZE_OIL) {
-			Rect minRect = minAreaRect(Mat(vectorSpots[i])).boundingRect();
-			/* 这里通过minAreaRect可能取到的矩形已经超出了图片边界，一般是最外的轮廓，所以要进行先处理 */
-			if (minRect.x < 0)
-				minRect.x = 0;
-			if (minRect.y < 0)
-				minRect.y = 0;
-			if (minRect.x + minRect.width > imgMask.cols)
-				minRect.width = imgMask.cols - minRect.x;
-			if (minRect.y + minRect.height > imgMask.rows)
-				minRect.height = imgMask.rows - minRect.y;
-
-			Mat maskCopy;
-			imgMask.copyTo(maskCopy);
-			Mat imgroi(maskCopy, minRect);
-
-			cvtColor(imgroi, imgroi, COLOR_BGR2HLS);
-			Scalar color = mean(imgroi);
-
-			/* 这里根据颜色值进行一次过滤 */
-			LOG(INFO) << "Oil light value:" << color[1];
-			if (color[1] >= MIN_COLOR_OIL) {
-#if 1
-				Point2f center;
-				float radius = 0;
-				minEnclosingCircle(Mat(vectorSpots[i]), center, radius);
-
-				if (1) {//(radius > 2 && radius < 50) {
-					Mat matTest;
-					srcImg.copyTo(matTest);
-					string strSize = to_string(areaSize);
-					//putText(matTest, format("color(%d:%d:%d), areaSize(%s)", color[0], color[1], color[2], strSize.substr(0, 3).c_str()), cv::Point2f(center.x, center.y - radius), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
-					putText(matTest, format("color(%d), areaSize(%s)", (int)color[1 ], strSize.substr(0, 3).c_str()), cv::Point2f(20, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
-					rectangle(matTest, minRect, Scalar(0, 255, 0));
-					//circle(matTest, center, (int)(radius + 1), Scalar(0, 255, 0), 2, 8);
-					namedWindow("当前油份区域：", WINDOW_NORMAL);
-					imshow("当前油份区域：", matTest);
-					waitKey();
-				}
-#endif // With_Debug		
-				nTotolSize += areaSize;
-			}
-		}
-	}
-
-#ifdef With_Debug
-	Mat matDebug;
-	srcImg.copyTo(matDebug);	
-	putText(matDebug, format("%d", nTotolSize), Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.8, Scalar(0, 0, 255), 3);
-	namedWindow("油份检测结果：", WINDOW_NORMAL);
-	imshow("油份检测结果：", matDebug);
-	waitKey();
-#endif // With_Debug
-
-	return nTotolSize;
+	return fPercent;
 }
 
 
@@ -381,6 +308,7 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 	int nPimples = -1;
 	int nBlackHeadsNose = 0;
 	int nBlackHeadsFace = 0;
+	float fOil[4] = {0.0}; // 左右脸颊，额头与鼻子（额头与鼻子最终组合成T区）
 
 	for (int i = 0; i <= INDEX_CONTOUR_NOSE; ++i) {
 		/* 创建一个通道并与原图大小相等的Mat */
@@ -400,13 +328,17 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 
 		if (INDEX_CONTOUR_LEFT == i) {
 			nBlackHeadsFace = findBlackHeads(strImageName, matSrc, masked);
+			fOil[0] = getMoistureAndOil(strImageName, matSrc, masked);
 		} else if (INDEX_CONTOUR_RIGHT == i) {
 			nBlackHeadsFace += findBlackHeads(strImageName, matSrc, masked);
+			fOil[1] = getMoistureAndOil(strImageName, matSrc, masked);
+		}else if (INDEX_CONTOUR_FOREHEAD == i) {
+			fOil[2] = getMoistureAndOil(strImageName, matSrc, masked);
 		} else if (INDEX_CONTOUR_NOSE == i) {
 			nBlackHeadsNose = findBlackHeads(strImageName, matSrc, masked);
 			vectorIntResult[INDEX_VALUE_BLACKHEADS] = nBlackHeadsNose;
+			fOil[3] = getMoistureAndOil(strImageName, matSrc, masked);
 		}
-
 	}
 
 	if (nBlackHeadsFace >= NUMBER_PORE_ROUGH) {
@@ -415,6 +347,57 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_NORMAL;
 	} else {
 		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_SMOOTH;
+	}
+
+	{
+		/* oil and moisture */
+		bool bWaterEnough[2] = {false}; // left+right,forehead+nose
+		fOil[0] = (fOil[0] + fOil[1]) / 2; // both = (left + right) /2
+		fOil[1] = (fOil[2] + fOil[3]) / 2; // T = (forehead + nose) / 2 
+		for (int i = 0; i < 2; ++i) {
+			if ((fOil[i] >= OIL_LEVEL_OVER) || (fOil[i] <= OIL_LEVEL_LOW) || (TYPE_SKIN_ROUGH == vectorIntResult[INDEX_VALUE_PORE_TYPE])) {
+				/* 皮肤油脂分泌旺盛或分泌少，或者油脂分泌适中且皮肤纹理粗糙不规则均分类为水份不足状态 */
+				bWaterEnough[i] = false;
+			} else {
+				bWaterEnough[i] = true;
+			}
+		}
+		enumSkinOilType nOilTypeSingle[2] = { TYPE_OIL_LOW }; // 左、右及T区分别是油、干、中性的哪一种
+		for (int i = 0; i < 2; ++i) {
+			if ((fOil[i] >= OIL_LEVEL_OVER) && (!bWaterEnough[i])) {
+				/* 油脂分泌旺盛，肌肤水份不足 */
+				nOilTypeSingle[i] = TYPE_OIL_OVER;
+			} else if ((fOil[i] < OIL_LEVEL_OVER) && (fOil[i]) > OIL_LEVEL_LOW && (!bWaterEnough[i])) {
+				/* 油脂分泌适中，肌肤水份不足 */
+				nOilTypeSingle[i] = TYPE_OIL_LOW;
+			} else if ((fOil[i] < OIL_LEVEL_OVER) && (fOil[i]) > OIL_LEVEL_LOW && (bWaterEnough[i])) {
+				/* 油脂分泌适中，肌肤水份充足 */
+				nOilTypeSingle[i] = TYPE_OIL_BALANCE;
+			} else if ((fOil[i]) <= OIL_LEVEL_LOW && (bWaterEnough[i])) {
+				/* 油脂分泌少，肌肤水份充足 */
+				nOilTypeSingle[i] = TYPE_OIL_BALANCE;
+			} else if ((fOil[i]) <= OIL_LEVEL_LOW && (!bWaterEnough[i])) {
+				/* 油脂分泌少，肌肤水份不足 */
+				nOilTypeSingle[i] = TYPE_OIL_LOW;
+			} else {
+				nOilTypeSingle[i] = TYPE_OIL_BALANCE;
+			}
+		}
+
+		if ((nOilTypeSingle[0] + nOilTypeSingle[1]) <= TYPE_OIL_BALANCE) {
+			/* 干性: 两颊和T区均偏干或一个中性一个偏干 */
+			vectorIntResult[INDEX_VALUE_OIL_TYPE] = TYPE_OIL_LOW;
+		} else if ((TYPE_OIL_BALANCE == nOilTypeSingle[0]) && (TYPE_OIL_BALANCE == nOilTypeSingle[1])) {
+			/* 中性：两颊和T区均为是中性 */
+			vectorIntResult[INDEX_VALUE_OIL_TYPE] = TYPE_OIL_BALANCE;
+		} else if ((nOilTypeSingle[0] + nOilTypeSingle[1]) >= (TYPE_OIL_BALANCE + TYPE_OIL_OVER)) {
+			/* 两颊和T区均偏油或一个中性一个偏油 */
+			vectorIntResult[INDEX_VALUE_OIL_TYPE] = TYPE_OIL_OVER;
+		} else {
+			/* 两颊和T区一个偏干，一个偏油 */
+			vectorIntResult[INDEX_VALUE_OIL_TYPE] = TYPE_OIL_MIX;
+		}
+
 	}
 
 #ifdef WITH_SPOTS_AS_PIMPLES

@@ -12,6 +12,13 @@ enum enumSkinPoreType {
 	TYPE_SKIN_ROUGH = 2
 };
 
+enum enumSkinOilType {
+	TYPE_OIL_LOW = 0,
+	TYPE_OIL_BALANCE = 1,
+	TYPE_OIL_OVER = 2,
+	TYPE_OIL_MIX = 3
+};
+
 enum enumFaceValueIndex {
 	INDEX_VALUE_LEFT = 0,
 	INDEX_VALUE_RIGHT,
@@ -20,6 +27,7 @@ enum enumFaceValueIndex {
 	INDEX_VALUE_NOSE,
 	INDEX_VALUE_BLACKHEADS,
 	INDEX_VALUE_PORE_TYPE,
+	INDEX_VALUE_OIL_TYPE,
 	INDEX_VALUE_MAX
 };
 
