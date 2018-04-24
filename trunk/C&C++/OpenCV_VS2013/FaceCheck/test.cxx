@@ -13,7 +13,7 @@
 #else
 #include <windows.h>
 #define SIZE_TYPE_T size_t
-static CureLog g_logObject;
+//static CureLog g_logObject;
 #endif
 
 int main(int argc, char **argv)
@@ -66,11 +66,13 @@ int main(int argc, char **argv)
 			strImageName = strImageName.substr(nPosition + 1);
 		}
 
-#if 0
+#if 1
 		//findPimples(strImageName, matSrc, matSrc);
-		matTest = matSrc.clone();
-		cv::resize(matTest, matTest, cv::Size(1024, 768));
-		cv::imwrite(string(strImageName + ".jpg").c_str(), matTest);
+		//matTest = matSrc.clone();
+		//cv::resize(matTest, matTest, cv::Size(1024, 768));
+		//cv::imwrite(string(strImageName + ".jpg").c_str(), matTest);
+		getMoistureAndOil(strImageName, matSrc, matSrc);
+
 #else
 		if (1) {//(matSrc.rows > 1280 || matSrc.cols > 1280) {
 			if (matSrc.rows > matSrc.cols) {
@@ -86,15 +88,16 @@ int main(int argc, char **argv)
 			goto End;
 		}
 
-		rectFaceCorassness = cv::Rect(vectorFace[INDEX_CONTOUR_FACE][0], vectorFace[INDEX_CONTOUR_FACE][2]);
-		fCoarseness = getFaceCoarseness(matSrc, rectFaceCorassness);
-		LOG(INFO) << strImageName << ": Skin coarseness: " << to_string(fCoarseness); 
-
 		bResult = findFaceSpots(strImageName, matSrc, vectorFace, vectorIntResult);
 		if (!bResult) {
 			LOG(ERROR) << strImageName << ": Find face spots failed!";
 			goto End;
 		}
+
+		rectFaceCorassness = cv::Rect(vectorFace[INDEX_CONTOUR_FACE][0], vectorFace[INDEX_CONTOUR_FACE][2]);
+		fCoarseness = getFaceCoarseness(matSrc, rectFaceCorassness);
+		LOG(INFO) << strImageName << ": Skin coarseness: " << to_string(fCoarseness);
+
 		colorType = getFaceColorType(strImageName, matSrc, rectFaceColor);
 #endif
 	End:

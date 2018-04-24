@@ -2,8 +2,6 @@
 #ifndef  __FACE_GLOBAL_H__
 #define __FACE_GLOBAL_H__
 
-#include "log.h"
-
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <string>
@@ -41,6 +39,15 @@ using namespace std;
 
 typedef vector<vector<cv::Point> > vectorContours;
 typedef vector<int> vectorInt;
+
+#ifdef __linux
+#include "log.h"
+#else
+/* 最近在使用VS2013或2017进行调试的时候，运行时总是出错，2018.1.15之前还是正常的。暂时去除GLOG模块的使用 */
+#define LOG(XXX) cout << endl
+#define ERROR 0
+#define INFO 2 
+#endif
 
 #endif // ! __FACE_GLOBAL_H__
 
