@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 			strImageName = strImageName.substr(nPosition + 1);
 		}
 
-#if 1
+#if 0
 		//findPimples(strImageName, matSrc, matSrc);
 		//matTest = matSrc.clone();
 		//cv::resize(matTest, matTest, cv::Size(1024, 768));
@@ -94,11 +94,13 @@ int main(int argc, char **argv)
 			goto End;
 		}
 
+#if 0 // coraseness
 		rectFaceCorassness = cv::Rect(vectorFace[INDEX_CONTOUR_FACE][0], vectorFace[INDEX_CONTOUR_FACE][2]);
 		fCoarseness = getFaceCoarseness(matSrc, rectFaceCorassness);
 		LOG(INFO) << strImageName << ": Skin coarseness: " << to_string(fCoarseness);
 
 		colorType = getFaceColorType(strImageName, matSrc, rectFaceColor);
+#endif
 #endif
 	End:
 		stringstream ss;
@@ -107,7 +109,10 @@ int main(int argc, char **argv)
 			<< ",\"C\":" << vectorIntResult[INDEX_VALUE_FOREHEAD] << ",\"D\":" << vectorIntResult[INDEX_VALUE_JAW] << ",\"E\":" << vectorIntResult[INDEX_VALUE_NOSE] << "}";
 		ss << ",\"blackheads\":" << vectorIntResult[INDEX_VALUE_BLACKHEADS];
 		ss << ",\"pore\":" << vectorIntResult[INDEX_VALUE_PORE_TYPE];
+		ss << ",\"oil\":" << vectorIntResult[INDEX_VALUE_OIL_TYPE];
+#if 0 // coraseness
 		ss << ",\"coarseness\":" << fCoarseness;
+#endif
 		ss << ",\"color\":" << colorType;
 		ss << "}";
 
@@ -115,6 +120,6 @@ int main(int argc, char **argv)
 #ifndef __linux
 	}
 #endif
-
+	Sleep(10000);
 	return 0;
 }
