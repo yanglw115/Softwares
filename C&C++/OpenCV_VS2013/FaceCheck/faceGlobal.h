@@ -48,7 +48,7 @@ using namespace std;
 typedef vector<vector<cv::Point> > vectorContours;
 typedef vector<int> vectorInt;
 
-#ifdef __linux
+#ifndef WIN_TEST
 #include "log.h"
 #else
 /* 最近在使用VS2013或2017进行调试的时候，运行时总是出错，2018.1.15之前还是正常的。暂时去除GLOG模块的使用 */
