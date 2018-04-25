@@ -266,17 +266,21 @@ float getMoistureAndOil(const string &strImageName, const Mat &srcImg, Mat &imgM
 	float fPercent = 0.0;
 	Mat bw;
 
+	/* 这里将RGB颜色空间转换为HLS颜色空间，从而取白色的亮度，以此来作为反光度的参考 */
 	cvtColor(imgMask, bw, COLOR_BGR2HLS);
 	calcHist(&bw, 1, channelsLight, Mat(), lightHist, dims, histSize, ranges, true, false);
 
 	for (int i = 0; i < 256; ++i) {
 		float binValue = lightHist.at<float>(i);
 		if (i >= MIN_COLOR_OIL) {
+			/* 总的反光点 */
 			nTotalHigh += (int)binValue;
 		}
+		/* 所有的点 */
 		nTotalPoints += (int)binValue;
 	}
 	if (nTotalPoints) {
+		/* 计算出反光点比例，近似于反光面积比例 */
 		fPercent = nTotalHigh * 100.0 / nTotalPoints;
 	}
 	LOG(INFO) << "Oil percent: " << fPercent;
@@ -324,6 +328,7 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 		matSrc.copyTo(masked, mask);
 		/* imgSrc始终保持不变 */
 		nPimples = findPimples(strImageName, matSrc, masked);
+		/* 痘痘 */
 		vectorIntResult[i] = nPimples;
 
 		if (INDEX_CONTOUR_LEFT == i) {
@@ -341,6 +346,7 @@ bool findFaceSpots(const string &strImageName, const cv::Mat &matSrc, const vect
 		}
 	}
 
+	/* 毛孔粗大度目前根据左右脸黑头的总数量来粗略评定 */
 	if (nBlackHeadsFace >= NUMBER_PORE_ROUGH) {
 		vectorIntResult[INDEX_VALUE_PORE_TYPE] = TYPE_SKIN_ROUGH;
 	} else if (nBlackHeadsFace >= NUMBER_PORE_NORMAL) {
