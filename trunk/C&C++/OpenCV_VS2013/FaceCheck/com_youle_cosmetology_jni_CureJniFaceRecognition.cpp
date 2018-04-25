@@ -20,9 +20,9 @@ static CureLog g_logObject;
 JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_recogni
   (JNIEnv *env, jobject obj, jstring strFilePath)
 {
-	vector<int> vectorIntResult(5);
+	vector<int> vectorIntResult(INDEX_VALUE_MAX); /* left_face, right_face, forehead, jaw, nose | blackheads */
 	vectorContours vectorFace;
-	cv::Rect rectFace;
+	cv::Rect rectFaceColor;
 	enumFaceColorType colorType = Type_Color_TouBai;
 	cv::Mat matSrc;
 	string strImageName("");
@@ -55,22 +55,29 @@ JNIEXPORT jstring JNICALL Java_com_youle_cosmetology_jni_CureJniFaceRecognition_
 			cv::resize(matSrc, matSrc, cv::Size(1280, 1280 * matSrc.rows / matSrc.cols));
 		}
 	}
-	bResult = faceLandmarkDetect(strImageName, matSrc, vectorFace, rectFace);
+	bResult = faceLandmarkDetect(strImageName, matSrc, vectorFace, rectFaceColor);
 	if (!bResult) {
+			LOG(ERROR) << strImageName << ": Detect face landmark failed!";
 		goto End;
 	}
 	bResult = findFaceSpots(strImageName, matSrc, vectorFace, vectorIntResult);
 	if (!bResult) {
+			LOG(ERROR) << strImageName << ": Find face spots failed!";
 		goto End;
 	}
-	colorType = getFaceColorType(strImageName, matSrc, rectFace);
+	colorType = getFaceColorType(strImageName, matSrc, rectFaceColor);
 
 End:	
 	env->ReleaseStringUTFChars(strFilePath, 0);
 	stringstream ss;
-	ss << "{\"result\":" << bResult << ",\"spots\":{\"A\":" << vectorIntResult[0] <<  ",\"B\":" << vectorIntResult[1]
-	   << ",\"C\":" << vectorIntResult[2] << ",\"D\":" << vectorIntResult[3] << ",\"E\":" << vectorIntResult[4] 
-	   << "},\"color\":" << colorType << "}";
+	ss << "{\"result\":" << bResult;
+	ss << ",\"spots\":{\"A\":" << vectorIntResult[INDEX_VALUE_LEFT] << ",\"B\":" << vectorIntResult[INDEX_VALUE_RIGHT]
+		<< ",\"C\":" << vectorIntResult[INDEX_VALUE_FOREHEAD] << ",\"D\":" << vectorIntResult[INDEX_VALUE_JAW] << ",\"E\":" << vectorIntResult[INDEX_VALUE_NOSE] << "}";
+	ss << ",\"blackheads\":" << vectorIntResult[INDEX_VALUE_BLACKHEADS];
+	ss << ",\"pore\":" << vectorIntResult[INDEX_VALUE_PORE_TYPE];
+	ss << ",\"oil\":" << vectorIntResult[INDEX_VALUE_OIL_TYPE];
+	ss << ",\"color\":" << colorType;
+	ss << "}";
 
 	LOG(INFO) << strImageName << ": " << ss.str();
 	return env->NewStringUTF(ss.str().c_str());
