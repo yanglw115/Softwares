@@ -13,21 +13,21 @@ enum enumSkinPoreType {
 };
 
 enum enumSkinOilType {
-	TYPE_OIL_LOW = 0,
-	TYPE_OIL_BALANCE = 1,
-	TYPE_OIL_OVER = 2,
-	TYPE_OIL_MIX = 3
+	TYPE_OIL_LOW = 0, /* 干燥 */
+	TYPE_OIL_BALANCE = 1, /* 中性 */
+	TYPE_OIL_OVER = 2, /* 油性 */
+	TYPE_OIL_MIX = 3 /* 混合性 */
 };
 
 enum enumFaceValueIndex {
-	INDEX_VALUE_LEFT = 0,
-	INDEX_VALUE_RIGHT,
-	INDEX_VALUE_FOREHEAD,
-	INDEX_VALUE_JAW,
-	INDEX_VALUE_NOSE,
-	INDEX_VALUE_BLACKHEADS,
-	INDEX_VALUE_PORE_TYPE,
-	INDEX_VALUE_OIL_TYPE,
+	INDEX_VALUE_LEFT = 0, /* 左脸痘痘 */
+	INDEX_VALUE_RIGHT, /* 右脸痘痘 */
+	INDEX_VALUE_FOREHEAD, /* 额头痘痘 */
+	INDEX_VALUE_JAW, /* 下巴痘痘 */
+	INDEX_VALUE_NOSE, /* 鼻子痘痘 */
+	INDEX_VALUE_BLACKHEADS, /* 黑头(鼻子) */
+	INDEX_VALUE_PORE_TYPE, /* 毛孔粗大度 */
+	INDEX_VALUE_OIL_TYPE, /* 肤质，油性与水份 */
 	INDEX_VALUE_MAX
 };
 
