@@ -36,6 +36,7 @@ LIBS = -L./build/Linux/libs -lglog -lopencv_core -lopencv_imgcodecs -lopencv_img
 # 这里指定了临时库存在目录，非当前目录
 OBJS = $(patsubst %.cpp, $(DirProject)/%.o, $(wildcard *.cpp))
 
+# gcc的版本最好统一为gcc 7.2.0
 CC = /usr/local/gcc-7.2.0/bin/g++
 # CC = g++
 VERSION=$(shell svn info | grep "Last Changed Rev" | cut -f2 -d ":")
@@ -58,6 +59,7 @@ clean:
 
 # java在编译时需要同时编译入口java与依赖java文件，即下面的*.java
 # java运行的时候需要指定-classpath，到哪个路径下去找依赖的class
+# 建议先make pack；然后make install;最后再执行make java，否则因为一些依赖关系会导致JAVA无法成功运行。
 java: $(GENERATE_LIBRARY)
 	javac -d $(DirJniClasses) $(DirJniSrc)/*.java
 	java -classpath $(DirJniClasses) $(NameJniEntry)
@@ -67,17 +69,21 @@ test: $(GENERATE_LIBRARY)
 	rm -rf $(TEST_MAIN_EXE)
 	ln -sv $(DirProject)/$(TEST_MAIN_EXE) $(TEST_MAIN_EXE)
 
-# 打包文件(调用相关脚本)
+# 打包文件，制作完整centos 6.5上的安装包(调用相关脚本)
+# 注意打包前需要前需要将shape_predictor_68_face_landmarks.dat拷贝到build/data下面。因为此包太大，SVN无法上传与下载。
 pack: $(GENERATE_LIBRARY)
 	cd $(DirPackage) && bash $(NamePackageShell)
 
 # 安装到本机(调用相关脚本)
+# make pack完成之后，即可执行make install，将打包好的文件安装到本机。
 install:
 	cd $(DirPackage) && find ./ -name $(NameInstaller)"*.bin" -exec sudo {} \;
 
+# 更新包制作，区别于安装包，只是更新了JNI动态库文件
 pack_update:
 	cd $(DirPackage) && bash $(NamePackageUpdateShell)
-	
+
+# 更新包的安装，即更新JNI动态库的安装	
 update:
 	cd $(DirPackage) && find ./ -name $(NameUpdateBin)"*.bin" -exec sudo {} \;
 
