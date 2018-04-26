@@ -3,9 +3,11 @@
 #include <iostream>
 #include <QtDebug>
 #include <QMessageBox>
+#include <QHeaderView>
 
 #include "cure_salary.h"
 #include "msvs_charset.h"
+#include "cure_item_delegate.h"
 
 using namespace std;
 
@@ -44,7 +46,6 @@ void CureSalary::slotOpenExcel()
                 Worksheet *pWorksheet = dynamic_cast<Worksheet*>(m_pXlsxDoc->sheet(strSheetName));
                 if (pWorksheet) {
                     int nStartRow = 5;
-                    //saveSalaryExcelHead(pWorksheet, nStartRow);
                     m_pTableExcel->setModel(new SheetModel(pWorksheet, m_pTableExcel, nStartRow));
                     foreach (CellRange range, pWorksheet->mergedCells())
                         m_pTableExcel->setSpan(range.firstRow()-1, range.firstColumn()-1, range.rowCount(), range.columnCount());
@@ -106,6 +107,7 @@ void CureSalary::freeXlsxDocument()
     }
 }
 
+/* 根据导入的数据模板，提取邮件发送的excel头部信息。也可以直接使用邮件发送模板，就不需要这样提取了。 */
 void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow)
 {
     QString strSaveFileName = "Salary_201808.xlsx";

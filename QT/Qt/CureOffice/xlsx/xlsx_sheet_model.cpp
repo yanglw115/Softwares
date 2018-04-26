@@ -55,6 +55,8 @@ SheetModel::SheetModel(Worksheet *sheet, QObject *parent, const int nStartRow)
 {
     d_ptr->sheet = sheet;
     m_nStartRow = nStartRow;
+    m_vecotrSelect.resize(sheet->dimension().lastColumn() - 1);
+    m_vecotrSelect.fill(true);
 }
 
 /*!
@@ -68,7 +70,7 @@ SheetModel::~SheetModel()
 int SheetModel::rowCount(const QModelIndex &/*parent*/) const
 {
     Q_D(const SheetModel);
-    return d->sheet->dimension().lastRow() - m_nStartRow - 1;
+    return d->sheet->dimension().lastRow() - m_nStartRow; // with checkbox
 }
 
 
@@ -83,6 +85,9 @@ Qt::ItemFlags SheetModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
     //return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    if (0 == index.row()) {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled  | Qt::ItemIsUserCheckable;
+    }
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
@@ -93,10 +98,19 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    Cell *cell = d->sheet->cellAt(index.row()+m_nStartRow, index.column()+1);
+    if (0 == index.row()) {
+        if (Qt::CheckStateRole == role) {
+            return (m_vecotrSelect.at(index.column())? Qt::Checked: Qt::Unchecked);
+        } else {
+            return QString("");
+        }
+
+    }
+
+    Cell *cell = d->sheet->cellAt(index.row()+m_nStartRow-1, index.column()+1); // with checkbox
     if (!cell)
         return QVariant();
-    QVariant userFriendlyValue = d->sheet->read(index.row()+m_nStartRow, index.column()+1);
+    QVariant userFriendlyValue = d->sheet->read(index.row()+m_nStartRow-1, index.column()+1);
 
     if (role == Qt::DisplayRole) {
         if (cell->isDateTime())
@@ -203,8 +217,10 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
         return false;
 
     if (role == Qt::EditRole) {
-        if (d->sheet->write(index.row()+m_nStartRow, index.column()+1, value) == 0)
+        if (d->sheet->write(index.row()+m_nStartRow-1, index.column()+1, value) == 0) // with checkbox
             return true;
+    } else if (index.row() == 0 && role == Qt::CheckStateRole) {
+        m_vecotrSelect[index.column()] = value.toBool();
     }
 
     return false;

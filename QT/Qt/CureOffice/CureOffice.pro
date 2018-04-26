@@ -16,13 +16,15 @@ RC_FILE = logo.rc
 SOURCES += main.cpp\
         mainwindow.cpp \
     cure_salary.cpp \
-    xlsx/xlsx_sheet_model.cpp
+    xlsx/xlsx_sheet_model.cpp \
+    cure_item_delegate.cpp
 
 HEADERS  += mainwindow.h \
     msvs_charset.h \
     cure_salary.h \
     xlsx/xlsx_sheet_model.h \
-    xlsx/xlsx_sheet_model_p.h
+    xlsx/xlsx_sheet_model_p.h \
+    cure_item_delegate.h
 
 RESOURCES += \
     resources/imgresource.qrc

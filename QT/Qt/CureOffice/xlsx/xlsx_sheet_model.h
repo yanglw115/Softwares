@@ -29,6 +29,8 @@
 #include "xlsxglobal.h"
 #include <QAbstractTableModel>
 
+#include <QVector>
+
 QT_BEGIN_NAMESPACE_XLSX
 
 class Worksheet;
@@ -57,6 +59,7 @@ public slots:
 private:
     SheetModelPrivate * const d_ptr;
     int m_nStartRow;
+    QVector<bool> m_vecotrSelect;
 };
 
 QT_END_NAMESPACE_XLSX
