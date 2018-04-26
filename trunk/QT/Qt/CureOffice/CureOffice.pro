@@ -4,21 +4,33 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xlsx
+QT       += core gui xlsx network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = CureOffice
 TEMPLATE = app
 RC_FILE = logo.rc
-
+DEFINES += SMTP_BUILD
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     cure_salary.cpp \
     xlsx/xlsx_sheet_model.cpp \
     cure_item_delegate.cpp \
-    hanz2pinyin/Hanz2Piny.cpp
+    hanz2pinyin/Hanz2Piny.cpp \
+    smtpClient/emailaddress.cpp \
+    smtpClient/mimeattachment.cpp \
+    smtpClient/mimecontentformatter.cpp \
+    smtpClient/mimefile.cpp \
+    smtpClient/mimehtml.cpp \
+    smtpClient/mimeinlinefile.cpp \
+    smtpClient/mimemessage.cpp \
+    smtpClient/mimemultipart.cpp \
+    smtpClient/mimepart.cpp \
+    smtpClient/mimetext.cpp \
+    smtpClient/quotedprintable.cpp \
+    smtpClient/smtpclient.cpp
 
 HEADERS  += mainwindow.h \
     msvs_charset.h \
@@ -30,7 +42,21 @@ HEADERS  += mainwindow.h \
     hanz2pinyin/utf8/core.h \
     hanz2pinyin/utf8/unchecked.h \
     hanz2pinyin/Hanz2Piny.h \
-    hanz2pinyin/utf8.h
+    hanz2pinyin/utf8.h \
+    smtpClient/emailaddress.h \
+    smtpClient/mimeattachment.h \
+    smtpClient/mimecontentformatter.h \
+    smtpClient/mimefile.h \
+    smtpClient/mimehtml.h \
+    smtpClient/mimeinlinefile.h \
+    smtpClient/mimemessage.h \
+    smtpClient/mimemultipart.h \
+    smtpClient/mimepart.h \
+    smtpClient/mimetext.h \
+    smtpClient/quotedprintable.h \
+    smtpClient/smtpclient.h \
+    smtpClient/smtpexports.h \
+    smtpClient/SmtpMime.h
 
 RESOURCES += \
     resources/imgresource.qrc

@@ -32,6 +32,8 @@ static QRect CheckBoxRect(const QStyleOptionViewItem &viewItemStyleOptions)/*con
 
 QWidget *CureCheckDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(option)
+    Q_UNUSED(index)
     QCheckBox *pCheckBox = new QCheckBox(parent);
     return pCheckBox;
 }
@@ -67,6 +69,7 @@ void CureCheckDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 
 void CureCheckDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(index)
     editor->setGeometry(option.rect);
 }
 
