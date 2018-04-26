@@ -4,11 +4,13 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QHeaderView>
+#include <QFile>
 
 #include "cure_salary.h"
 #include "msvs_charset.h"
 #include "cure_item_delegate.h"
 #include "hanz2pinyin/Hanz2Piny.h"
+#include "smtpClient/SmtpMime.h"
 
 using namespace std;
 
@@ -180,5 +182,38 @@ void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow)
     pDoc->saveAs(strSaveFileName);
     delete pDoc;
     pDoc = NULL;
+}
+
+bool CureSalary::sendEmail(const QString strTitle, const QString strAttachFile)
+{
+    SmtpClient email("smtp.ym.163.com", 465, SmtpClient::SslConnection); // ssl端口是465，非SSL是25
+    email.setUser("xxxxxx@xxxx.com");
+    email.setPassword("xxxxxx");
+
+    MimeMessage message;
+    message.setSender(new EmailAddress("yangliwei@95051.com", "yangliwei"));
+    message.addRecipient(new EmailAddress("yanglw115@foxmail.com", "xingyu"));
+    message.setSubject("2018年3月工资条");
+
+    MimeAttachment attachMent(new QFile("Salary_201808.xlsx"));
+    attachMent.setContentType("excel");
+    message.addPart(&attachMent);
+
+    if (email.connectToHost()) {
+        if (email.login()) {
+            if (email.sendMail(message)) {
+                qDebug() << "Send email success!";
+            } else {
+                qWarning() << "Send email failed!";
+            }
+            email.quit();
+        } else {
+            qWarning() << "Email login failed!";
+        }
+    } else {
+        qWarning() << "Email connect failed!";
+    }
+
+    return true;
 }
 

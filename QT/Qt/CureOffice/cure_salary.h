@@ -30,6 +30,7 @@ private:
     void initWidgets();
     void freeXlsxDocument();
     void saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow);
+    bool sendEmail(const QString strTitle = "", const QString strAttachFile = "");
 private:
     /* open excel */
     QLabel *m_pLabelOpenExcel;
