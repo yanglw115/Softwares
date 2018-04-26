@@ -8,6 +8,7 @@
 #include "cure_salary.h"
 #include "msvs_charset.h"
 #include "cure_item_delegate.h"
+#include "hanz2pinyin/Hanz2Piny.h"
 
 using namespace std;
 
@@ -47,9 +48,8 @@ void CureSalary::slotOpenExcel()
                 if (pWorksheet) {
                     int nStartRow = 5;
                     m_pTableExcel->setModel(new SheetModel(pWorksheet, m_pTableExcel, nStartRow));
-                    foreach (CellRange range, pWorksheet->mergedCells())
-                        m_pTableExcel->setSpan(range.firstRow()-1, range.firstColumn()-1, range.rowCount(), range.columnCount());
                     m_bStateOpenExcel = true;
+                    qDebug() << "Table row count: " << m_pTableExcel->model()->rowCount() << ", colum count: " << m_pTableExcel->model()->columnCount();
                 }
             } else {
                 qCritical() << "New xlsx document failed!";
@@ -67,6 +67,42 @@ void CureSalary::slotOpenExcel()
     }
 }
 
+void CureSalary::slotDoTableViewFilter(const QString &strText)
+{
+    for (int i = 0; i < m_pTableExcel->model()->rowCount(); ++i) {
+        bool bShow = false;
+        for (int j = 0; j < m_pTableExcel->model()->columnCount(); ++j) {
+            QModelIndex modelIndex = m_pTableExcel->model()->index(i, j);
+            QString strItem = modelIndex.data().toString();
+            if (strItem.contains(strText, Qt::CaseInsensitive)) {
+                bShow = true;
+                break;
+            }
+
+            /* 下面处理汉字转拼音，即过滤输入的是拼音的时候处理 */
+            QString strPinyin;
+            Hanz2Piny HP;
+            vectorPair vectorResult = HP.toPinyinFromUtf8(strItem.toUtf8().toStdString(), false);
+            for (uint k = 0; k < vectorResult.size(); ++k) {
+                if (vectorResult.size() && vectorResult.at(k).first) {
+                    vectorString value = vectorResult.at(k).second;
+                    strPinyin.append(QString::fromStdString(value.at(0)));//这里存在多音字的情况，暂时只用第一个
+                }
+            }
+            if (strPinyin.contains(strText, Qt::CaseInsensitive)) {
+                bShow = true;
+                break;
+            }
+            //qDebug() << "Hanz to pinyin: " << strPinyin;
+        }
+        if (bShow) {
+            m_pTableExcel->showRow(i);
+        } else {
+            m_pTableExcel->hideRow(i);
+        }
+    }
+}
+
 void CureSalary::initWidgets()
 {
     m_pLabelOpenExcel = new QLabel(tr("请打开.xlsx格式的工资表: "), this);
@@ -75,6 +111,15 @@ void CureSalary::initWidgets()
     m_pButtonOpenExcel = new QPushButton(g_strOpenExcel, this);
     connect(m_pButtonOpenExcel, SIGNAL(clicked(bool)), this, SLOT(slotOpenExcel()));
     m_pTableExcel = new QTableView(this);
+
+    /* 对QTableView进行过滤 */
+    m_pLabelFilter = new QLabel(tr("条件过滤："), this);
+    m_pEditFilter = new QLineEdit(this);
+    m_pHLayoutFilter = new QHBoxLayout;
+    m_pHLayoutFilter->addWidget(m_pLabelFilter);
+    m_pHLayoutFilter->addWidget(m_pEditFilter);
+    connect(m_pEditFilter, SIGNAL(textChanged(QString)), this, SLOT(slotDoTableViewFilter(QString)));
+    m_pHLayoutFilter->addStretch(1);
 
     m_pVLayoutMain = new QVBoxLayout;
     m_pHLayoutOpenExcel = new QHBoxLayout;
@@ -85,6 +130,7 @@ void CureSalary::initWidgets()
     m_pHLayoutOpenExcel->addWidget(m_pButtonOpenExcel);
 
     m_pVLayoutMain->addLayout(m_pHLayoutOpenExcel);
+    m_pVLayoutMain->addLayout(m_pHLayoutFilter);
     m_pVLayoutMain->addWidget(m_pTableExcel);
 }
 

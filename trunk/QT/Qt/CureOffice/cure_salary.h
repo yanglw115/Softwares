@@ -24,15 +24,23 @@ signals:
 
 private slots:
     void slotOpenExcel();
+    void slotDoTableViewFilter(const QString &strText);
 public slots:
 private:
     void initWidgets();
     void freeXlsxDocument();
     void saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow);
 private:
+    /* open excel */
     QLabel *m_pLabelOpenExcel;
     QLineEdit *m_pEditOpenedExcel;
     QPushButton *m_pButtonOpenExcel;
+
+    /* tableview filter */
+    QLabel *m_pLabelFilter;
+    QLineEdit *m_pEditFilter;
+    QHBoxLayout *m_pHLayoutFilter;
+
     QTableView *m_pTableExcel;
     Document *m_pXlsxDoc;
 
