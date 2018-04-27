@@ -72,6 +72,9 @@ void Dialog::on_m_pButtonDecrypt_clicked()
     unsigned char buffer[65] = {0};
     if (0 == des_decryption((unsigned char *)ui->m_pDecryptIn->text().toUtf8().data(),
             DES_KEY, buffer)) {
+        for (int i = 0; i < strlen((char *)buffer); ++i) {
+            qDebug() << i << ": " << buffer[i];
+        }
         qDebug() << "Decrypt result:" << QString((char *)buffer);
         ui->m_pDecryptOut->setText(QString((char*)buffer));
     }

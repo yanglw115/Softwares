@@ -38,7 +38,8 @@ int des_encryption(unsigned char* pSrc, unsigned char* pKey, unsigned char* pBuf
     iLoop = InputdateLen / 8;
     iDes = InputdateLen % 8;
 
-    if (0 != iDes)
+    /* PKCS7 padding */
+    //if (0 != iDes)
     {
         InputdateLen = (iLoop+1)*8;
     }
@@ -63,7 +64,8 @@ int des_encryption(unsigned char* pSrc, unsigned char* pKey, unsigned char* pBuf
 		memcpy(Dst + i * 8, oBuf, 8);
 	}
 
-    if (0 != iDes)
+    /* PKCS7 padding */
+    //if (0 != iDes)
     {
 		memset(oBuf, 0, 64);
         memset(oSet, InputdateLen - strlen(pSrc), 8);
@@ -159,11 +161,10 @@ int des_decryption(unsigned char* pSrc, unsigned char* pKey, unsigned char* pBuf
 	}
 	//end hex value in BCD_dst
 //	BCDToASCII(pBuf, BCD_Dst, BCD_Len);
-    for (i = 0; i < BCD_Len; ++i) {
-        if (BCD_Dst[i] < 8) {
-            BCD_Dst[i] = 0;
-        }
-    }
+
+    /* PKCS7 padding */
+    BCD_Dst[BCD_Len - BCD_Dst[BCD_Len - 1]] = 0;
+
     strncpy(pBuf, BCD_Dst, strlen(BCD_Dst));
 	free(BCD_Dst);
 	free(BCD_Src);
