@@ -28,8 +28,12 @@
 #include "xlsxworksheet.h"
 
 #include <QBrush>
+#include <QCheckBox>
+#include <QtDebug>
 
 QT_BEGIN_NAMESPACE_XLSX
+
+#define CHECK_BOX_COLUMN 0
 
 SheetModelPrivate::SheetModelPrivate(SheetModel *p)
     :q_ptr(p)
@@ -55,7 +59,8 @@ SheetModel::SheetModel(Worksheet *sheet, QObject *parent, const int nStartRow)
 {
     d_ptr->sheet = sheet;
     m_nStartRow = nStartRow;
-    m_vecotrSelect.resize(sheet->dimension().lastColumn() - 1);
+    m_bEmitCheckStateChange = true;
+    m_vecotrSelect.resize(this->rowCount());
     m_vecotrSelect.fill(true);
 }
 
@@ -77,14 +82,17 @@ int SheetModel::rowCount(const QModelIndex &/*parent*/) const
 int SheetModel::columnCount(const QModelIndex &/*parent*/) const
 {
     Q_D(const SheetModel);
-    return d->sheet->dimension().lastColumn();
+    return d->sheet->dimension().lastColumn() + 1; // with checkheader
 }
 
 Qt::ItemFlags SheetModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return Qt::NoItemFlags;
-    //return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+
+    if (CHECK_BOX_COLUMN == index.column()) {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+    }
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
 
@@ -95,18 +103,38 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    Cell *cell = d->sheet->cellAt(index.row()+m_nStartRow, index.column()+1);
+    int nColumn = index.column();
+
+    if (CHECK_BOX_COLUMN == nColumn) {
+        /* 第一列是checkbox，所以不需要返回显示数据 */
+        if (role == Qt::UserRole) {
+//            qDebug() << "get user role:" << m_vecotrSelect;
+            return m_vecotrSelect[index.row()];
+        } else {
+            return QVariant();
+        }
+    }
+
+    /**
+     * 从excel表中读取数据，sheet表的数据索引是从(1, 1)开始
+     * 这里因为占用了第一列用作checkbox,所以sheet值从index.column(>=1)开始，否则就是index.colum+1
+     */
+    Cell *cell = d->sheet->cellAt(index.row() + m_nStartRow, index.column());
     if (!cell)
         return QVariant();
-    QVariant userFriendlyValue = d->sheet->read(index.row()+m_nStartRow, index.column()+1);
+    QVariant userFriendlyValue = d->sheet->read(index.row() + m_nStartRow, index.column());
 
-    if (role == Qt::DisplayRole) {
+    switch (role) {
+    case Qt::DisplayRole:
         if (cell->isDateTime())
             return userFriendlyValue;
         return cell->value();
-    } else if (role == Qt::EditRole) {
+        break;
+    case Qt::EditRole:
         return userFriendlyValue;
-    } else if (role == Qt::TextAlignmentRole) {
+        break;
+    case Qt::TextAlignmentRole:
+    {
         Qt::Alignment align;
         switch (cell->format().horizontalAlignment()) {
         case Format::AlignLeft:
@@ -138,17 +166,35 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
             break;
         }
         return QVariant(align);
-    } else if (role == Qt::FontRole) {
+        break;
+    }
+    case Qt::FontRole:
         if (cell->format().hasFontData())
             return cell->format().font();
-    } else if (role == Qt::ForegroundRole) {
+        break;
+    case Qt::ForegroundRole:
         if (cell->format().fontColor().isValid())
             return QBrush(cell->format().fontColor());
-    } else if (role == Qt::BackgroundRole) {
+        break;
+    case Qt::BackgroundRole:
         if (cell->format().patternBackgroundColor().isValid())
             return QBrush(cell->format().patternBackgroundColor());
+        break;
+#if 0
+    case Qt::CheckStateRole:
+        // 直接在TableView中设置checkbox不稳定，有时候check状态会无故改变
+        if (0 == index.column()) {
+            return m_vecotrSelect[index.row()]? Qt::Checked: Qt::Unchecked;
+        }
+        break;
+    case Qt::UserRole:
+        if (nColumn == CHECK_BOX_COLUMN)
+            return m_vecotrSelect[index.row()];
+        break;
+#endif
+    default:
+        break;
     }
-
     return QVariant();
 }
 
@@ -172,6 +218,7 @@ static QString col_to_name(int col_num)
     return col_str;
 }
 
+#if 1
 QVariant SheetModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 #if 0
@@ -186,16 +233,36 @@ QVariant SheetModel::headerData(int section, Qt::Orientation orientation, int ro
 #else
     Q_D(const SheetModel);
     /* 读取excel */
-    if (role == Qt::DisplayRole) {
+    switch (role) {
+    case Qt::DisplayRole:
         if (orientation == Qt::Horizontal) {
-            Cell *cell = d->sheet->cellAt(m_nStartRow - 1, section + 1);
-            return cell->value();
+            if (section != CHECK_BOX_COLUMN) {
+                /* 这里因为使用了header中的checkbox，单独占用一列，所以下面为section, 否则为section + 1 */
+                Cell *cell = d->sheet->cellAt(m_nStartRow - 1, section);
+                return cell->value();
+            } else {
+                return QVariant();
+            }
         } else
             return QString::number(section + 1);
+        break;
+#if 0
+    // 这里的header
+    case Qt::UserRole:
+        if (orientation == Qt::Horizontal) {
+            if (section == CHECK_BOX_COLUMN)
+                //return record.bChecked;
+                return true;
+        }
+        break;
+#endif
+    default:
+        break;
     }
     return QVariant();
 #endif
 }
+#endif
 
 bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -204,12 +271,46 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
     if (!index.isValid())
         return false;
 
-    if (role == Qt::EditRole) {
-        if (d->sheet->write(index.row()+m_nStartRow, index.column()+1, value) == 0)
-            return true;
+    int nColumn = index.column();
+    bool bReturn = false;
+    switch (role) {
+    case Qt::EditRole:
+        /* 这里因为使用了header的checkbox，所以下面的sheet取值列为index.column() + 2，否则为index.column() + 1 */
+        if (d->sheet->write(index.row() + m_nStartRow, index.column() + 2, value) == 0)
+            bReturn = true;
+        break;
+#if 0
+    case Qt::CheckStateRole:
+        // 直接在TableView中设置checkbox不稳定，有时候check状态会无故改变
+        if (0 == index.column()) {
+            m_vecotrSelect[index.row()] = (value == Qt::Checked);
+        }
+        break;
+#else
+    case Qt::CheckStateRole:
+        /* checkstate用于非自定义的控件 */
+        break;
+#endif
+    case Qt::UserRole:
+        /* 直接在数据列的checkbox上面进行操作，使用的是UserRole */
+        if (nColumn == CHECK_BOX_COLUMN) {            
+            m_vecotrSelect[index.row()] = value.toBool();
+            emit sigDataChanged(index);
+//            qDebug() << "2set to :" << m_vecotrSelect;
+            if (m_bEmitCheckStateChange) {
+                checkStateChanged();
+            }
+            bReturn = true;
+        }
+        break;
+    default:
+        break;
     }
 
-    return false;
+    /* 必须执行reset,否则包括头部的checkbox状态会有问题 */
+//    beginResetModel();
+//    endResetModel();
+    return bReturn;
 }
 
 /*!
@@ -219,6 +320,45 @@ Worksheet *SheetModel::sheet() const
 {
     Q_D(const SheetModel);
     return d->sheet;
+}
+
+void SheetModel::checkStateChanged()
+{
+    Qt::CheckState state = Qt::Unchecked;
+    int nCount = m_vecotrSelect.size();
+    int nSelectedCount = 0;
+    qDebug() << "m_vectorSelect: " << m_vecotrSelect;
+    for (int i = 0; i < nCount; ++i) {
+        if (m_vecotrSelect[i])
+            ++nSelectedCount;
+    }
+
+    if (nSelectedCount >= nCount) {
+        state = Qt::Checked;
+    } else if (nSelectedCount > 0) {
+        state = Qt::PartiallyChecked;
+    }
+
+    qDebug() << "Header checkbox new state: " << state;
+    emit sigCheckStateChanged(state);
+}
+
+void SheetModel::slotCheckStateChanged(int state)
+{
+    QModelIndex index;
+    for (int i = 0; i < rowCount(); ++i) {
+        index = this->index(i, CHECK_BOX_COLUMN);
+        m_bEmitCheckStateChange = false;
+        setData(index, state == Qt::Checked, Qt::UserRole);
+        m_bEmitCheckStateChange = true;
+    }
+}
+
+void SheetModel::slotDataChanged(const QModelIndex &index)
+{
+    Q_UNUSED(index)
+    beginResetModel();
+    endResetModel();
 }
 
 QT_END_NAMESPACE_XLSX

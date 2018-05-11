@@ -21,6 +21,9 @@ private:
 protected:
     virtual void resizeEvent(QResizeEvent * event);
 
+private slots:
+    void slotUpdateUI();
+
 private:
     QWidget *m_pWidgetOffice;
     QListWidget *m_pListOffice;

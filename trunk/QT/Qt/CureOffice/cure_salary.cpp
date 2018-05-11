@@ -11,6 +11,7 @@
 #include "cure_item_delegate.h"
 #include "hanz2pinyin/Hanz2Piny.h"
 #include "smtpClient/SmtpMime.h"
+#include "cure_tableheaderview.h"
 
 using namespace std;
 
@@ -49,7 +50,22 @@ void CureSalary::slotOpenExcel()
                 Worksheet *pWorksheet = dynamic_cast<Worksheet*>(m_pXlsxDoc->sheet(strSheetName));
                 if (pWorksheet) {
                     int nStartRow = 5;
-                    m_pTableExcel->setModel(new SheetModel(pWorksheet, m_pTableExcel, nStartRow));
+                    SheetModel *pModel = new SheetModel(pWorksheet, m_pTableExcel, nStartRow);
+                    m_pTableExcel->setModel(pModel);
+                    /* 以下对TableView设置header的方式不生效，不能够展示自定义的效果，对TableWidget可能是OK的 */
+//                    HeaderViewCheck *pHeaderView = new HeaderViewCheck(Qt::Vertical, m_pTableExcel);
+//                    m_pTableExcel->setVerticalHeader(pHeaderView);
+                    CheckBoxDelegate *pDelegate = new CheckBoxDelegate(this);
+                    m_pTableExcel->setItemDelegate(pDelegate);
+
+                    /* 这里虽然设置了自定义的headerView，但是model的headerData还会生效，只是自定义的headerView会覆盖其设置区域的值 */
+                    TableHeaderView *pHeaderView = new TableHeaderView(Qt::Horizontal, this);
+                    m_pTableExcel->setHorizontalHeader(pHeaderView);
+
+                    /* 上面使用了自定义水平方向的头，所以下面需要show()一下，否则不显示 */
+                    m_pTableExcel->horizontalHeader()->show();
+                    connect(pModel, SIGNAL(sigCheckStateChanged(int)), pHeaderView, SLOT(slotCheckStateChanged(int)));
+                    connect(pHeaderView, SIGNAL(sigCheckStateChanged(int)), pModel, SLOT(slotCheckStateChanged(int)));
                     m_bStateOpenExcel = true;
                     qDebug() << "Table row count: " << m_pTableExcel->model()->rowCount() << ", colum count: " << m_pTableExcel->model()->columnCount();
                 }
@@ -115,7 +131,7 @@ void CureSalary::initWidgets()
     m_pTableExcel = new QTableView(this);
 
     /* 对QTableView进行过滤 */
-    m_pLabelFilter = new QLabel(tr("条件过滤："), this);
+    m_pLabelFilter = new QLabel(tr("查询："), this);
     m_pEditFilter = new QLineEdit(this);
     m_pHLayoutFilter = new QHBoxLayout;
     m_pHLayoutFilter->addWidget(m_pLabelFilter);
