@@ -13,6 +13,11 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMinimumSize(800, 600);
 
     initMainWindow();
+
+    QTimer *pTimer = new QTimer(this);
+    pTimer->setInterval(1000);
+    connect(pTimer, SIGNAL(timeout()), this, SLOT(slotUpdateUI()));
+//    pTimer->start();
 }
 
 MainWindow::~MainWindow()
@@ -106,4 +111,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     m_pListOffice->setIconSize(event->size() / LIST_ICON_SIZE_RATIO);
     m_pListOffice->setSpacing(this->height() / (LIST_ICON_SIZE_RATIO * 2));
     //m_pListOffice->setFixedWidth(this->width() / 10);
+}
+
+void MainWindow::slotUpdateUI()
+{
+    qDebug() << "Upgrade main gui!";
+    update();
 }

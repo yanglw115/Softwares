@@ -52,13 +52,19 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     Worksheet *sheet() const;
+public slots:
+    void checkStateChanged();
+    void slotCheckStateChanged(int state);
+    void slotDataChanged(const QModelIndex &index);
 signals:
-
+    void sigDataChanged(const QModelIndex &index);
+    void sigCheckStateChanged(int state);
 public slots:
 
 private:
     SheetModelPrivate * const d_ptr;
     int m_nStartRow;
+    bool m_bEmitCheckStateChange;
     QVector<bool> m_vecotrSelect;
 };
 

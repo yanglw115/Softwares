@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     smtpClient/mimepart.cpp \
     smtpClient/mimetext.cpp \
     smtpClient/quotedprintable.cpp \
-    smtpClient/smtpclient.cpp
+    smtpClient/smtpclient.cpp \
+    cure_tableheaderview.cpp
 
 HEADERS  += mainwindow.h \
     msvs_charset.h \
@@ -56,7 +57,9 @@ HEADERS  += mainwindow.h \
     smtpClient/quotedprintable.h \
     smtpClient/smtpclient.h \
     smtpClient/smtpexports.h \
-    smtpClient/SmtpMime.h
+    smtpClient/SmtpMime.h \
+    cure_table_view_header.h \
+    cure_tableheaderview.h
 
 RESOURCES += \
     resources/imgresource.qrc
