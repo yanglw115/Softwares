@@ -220,7 +220,6 @@ static QString col_to_name(int col_num)
     return col_str;
 }
 
-#if 1
 QVariant SheetModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 #if 0
@@ -248,23 +247,12 @@ QVariant SheetModel::headerData(int section, Qt::Orientation orientation, int ro
         } else
             return QString::number(section + 1);
         break;
-#if 0
-    // 这里的header
-    case Qt::UserRole:
-        if (orientation == Qt::Horizontal) {
-            if (section == CHECK_BOX_COLUMN)
-                //return record.bChecked;
-                return true;
-        }
-        break;
-#endif
     default:
         break;
     }
     return QVariant();
 #endif
 }
-#endif
 
 bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -281,18 +269,9 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
         if (d->sheet->write(index.row() + m_nStartRow, index.column() + 2, value) == 0)
             bReturn = true;
         break;
-#if 0
-    case Qt::CheckStateRole:
-        // 直接在TableView中设置checkbox不稳定，有时候check状态会无故改变
-        if (0 == index.column()) {
-            m_vecotrSelect[index.row()] = (value == Qt::Checked);
-        }
-        break;
-#else
     case Qt::CheckStateRole:
         /* checkstate用于非自定义的控件 */
         break;
-#endif
     case Qt::UserRole:
         /* 直接在数据列的checkbox上面进行操作，使用的是UserRole */
         if (nColumn == CHECK_BOX_COLUMN) {            
@@ -325,7 +304,7 @@ void SheetModel::checkStateChanged()
     Qt::CheckState state = Qt::Unchecked;
     int nCount = m_vecotrSelect.size();
     int nSelectedCount = 0;
-    qDebug() << "m_vectorSelect: " << m_vecotrSelect;
+
     for (int i = 0; i < nCount; ++i) {
         if (m_vecotrSelect[i])
             ++nSelectedCount;
@@ -337,7 +316,7 @@ void SheetModel::checkStateChanged()
         state = Qt::PartiallyChecked;
     }
 
-    qDebug() << "Header checkbox new state: " << state;
+//    qDebug() << "Header checkbox new state: " << state;
     emit sigCheckStateChanged(state);
 }
 
