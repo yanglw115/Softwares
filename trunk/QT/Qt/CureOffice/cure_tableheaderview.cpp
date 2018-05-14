@@ -2,7 +2,7 @@
 
 #include <QApplication>
 #include <QDebug>
-#include <QThread>
+#include <QTimer>
 
 TableHeaderView::~TableHeaderView()
 {
@@ -13,8 +13,7 @@ TableHeaderView::TableHeaderView(Qt::Orientation orientation, QWidget *parent)
     : QHeaderView(orientation, parent),
       m_bPressed(false),
       m_bChecked(true),
-      m_bTristate(false),
-      m_bMoving(false)
+      m_bTristate(false)
 {
     // setStretchLastSection(true);
     setHighlightSections(false);
@@ -37,13 +36,17 @@ void TableHeaderView::slotCheckStateChanged(int state)
     }
 
     m_bChecked = (state == Qt::Checked);
-//    update();
-//    reset();
-//    ((QWidget*)this->parent())->repaint();
-//    QThread::usleep(200);
+    /* 经过调试，以下几种方法均可行，但是update()有时不生效 */
 //    repaint();
-    updateSection(CHECK_BOX_COLUMN);
 //    updateSection(CHECK_BOX_COLUMN);
+    /* 以下是针对数据状态改变，但是表头数据未能立即刷新过来的解决方法。其中300毫秒是经验值 */
+    headerDataChanged(Qt::Horizontal, 0, 0);
+    QTimer::singleShot(300, this, SLOT(slotRefreshHeader()));
+}
+
+void TableHeaderView::slotRefreshHeader()
+{
+    headerDataChanged(Qt::Horizontal, 0, 0);
 }
 
 // 绘制复选框
@@ -69,12 +72,6 @@ void TableHeaderView::paintSection(QPainter *painter, const QRect &rect, int log
         else
             option.state |= m_bChecked ?
                         QStyle::State_On : QStyle::State_Off;
-        if (testAttribute(Qt::WA_Hover) && underMouse()) {
-            if (m_bMoving)
-                option.state |= QStyle::State_MouseOver;
-            else
-                option.state &= ~QStyle::State_MouseOver;
-        }
 
         QCheckBox checkBox;
         option.iconSize = QSize(20, 20);
@@ -109,8 +106,6 @@ void TableHeaderView::mouseReleaseEvent(QMouseEvent *event)
         }
 
         update();
-//        updateSection(CHECK_BOX_COLUMN);
-//        reset();
 
         Qt::CheckState state = m_bChecked ? Qt::Checked : Qt::Unchecked;
 
@@ -130,11 +125,8 @@ bool TableHeaderView::event(QEvent *event)
         QMouseEvent *pEvent = static_cast<QMouseEvent *>(event);
         int nColumn = logicalIndexAt(pEvent->x());
         if (nColumn == CHECK_BOX_COLUMN) {
-            m_bMoving = (event->type() == QEvent::Enter);
-
             update();
 //            updateSection(CHECK_BOX_COLUMN);
-//            reset();
             return true;
         }
     }

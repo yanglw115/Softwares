@@ -62,6 +62,8 @@ SheetModel::SheetModel(Worksheet *sheet, QObject *parent, const int nStartRow)
     m_bEmitCheckStateChange = true;
     m_vecotrSelect.resize(this->rowCount());
     m_vecotrSelect.fill(true);
+
+    // connect(this, SIGNAL(sigDataChanged(QModelIndex)), this, SLOT(slotDataChanged(QModelIndex)));
 }
 
 /*!
@@ -295,8 +297,7 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
         /* 直接在数据列的checkbox上面进行操作，使用的是UserRole */
         if (nColumn == CHECK_BOX_COLUMN) {            
             m_vecotrSelect[index.row()] = value.toBool();
-            emit sigDataChanged(index);
-//            qDebug() << "2set to :" << m_vecotrSelect;
+            slotDataChanged(index);
             if (m_bEmitCheckStateChange) {
                 checkStateChanged();
             }
@@ -307,9 +308,6 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
         break;
     }
 
-    /* 必须执行reset,否则包括头部的checkbox状态会有问题 */
-//    beginResetModel();
-//    endResetModel();
     return bReturn;
 }
 
@@ -356,6 +354,7 @@ void SheetModel::slotCheckStateChanged(int state)
 
 void SheetModel::slotDataChanged(const QModelIndex &index)
 {
+    /* 必须执行reset,否则包括头部的checkbox状态会有问题 */
     Q_UNUSED(index)
     beginResetModel();
     endResetModel();
