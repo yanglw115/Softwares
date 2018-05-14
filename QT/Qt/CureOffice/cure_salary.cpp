@@ -8,7 +8,6 @@
 
 #include "cure_salary.h"
 #include "msvs_charset.h"
-#include "cure_item_delegate.h"
 #include "hanz2pinyin/Hanz2Piny.h"
 #include "smtpClient/SmtpMime.h"
 #include "cure_tableheaderview.h"

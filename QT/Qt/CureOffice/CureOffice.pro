@@ -17,7 +17,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     cure_salary.cpp \
     xlsx/xlsx_sheet_model.cpp \
-    cure_item_delegate.cpp \
     hanz2pinyin/Hanz2Piny.cpp \
     smtpClient/emailaddress.cpp \
     smtpClient/mimeattachment.cpp \
@@ -38,7 +37,6 @@ HEADERS  += mainwindow.h \
     cure_salary.h \
     xlsx/xlsx_sheet_model.h \
     xlsx/xlsx_sheet_model_p.h \
-    cure_item_delegate.h \
     hanz2pinyin/utf8/checked.h \
     hanz2pinyin/utf8/core.h \
     hanz2pinyin/utf8/unchecked.h \
@@ -58,7 +56,6 @@ HEADERS  += mainwindow.h \
     smtpClient/smtpclient.h \
     smtpClient/smtpexports.h \
     smtpClient/SmtpMime.h \
-    cure_table_view_header.h \
     cure_tableheaderview.h
 
 RESOURCES += \

@@ -28,12 +28,13 @@ protected:
 public slots:
     void slotCheckStateChanged(int state);
 
+private slots:
+    void slotRefreshHeader();
 private:
     bool m_bPressed;
     bool m_bChecked;
     bool m_bTristate;
     bool m_bNoChange;
-    bool m_bMoving;
 };
 
 
