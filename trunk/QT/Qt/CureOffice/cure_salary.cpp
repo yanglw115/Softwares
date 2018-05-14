@@ -66,6 +66,7 @@ void CureSalary::slotOpenExcel()
                     connect(pModel, SIGNAL(sigCheckStateChanged(int)), pHeaderView, SLOT(slotCheckStateChanged(int)));
                     connect(pHeaderView, SIGNAL(sigCheckStateChanged(int)), pModel, SLOT(slotCheckStateChanged(int)));
                     m_bStateOpenExcel = true;
+                    m_pEditFilter->clear();
                     qDebug() << "Table row count: " << m_pTableExcel->model()->rowCount() << ", colum count: " << m_pTableExcel->model()->columnCount();
                 }
             } else {
@@ -86,6 +87,9 @@ void CureSalary::slotOpenExcel()
 
 void CureSalary::slotDoTableViewFilter(const QString &strText)
 {
+    if (!m_bStateOpenExcel) {
+        return;
+    }
     for (int i = 0; i < m_pTableExcel->model()->rowCount(); ++i) {
         bool bShow = false;
         for (int j = 0; j < m_pTableExcel->model()->columnCount(); ++j) {
