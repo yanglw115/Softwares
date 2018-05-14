@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QFile>
+#include <QValidator>
 
 #include "cure_salary.h"
 #include "msvs_charset.h"
@@ -16,6 +17,14 @@ using namespace std;
 
 static const QString g_strOpenExcel("打开文件");
 static const QString g_strCloseExcel("关闭");
+static const QString g_strDefaultSMTPServer("smtp.ym.163.com");
+static const QString g_strDefautlSMTPPort("465");
+
+static const QString g_strSenderCheckState[] = {
+    "未检测",
+    "无效",
+    "有效"
+};
 
 CureSalary::CureSalary(QWidget *parent)
     : QWidget(parent)
@@ -27,6 +36,7 @@ CureSalary::CureSalary(QWidget *parent)
     , m_pVLayoutMain(NULL)
     , m_pHLayoutOpenExcel(NULL)
     , m_bStateOpenExcel(false)
+    , m_nStateSenderCheck(State_UnChecked)
 {
     initWidgets();
 }
@@ -124,6 +134,36 @@ void CureSalary::slotDoTableViewFilter(const QString &strText)
     }
 }
 
+void CureSalary::slotCheckEmailSenderValid()
+{
+    m_pGroupSender->setEnabled(false);
+
+    SmtpClient email(m_pEditSMTPServer->text(), m_pEditSMTPPort->text().toInt(), SmtpClient::SslConnection); // ssl端口是465，非SSL是25
+    email.setUser(m_pEditSenderAddress->text());
+    email.setPassword(m_pEditSenderPasswd->text());
+
+    if (email.connectToHost()) {
+        if (email.login()) {
+            email.quit();
+            m_pLabelSenderValid->setText(g_strSenderCheckState[State_Check_Success]);
+        } else {
+            qWarning() << "Email login failed!";
+            m_pLabelSenderValid->setText(g_strSenderCheckState[State_Check_Failed]);
+        }
+    } else {
+        qWarning() << "Email connect failed!";
+        m_pLabelSenderValid->setText(g_strSenderCheckState[State_Check_Failed]);
+    }
+
+    m_pGroupSender->setEnabled(true);
+}
+
+void CureSalary::slotEmailSenderDataChanged(const QString &strText)
+{
+    Q_UNUSED(strText)
+    m_pLabelSenderValid->setText(g_strSenderCheckState[State_UnChecked]);
+}
+
 void CureSalary::initWidgets()
 {
     m_pLabelOpenExcel = new QLabel(tr("请打开.xlsx格式的工资表: "), this);
@@ -132,6 +172,52 @@ void CureSalary::initWidgets()
     m_pButtonOpenExcel = new QPushButton(g_strOpenExcel, this);
     connect(m_pButtonOpenExcel, SIGNAL(clicked(bool)), this, SLOT(slotOpenExcel()));
     m_pTableExcel = new QTableView(this);
+
+     /* email sender config */
+    m_pGroupSender = new QGroupBox(tr("发件箱设置"), this);
+    m_pLabelSenderAddress = new QLabel(tr("邮箱："), m_pGroupSender);
+    m_pLabelSenderPasswd = new QLabel(tr("密码："), m_pGroupSender);
+    m_pLabelSMTPServer = new QLabel(tr("SMPT服务器地址："), m_pGroupSender);
+    m_pLabelSMTPPort = new QLabel(tr("SMPT端口(SSL)："), m_pGroupSender);
+    m_pLabelSenderValid = new QLabel(g_strSenderCheckState[State_UnChecked], m_pGroupSender);
+
+    m_pEditSenderAddress = new QLineEdit(m_pGroupSender);
+    m_pEditSenderPasswd = new QLineEdit(m_pGroupSender);
+    m_pEditSenderPasswd->setEchoMode(QLineEdit::Password);
+    m_pEditSMTPServer = new QLineEdit(m_pGroupSender);
+    m_pEditSMTPServer->setText(g_strDefaultSMTPServer);
+    m_pEditSMTPPort = new QLineEdit(m_pGroupSender);
+    QIntValidator *pValidatorSMTPPort = new QIntValidator(1, 65536, m_pGroupSender);
+    m_pEditSMTPPort->setValidator(pValidatorSMTPPort);
+    m_pEditSMTPPort->setText(g_strDefautlSMTPPort);
+    connect(m_pEditSenderAddress, SIGNAL(textChanged(QString)), this, SLOT(slotEmailSenderDataChanged(QString)));
+    connect(m_pEditSenderPasswd, SIGNAL(textChanged(QString)), this, SLOT(slotEmailSenderDataChanged(QString)));
+    connect(m_pEditSMTPServer, SIGNAL(textChanged(QString)), this, SLOT(slotEmailSenderDataChanged(QString)));
+    connect(m_pEditSMTPPort, SIGNAL(textChanged(QString)), this, SLOT(slotEmailSenderDataChanged(QString)));
+    m_pButtonSenderValidCheck = new QPushButton(tr("检测发件箱是否有效"), m_pGroupSender);
+    connect(m_pButtonSenderValidCheck, SIGNAL(clicked(bool)), this, SLOT(slotCheckEmailSenderValid()));
+    QHBoxLayout *pHBoxEmail = new QHBoxLayout;
+    pHBoxEmail->addWidget(m_pLabelSenderAddress);
+    pHBoxEmail->addWidget(m_pEditSenderAddress);
+    pHBoxEmail->addWidget(m_pLabelSenderPasswd);
+    pHBoxEmail->addWidget(m_pEditSenderPasswd);
+    pHBoxEmail->addStretch();
+    QHBoxLayout *pHBoxEmailServer = new QHBoxLayout;
+    pHBoxEmailServer->addWidget(m_pLabelSMTPServer);
+    pHBoxEmailServer->addWidget(m_pEditSMTPServer);
+    pHBoxEmailServer->addWidget(m_pLabelSMTPPort);
+    pHBoxEmailServer->addWidget(m_pEditSMTPPort);
+    QHBoxLayout *pHBoxCheckEmailValid = new QHBoxLayout;
+//    pHBoxCheckEmailValid->addStretch();
+    pHBoxCheckEmailValid->addWidget(m_pButtonSenderValidCheck);
+    pHBoxCheckEmailValid->addWidget(m_pLabelSenderValid);
+    pHBoxCheckEmailValid->addStretch();
+    pHBoxEmailServer->addStretch();
+
+    QVBoxLayout *m_pVLayoutGroupSender = new QVBoxLayout(m_pGroupSender);
+    m_pVLayoutGroupSender->addLayout(pHBoxEmail);
+    m_pVLayoutGroupSender->addLayout(pHBoxEmailServer);
+    m_pVLayoutGroupSender->addLayout(pHBoxCheckEmailValid);
 
     /* 对QTableView进行过滤 */
     m_pLabelFilter = new QLabel(tr("查询："), this);
@@ -150,6 +236,7 @@ void CureSalary::initWidgets()
     m_pHLayoutOpenExcel->addWidget(m_pEditOpenedExcel);
     m_pHLayoutOpenExcel->addWidget(m_pButtonOpenExcel);
 
+    m_pVLayoutMain->addWidget(m_pGroupSender);
     m_pVLayoutMain->addLayout(m_pHLayoutOpenExcel);
     m_pVLayoutMain->addLayout(m_pHLayoutFilter);
     m_pVLayoutMain->addWidget(m_pTableExcel);

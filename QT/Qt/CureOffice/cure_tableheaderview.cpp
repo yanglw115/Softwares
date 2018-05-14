@@ -39,9 +39,9 @@ void TableHeaderView::slotCheckStateChanged(int state)
     /* 经过调试，以下几种方法均可行，但是update()有时不生效 */
 //    repaint();
 //    updateSection(CHECK_BOX_COLUMN);
-    /* 以下是针对数据状态改变，但是表头数据未能立即刷新过来的解决方法。其中300毫秒是经验值 */
+    /* 以下是针对数据状态改变，但是表头数据未能立即刷新过来的解决方法。其中200毫秒是经验值 */
     headerDataChanged(Qt::Horizontal, 0, 0);
-    QTimer::singleShot(300, this, SLOT(slotRefreshHeader()));
+    QTimer::singleShot(200, this, SLOT(slotRefreshHeader()));
 }
 
 void TableHeaderView::slotRefreshHeader()
@@ -52,15 +52,11 @@ void TableHeaderView::slotRefreshHeader()
 // 绘制复选框
 void TableHeaderView::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const
 {
-    static int i = 0;
-    qDebug() << "Enter into paintSection......" << ++i;
     painter->save();
     QHeaderView::paintSection(painter, rect, logicalIndex);
     painter->restore();
 
-    qDebug() << "logicalIndex: " << logicalIndex;
     if (logicalIndex == CHECK_BOX_COLUMN) {
-        qDebug() << "logicalIndex == CHECK_BOX_COLUMN: ";
         QStyleOptionButton option;
         option.initFrom(this);
 
@@ -159,12 +155,11 @@ QWidget *CheckBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 
 void CheckBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-    qDebug() << "Enter setEditorData ......";
     QCheckBox *pCheckBox = dynamic_cast<QCheckBox*>(editor);
     if (pCheckBox) {
         if (CHECK_BOX_COLUMN == index.column()) {
             bool bState = index.model()->data(index, Qt::UserRole).toBool();
-            qDebug() << "setEditorData: (" << index.row() << ", " << index.column() << "): " << bState;
+//            qDebug() << "setEditorData: (" << index.row() << ", " << index.column() << "): " << bState;
             pCheckBox->setChecked(bState);
         }
     } else {
@@ -178,10 +173,10 @@ void CheckBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (pCheckBox) {
         if (CHECK_BOX_COLUMN == index.column()) {
             if (pCheckBox->isChecked()) {
-                qDebug() << "setModelData: (" << index.row() << ", " << index.column() << "): " << pCheckBox->isChecked();
+//                qDebug() << "setModelData: (" << index.row() << ", " << index.column() << "): " << pCheckBox->isChecked();
                 model->setData(index, true, Qt::UserRole);
             } else {
-                qDebug() << "setModelData: (" << index.row() << ", " << index.column() << "): " << pCheckBox->isChecked();
+//                qDebug() << "setModelData: (" << index.row() << ", " << index.column() << "): " << pCheckBox->isChecked();
                 model->setData(index, false, Qt::UserRole);
             }
         }
@@ -229,7 +224,7 @@ bool CheckBoxDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, con
     if (event->type() == QEvent::MouseButtonPress && decorationRect.contains(mouseEvent->pos())) {
         if (index.column() == CHECK_BOX_COLUMN) {
             bool data = model->data(index, Qt::UserRole).toBool();
-            qDebug() << "setModelData: (" << index.row() << ", " << index.column() << "): " << !data;
+//            qDebug() << "setModelData: (" << index.row() << ", " << index.column() << "): " << !data;
             model->setData(index, !data, Qt::UserRole);
         }
     }

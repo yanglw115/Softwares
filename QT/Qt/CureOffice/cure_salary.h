@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QtXlsx/QtXlsx>
+#include <QGroupBox>
 
 #include "xlsx/xlsx_sheet_model.h"
 
@@ -17,6 +18,11 @@ class CureSalary : public QWidget
 {
     Q_OBJECT
 public:
+    enum enumStateSenderCheck {
+        State_UnChecked = 0,
+        State_Check_Failed = 1,
+        State_Check_Success
+    };
     explicit CureSalary(QWidget *parent = 0);
     virtual ~CureSalary();
 
@@ -25,6 +31,8 @@ signals:
 private slots:
     void slotOpenExcel();
     void slotDoTableViewFilter(const QString &strText);
+    void slotCheckEmailSenderValid();
+    void slotEmailSenderDataChanged(const QString &strText);
 public slots:
 private:
     void initWidgets();
@@ -37,6 +45,20 @@ private:
     QLineEdit *m_pEditOpenedExcel;
     QPushButton *m_pButtonOpenExcel;
 
+    /* email sender config */
+    QGroupBox *m_pGroupSender;
+    QLabel *m_pLabelSenderAddress;
+    QLabel *m_pLabelSenderPasswd;
+    QLabel *m_pLabelSMTPServer;
+    QLabel *m_pLabelSMTPPort;
+    QLabel *m_pLabelSenderValid;
+
+    QLineEdit *m_pEditSenderAddress;
+    QLineEdit *m_pEditSenderPasswd;
+    QLineEdit *m_pEditSMTPServer;
+    QLineEdit *m_pEditSMTPPort;
+    QPushButton *m_pButtonSenderValidCheck;
+
     /* tableview filter */
     QLabel *m_pLabelFilter;
     QLineEdit *m_pEditFilter;
@@ -48,6 +70,7 @@ private:
     QVBoxLayout *m_pVLayoutMain;
     QHBoxLayout *m_pHLayoutOpenExcel;
     bool m_bStateOpenExcel;
+    enumStateSenderCheck m_nStateSenderCheck;
 
 };
 
