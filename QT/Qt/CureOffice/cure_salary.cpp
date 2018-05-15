@@ -6,6 +6,7 @@
 #include <QHeaderView>
 #include <QFile>
 #include <QValidator>
+#include <QDate>
 
 #include "cure_salary.h"
 #include "msvs_charset.h"
@@ -198,13 +199,18 @@ void CureSalary::slotSendEmail()
         if (QMessageBox::Ok == standardButton) {
             /* send email */
             qDebug() << "Start to send salary email......";
+            Format format = getEmailDataFormat();
             for (int i = 0; i < vectorCheckState.size(); ++i) {
                 vectorCheckState[i] &= (~SALARY_SEND_OK);
                 if (vectorCheckState[i] & SALARY_CHECKED) {
                     /* real send ... */
                     QString strFilePath;
-                    bool bSendOk = writePersonalInfoToFile(i, strFilePath);
-                    break;
+                    QString strName;
+                    bool bSendOk = false;
+                    if (writePersonalInfoToFile(i, format, strFilePath, strName)) {
+                        bSendOk = sendEmail("Cplusplus2017@163.com", strName, strFilePath);
+                    }
+
                     if (bSendOk) {
                         vectorCheckState[i] |= SALARY_SEND_OK;
                     }
@@ -278,10 +284,16 @@ void CureSalary::initWidgets()
     /* 对QTableView进行过滤 */
     m_pLabelFilter = new QLabel(tr("查询："), this);
     m_pEditFilter = new QLineEdit(this);
+    m_pLabelHRName = new QLabel(tr("HR姓名："), this);
+    m_pEditHRName = new QLineEdit(this);
+    m_pEditHRName->setText(tr("冯丽萍"));
     m_pButtonSendEmail = new QPushButton(tr("发送邮件"), this);
     m_pHLayoutFilter = new QHBoxLayout;
     m_pHLayoutFilter->addWidget(m_pLabelFilter);
     m_pHLayoutFilter->addWidget(m_pEditFilter);
+    m_pHLayoutFilter->addSpacing(100);
+    m_pHLayoutFilter->addWidget(m_pLabelHRName);
+    m_pHLayoutFilter->addWidget(m_pEditHRName);
     m_pHLayoutFilter->addWidget(m_pButtonSendEmail);
     connect(m_pEditFilter, SIGNAL(textChanged(QString)), this, SLOT(slotDoTableViewFilter(QString)));
     connect(m_pButtonSendEmail, SIGNAL(clicked(bool)), this, SLOT(slotSendEmail()));
@@ -320,25 +332,17 @@ void CureSalary::freeXlsxDocument()
     }
 }
 
-bool CureSalary::writePersonalInfoToFile(const int index, QString &strOutFilePath)
+bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName)
 {
     Document doc(g_strSalarySendTemplate);
     Worksheet *pWorkSheetWrite = dynamic_cast<Worksheet *>(doc.sheet(doc.sheetNames()[0]));
     SheetModel *pModel = dynamic_cast<SheetModel *>(m_pTableExcel->model());
     Worksheet *pWorkSheetRead = pModel->sheet();
 
-    Format format;
-    format.setFont(QFont("宋体", 10));
-    format.setTextWarp(true); // 自动换行
-    format.setVerticalAlignment(Format::AlignVCenter);
-    format.setHorizontalAlignment(Format::AlignHCenter);
-    format.setBorderStyle(Format::BorderThin); // 边框为实线
-
     bool bWrite = true;
     Cell *pCell = NULL;
 
     /* 循环使用邮件发送模板的头，其自身没有数据模板的第1列 */
-    QString strName;
     for (int i = 0; i < pWorkSheetWrite->dimension().lastColumn(); ++i) {
         pCell = pWorkSheetRead->cellAt(index + g_nStartRow, i + 2); /* i + 2是因为过滤掉数据模板的第1列序号列数据 */
         if (i == g_nIndexName) {
@@ -352,7 +356,8 @@ bool CureSalary::writePersonalInfoToFile(const int index, QString &strOutFilePat
     }
     if (bWrite) {
         qDebug() << "Write data success!";
-        strOutFilePath = "工资单_" + strName + ".xlsx";
+        QDate date = QDate::currentDate();
+        strOutFilePath = QString("%1年%2月工资单_%3.xlsx").arg(date.year()).arg(date.month()).arg(strName);
         if (QFile::exists(strOutFilePath)) {
             QFile::remove(strOutFilePath);
         }
@@ -392,24 +397,37 @@ void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet)
     pDoc = NULL;
 }
 
-bool CureSalary::sendEmail(const QString strTitle, const QString strAttachFile)
+Format CureSalary::getEmailDataFormat()
 {
-    SmtpClient email("smtp.ym.163.com", 465, SmtpClient::SslConnection); // ssl端口是465，非SSL是25
-    email.setUser("xxxxxx@xxxx.com");
-    email.setPassword("xxxxxx");
+    Format format;
+    format.setFont(QFont("宋体", 10));
+    format.setTextWarp(true); // 自动换行
+    format.setVerticalAlignment(Format::AlignVCenter);
+    format.setHorizontalAlignment(Format::AlignHCenter);
+    format.setBorderStyle(Format::BorderThin); // 边框为实线
+    return format;
+}
 
-    /* 杨利伟  您好！附件为您2018年3月的工资条，请注意查收！若有疑问请在此邮件发送后的5天内咨询HR冯丽萍进行处理，否则视为无疑问，谢谢！ */
+bool CureSalary::sendEmail(const QString &strReceiverEmail, const QString &strReceiverName, const QString &strAttachFile)
+{
+    SmtpClient email(m_pEditSMTPServer->text(), m_pEditSMTPPort->text().toInt(), SmtpClient::SslConnection); // ssl端口是465，非SSL是25
+    email.setUser(m_pEditSenderAddress->text());
+    email.setPassword(m_pEditSenderPasswd->text());
+
+    QDate date = QDate::currentDate();
     MimeMessage message;
-    message.setSender(new EmailAddress("yangliwei@95051.com", "yangliwei"));
-    message.addRecipient(new EmailAddress("yanglw115@foxmail.com", "xingyu"));
-    message.setSubject("2018年3月工资条");
+    message.setSender(new EmailAddress(m_pEditSenderAddress->text()));
+    message.addRecipient(new EmailAddress(strReceiverEmail));
+    message.setSubject(QString("%1年%2月工资条").arg(date.year()).arg(date.month()));
 
-    MimeAttachment attachMent(new QFile("Salary_201808.xlsx"));
+    MimeAttachment attachMent(new QFile(strAttachFile));
     attachMent.setContentType("excel");
     message.addPart(&attachMent);
 
     MimeText text;
-    text.setText(QString::asprintf("%s 您好！附件为您%s的工资条，请注意查收！若有疑问请在此邮件发送后的5天内咨询HR%s进行处理，否则视为无疑问，谢谢！ "));
+    QString strText = QString("%1 您好！附件为您%2年%3月的工资条，请注意查收！若有疑问请在此邮件发送后的5天内咨询HR%4进行处理，否则视为无疑问，谢谢！ ")
+            .arg(strReceiverName).arg(date.year()).arg(date.month()).arg(m_pEditHRName->text());
+    text.setText(strText);
     message.addPart(&text);
 
     if (email.connectToHost()) {
