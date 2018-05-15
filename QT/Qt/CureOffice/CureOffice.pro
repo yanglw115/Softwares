@@ -13,51 +13,53 @@ TEMPLATE = app
 RC_FILE = logo.rc
 DEFINES += SMTP_BUILD
 
+INCLUDEPATH += tools salary
+
 SOURCES += main.cpp\
         mainwindow.cpp \
-    cure_salary.cpp \
-    xlsx/xlsx_sheet_model.cpp \
-    hanz2pinyin/Hanz2Piny.cpp \
-    smtpClient/emailaddress.cpp \
-    smtpClient/mimeattachment.cpp \
-    smtpClient/mimecontentformatter.cpp \
-    smtpClient/mimefile.cpp \
-    smtpClient/mimehtml.cpp \
-    smtpClient/mimeinlinefile.cpp \
-    smtpClient/mimemessage.cpp \
-    smtpClient/mimemultipart.cpp \
-    smtpClient/mimepart.cpp \
-    smtpClient/mimetext.cpp \
-    smtpClient/quotedprintable.cpp \
-    smtpClient/smtpclient.cpp \
-    cure_tableheaderview.cpp
+    salary/cure_salary.cpp \
+    salary/cure_tableheaderview.cpp \
+    tools/hanz2pinyin/Hanz2Piny.cpp \
+    tools/smtpClient/emailaddress.cpp \
+    tools/smtpClient/mimeattachment.cpp \
+    tools/smtpClient/mimecontentformatter.cpp \
+    tools/smtpClient/mimefile.cpp \
+    tools/smtpClient/mimehtml.cpp \
+    tools/smtpClient/mimeinlinefile.cpp \
+    tools/smtpClient/mimemessage.cpp \
+    tools/smtpClient/mimemultipart.cpp \
+    tools/smtpClient/mimepart.cpp \
+    tools/smtpClient/mimetext.cpp \
+    tools/smtpClient/quotedprintable.cpp \
+    tools/smtpClient/smtpclient.cpp \
+    tools/xlsx/xlsx_sheet_model.cpp
 
 HEADERS  += mainwindow.h \
     msvs_charset.h \
-    cure_salary.h \
-    xlsx/xlsx_sheet_model.h \
-    xlsx/xlsx_sheet_model_p.h \
-    hanz2pinyin/utf8/checked.h \
-    hanz2pinyin/utf8/core.h \
-    hanz2pinyin/utf8/unchecked.h \
-    hanz2pinyin/Hanz2Piny.h \
-    hanz2pinyin/utf8.h \
-    smtpClient/emailaddress.h \
-    smtpClient/mimeattachment.h \
-    smtpClient/mimecontentformatter.h \
-    smtpClient/mimefile.h \
-    smtpClient/mimehtml.h \
-    smtpClient/mimeinlinefile.h \
-    smtpClient/mimemessage.h \
-    smtpClient/mimemultipart.h \
-    smtpClient/mimepart.h \
-    smtpClient/mimetext.h \
-    smtpClient/quotedprintable.h \
-    smtpClient/smtpclient.h \
-    smtpClient/smtpexports.h \
-    smtpClient/SmtpMime.h \
-    cure_tableheaderview.h \
-    cure_global.h
+    cure_global.h \
+    salary/cure_salary.h \
+    salary/cure_tableheaderview.h \
+    tools/hanz2pinyin/utf8/checked.h \
+    tools/hanz2pinyin/utf8/core.h \
+    tools/hanz2pinyin/utf8/unchecked.h \
+    tools/hanz2pinyin/Hanz2Piny.h \
+    tools/hanz2pinyin/utf8.h \
+    tools/smtpClient/emailaddress.h \
+    tools/smtpClient/mimeattachment.h \
+    tools/smtpClient/mimecontentformatter.h \
+    tools/smtpClient/mimefile.h \
+    tools/smtpClient/mimehtml.h \
+    tools/smtpClient/mimeinlinefile.h \
+    tools/smtpClient/mimemessage.h \
+    tools/smtpClient/mimemultipart.h \
+    tools/smtpClient/mimepart.h \
+    tools/smtpClient/mimetext.h \
+    tools/smtpClient/quotedprintable.h \
+    tools/smtpClient/smtpclient.h \
+    tools/smtpClient/smtpexports.h \
+    tools/smtpClient/SmtpMime.h \
+    tools/xlsx/xlsx_sheet_model.h \
+    tools/xlsx/xlsx_sheet_model_p.h
 
 RESOURCES += \
     resources/imgresource.qrc
