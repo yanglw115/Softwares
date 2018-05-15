@@ -33,11 +33,13 @@ private slots:
     void slotDoTableViewFilter(const QString &strText);
     void slotCheckEmailSenderValid();
     void slotEmailSenderDataChanged(const QString &strText);
+    void slotSendEmail();
 public slots:
 private:
     void initWidgets();
     void freeXlsxDocument();
-    void saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow);
+    bool writePersonalInfoToFile(const int index, QString &strOutFilePath);
+    void saveSalaryExcelHead(Worksheet *pWorksheet);
     bool sendEmail(const QString strTitle = "", const QString strAttachFile = "");
 private:
     /* open excel */
@@ -62,6 +64,7 @@ private:
     /* tableview filter */
     QLabel *m_pLabelFilter;
     QLineEdit *m_pEditFilter;
+    QPushButton *m_pButtonSendEmail;
     QHBoxLayout *m_pHLayoutFilter;
 
     QTableView *m_pTableExcel;

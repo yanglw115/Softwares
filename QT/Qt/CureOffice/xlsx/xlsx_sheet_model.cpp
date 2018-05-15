@@ -26,6 +26,7 @@
 #include <xlsx/xlsx_sheet_model.h>
 #include "xlsx_sheet_model_p.h"
 #include "xlsxworksheet.h"
+#include "cure_global.h"
 
 #include <QBrush>
 #include <QCheckBox>
@@ -61,7 +62,7 @@ SheetModel::SheetModel(Worksheet *sheet, QObject *parent, const int nStartRow)
     m_nStartRow = nStartRow;
     m_bEmitCheckStateChange = true;
     m_vecotrSelect.resize(this->rowCount());
-    m_vecotrSelect.fill(true);
+    m_vecotrSelect.fill(SALARY_CHECKED);
 
     // connect(this, SIGNAL(sigDataChanged(QModelIndex)), this, SLOT(slotDataChanged(QModelIndex)));
 }
@@ -111,7 +112,7 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
         /* 第一列是checkbox，所以不需要返回显示数据 */
         if (role == Qt::UserRole) {
 //            qDebug() << "get user role:" << m_vecotrSelect;
-            return m_vecotrSelect[index.row()];
+            return (m_vecotrSelect[index.row()] & SALARY_CHECKED);
         } else {
             return QVariant();
         }
@@ -186,12 +187,12 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
     case Qt::CheckStateRole:
         // 直接在TableView中设置checkbox不稳定，有时候check状态会无故改变
         if (0 == index.column()) {
-            return m_vecotrSelect[index.row()]? Qt::Checked: Qt::Unchecked;
+            return (m_vecotrSelect[index.row()] & SALARY_CHECKED)? Qt::Checked: Qt::Unchecked;
         }
         break;
     case Qt::UserRole:
         if (nColumn == CHECK_BOX_COLUMN)
-            return m_vecotrSelect[index.row()];
+            return m_vecotrSelect[index.row()] & SALARY_CHECKED;
         break;
 #endif
     default:
@@ -275,7 +276,7 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
     case Qt::UserRole:
         /* 直接在数据列的checkbox上面进行操作，使用的是UserRole */
         if (nColumn == CHECK_BOX_COLUMN) {            
-            m_vecotrSelect[index.row()] = value.toBool();
+            m_vecotrSelect[index.row()] = value.toInt();
             slotDataChanged(index);
             if (m_bEmitCheckStateChange) {
                 checkStateChanged();
@@ -299,6 +300,11 @@ Worksheet *SheetModel::sheet() const
     return d->sheet;
 }
 
+QVector<int> SheetModel::getCheckStateVector() const
+{
+    return m_vecotrSelect;
+}
+
 void SheetModel::checkStateChanged()
 {
     Qt::CheckState state = Qt::Unchecked;
@@ -306,7 +312,7 @@ void SheetModel::checkStateChanged()
     int nSelectedCount = 0;
 
     for (int i = 0; i < nCount; ++i) {
-        if (m_vecotrSelect[i])
+        if (m_vecotrSelect[i] & SALARY_CHECKED)
             ++nSelectedCount;
     }
 
