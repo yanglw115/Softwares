@@ -38,9 +38,10 @@ public slots:
 private:
     void initWidgets();
     void freeXlsxDocument();
-    bool writePersonalInfoToFile(const int index, QString &strOutFilePath);
+    bool writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName);
     void saveSalaryExcelHead(Worksheet *pWorksheet);
-    bool sendEmail(const QString strTitle = "", const QString strAttachFile = "");
+    Format getEmailDataFormat();
+    bool sendEmail(const QString &strReceiver, const QString &strReceiverName, const QString &strAttachFile);
 private:
     /* open excel */
     QLabel *m_pLabelOpenExcel;
@@ -64,6 +65,8 @@ private:
     /* tableview filter */
     QLabel *m_pLabelFilter;
     QLineEdit *m_pEditFilter;
+    QLabel *m_pLabelHRName;
+    QLineEdit *m_pEditHRName;
     QPushButton *m_pButtonSendEmail;
     QHBoxLayout *m_pHLayoutFilter;
 
