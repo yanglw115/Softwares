@@ -56,7 +56,8 @@ HEADERS  += mainwindow.h \
     smtpClient/smtpclient.h \
     smtpClient/smtpexports.h \
     smtpClient/SmtpMime.h \
-    cure_tableheaderview.h
+    cure_tableheaderview.h \
+    cure_global.h
 
 RESOURCES += \
     resources/imgresource.qrc

@@ -12,6 +12,7 @@
 #include "hanz2pinyin/Hanz2Piny.h"
 #include "smtpClient/SmtpMime.h"
 #include "cure_tableheaderview.h"
+#include "cure_global.h"
 
 using namespace std;
 
@@ -19,6 +20,12 @@ static const QString g_strOpenExcel("打开文件");
 static const QString g_strCloseExcel("关闭");
 static const QString g_strDefaultSMTPServer("smtp.ym.163.com");
 static const QString g_strDefautlSMTPPort("465");
+
+static const QString g_strSalarySendTemplate = "SalaryEmailTemplate.xlsx";
+/* 数据模板真正员工数据的起始行 */
+static const int g_nStartRow = 5;
+/* 姓名所在邮件发送模块中的索引 */
+static const int g_nIndexName = 2; // from 0
 
 static const QString g_strSenderCheckState[] = {
     "未检测",
@@ -39,6 +46,19 @@ CureSalary::CureSalary(QWidget *parent)
     , m_nStateSenderCheck(State_UnChecked)
 {
     initWidgets();
+
+    /* 以下对TableView设置header的方式不生效，不能够展示自定义的效果，对TableWidget可能是OK的 */
+    // HeaderViewCheck *pHeaderView = new HeaderViewCheck(Qt::Vertical, m_pTableExcel);
+    // m_pTableExcel->setVerticalHeader(pHeaderView);
+    CheckBoxDelegate *pDelegate = new CheckBoxDelegate(this);
+    m_pTableExcel->setItemDelegate(pDelegate);
+
+    /* 这里虽然设置了自定义的headerView，但是model的headerData还会生效，只是自定义的headerView会覆盖其设置区域的值 */
+    TableHeaderView *pHeaderView = new TableHeaderView(Qt::Horizontal, this);
+    m_pTableExcel->setHorizontalHeader(pHeaderView);
+
+    /* 上面使用了自定义水平方向的头，所以下面需要show()一下，否则不显示 */
+    m_pTableExcel->horizontalHeader()->show();
 }
 
 CureSalary::~CureSalary()
@@ -58,25 +78,14 @@ void CureSalary::slotOpenExcel()
                 QString strSheetName = m_pXlsxDoc->sheetNames()[0];
                 Worksheet *pWorksheet = dynamic_cast<Worksheet*>(m_pXlsxDoc->sheet(strSheetName));
                 if (pWorksheet) {
-                    int nStartRow = 5;
-                    SheetModel *pModel = new SheetModel(pWorksheet, m_pTableExcel, nStartRow);
+                    SheetModel *pModel = new SheetModel(pWorksheet, m_pTableExcel, g_nStartRow);
                     m_pTableExcel->setModel(pModel);
-                    /* 以下对TableView设置header的方式不生效，不能够展示自定义的效果，对TableWidget可能是OK的 */
-//                    HeaderViewCheck *pHeaderView = new HeaderViewCheck(Qt::Vertical, m_pTableExcel);
-//                    m_pTableExcel->setVerticalHeader(pHeaderView);
-                    CheckBoxDelegate *pDelegate = new CheckBoxDelegate(this);
-                    m_pTableExcel->setItemDelegate(pDelegate);
 
-                    /* 这里虽然设置了自定义的headerView，但是model的headerData还会生效，只是自定义的headerView会覆盖其设置区域的值 */
-                    TableHeaderView *pHeaderView = new TableHeaderView(Qt::Horizontal, this);
-                    m_pTableExcel->setHorizontalHeader(pHeaderView);
-
-                    /* 上面使用了自定义水平方向的头，所以下面需要show()一下，否则不显示 */
-                    m_pTableExcel->horizontalHeader()->show();
-                    connect(pModel, SIGNAL(sigCheckStateChanged(int)), pHeaderView, SLOT(slotCheckStateChanged(int)));
-                    connect(pHeaderView, SIGNAL(sigCheckStateChanged(int)), pModel, SLOT(slotCheckStateChanged(int)));
+                    connect(pModel, SIGNAL(sigCheckStateChanged(int)), m_pTableExcel->horizontalHeader(), SLOT(slotCheckStateChanged(int)));
+                    connect(m_pTableExcel->horizontalHeader(), SIGNAL(sigCheckStateChanged(int)), pModel, SLOT(slotCheckStateChanged(int)));
                     m_bStateOpenExcel = true;
                     m_pEditFilter->clear();
+                    saveSalaryExcelHead(pWorksheet);
                     qDebug() << "Table row count: " << m_pTableExcel->model()->rowCount() << ", colum count: " << m_pTableExcel->model()->columnCount();
                 }
             } else {
@@ -145,13 +154,16 @@ void CureSalary::slotCheckEmailSenderValid()
     if (email.connectToHost()) {
         if (email.login()) {
             email.quit();
-            m_pLabelSenderValid->setText(g_strSenderCheckState[State_Check_Success]);
+            m_nStateSenderCheck = State_Check_Success;
+            m_pLabelSenderValid->setText(g_strSenderCheckState[m_nStateSenderCheck]);
         } else {
             qWarning() << "Email login failed!";
-            m_pLabelSenderValid->setText(g_strSenderCheckState[State_Check_Failed]);
+            m_nStateSenderCheck = State_Check_Failed;
+            m_pLabelSenderValid->setText(g_strSenderCheckState[m_nStateSenderCheck]);
         }
     } else {
         qWarning() << "Email connect failed!";
+        m_nStateSenderCheck = State_Check_Failed;
         m_pLabelSenderValid->setText(g_strSenderCheckState[State_Check_Failed]);
     }
 
@@ -161,7 +173,51 @@ void CureSalary::slotCheckEmailSenderValid()
 void CureSalary::slotEmailSenderDataChanged(const QString &strText)
 {
     Q_UNUSED(strText)
-    m_pLabelSenderValid->setText(g_strSenderCheckState[State_UnChecked]);
+    m_nStateSenderCheck = State_UnChecked;
+    m_pLabelSenderValid->setText(g_strSenderCheckState[m_nStateSenderCheck]);
+}
+
+void CureSalary::slotSendEmail()
+{
+    if (m_nStateSenderCheck != State_Check_Success) {
+        QMessageBox::warning(this, tr("工资条发送"), tr("发件箱不可用或者未检测其可用性,请确认!"));
+        return;
+    }
+    if (m_pTableExcel->model() && m_pTableExcel->model()->rowCount() > 0) {
+        SheetModel *pModel = dynamic_cast<SheetModel*>(m_pTableExcel->model());
+        QVector<int> vectorCheckState = pModel->getCheckStateVector();
+        int nChecked = 0;
+        for (int i = 0; i < vectorCheckState.size(); ++i) {
+            if (vectorCheckState[i] & SALARY_CHECKED) {
+                ++nChecked;
+            }
+        }
+        /* 自定义邮件发送Dialog,展示发送进度及发送结果 */
+        QString strInfo = QString::asprintf("准备发送工资详情, 总记录数为: %d条, 已选择: %d条.", vectorCheckState.size(), nChecked);
+        QMessageBox::StandardButton standardButton = QMessageBox::information(this, tr("工资条发送"), strInfo, QMessageBox::Ok, QMessageBox::Cancel);
+        if (QMessageBox::Ok == standardButton) {
+            /* send email */
+            qDebug() << "Start to send salary email......";
+            for (int i = 0; i < vectorCheckState.size(); ++i) {
+                vectorCheckState[i] &= (~SALARY_SEND_OK);
+                if (vectorCheckState[i] & SALARY_CHECKED) {
+                    /* real send ... */
+                    QString strFilePath;
+                    bool bSendOk = writePersonalInfoToFile(i, strFilePath);
+                    break;
+                    if (bSendOk) {
+                        vectorCheckState[i] |= SALARY_SEND_OK;
+                    }
+//                    emit signal to dialog;
+                }
+            }
+        } else {
+            qDebug() << "Cancel to send salary email.";
+        }
+
+    } else {
+        QMessageBox::warning(this, tr("工资条发送"), tr("工资信息列表为空,不可发送!"));
+    }
 }
 
 void CureSalary::initWidgets()
@@ -222,10 +278,13 @@ void CureSalary::initWidgets()
     /* 对QTableView进行过滤 */
     m_pLabelFilter = new QLabel(tr("查询："), this);
     m_pEditFilter = new QLineEdit(this);
+    m_pButtonSendEmail = new QPushButton(tr("发送邮件"), this);
     m_pHLayoutFilter = new QHBoxLayout;
     m_pHLayoutFilter->addWidget(m_pLabelFilter);
     m_pHLayoutFilter->addWidget(m_pEditFilter);
+    m_pHLayoutFilter->addWidget(m_pButtonSendEmail);
     connect(m_pEditFilter, SIGNAL(textChanged(QString)), this, SLOT(slotDoTableViewFilter(QString)));
+    connect(m_pButtonSendEmail, SIGNAL(clicked(bool)), this, SLOT(slotSendEmail()));
     m_pHLayoutFilter->addStretch(1);
 
     m_pVLayoutMain = new QVBoxLayout;
@@ -261,10 +320,52 @@ void CureSalary::freeXlsxDocument()
     }
 }
 
-/* 根据导入的数据模板，提取邮件发送的excel头部信息。也可以直接使用邮件发送模板，就不需要这样提取了。 */
-void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow)
+bool CureSalary::writePersonalInfoToFile(const int index, QString &strOutFilePath)
 {
-    QString strSaveFileName = "Salary_201808.xlsx";
+    Document doc(g_strSalarySendTemplate);
+    Worksheet *pWorkSheetWrite = dynamic_cast<Worksheet *>(doc.sheet(doc.sheetNames()[0]));
+    SheetModel *pModel = dynamic_cast<SheetModel *>(m_pTableExcel->model());
+    Worksheet *pWorkSheetRead = pModel->sheet();
+
+    Format format;
+    format.setFont(QFont("宋体", 10));
+    format.setTextWarp(true); // 自动换行
+    format.setVerticalAlignment(Format::AlignVCenter);
+    format.setHorizontalAlignment(Format::AlignHCenter);
+    format.setBorderStyle(Format::BorderThin); // 边框为实线
+
+    bool bWrite = true;
+    Cell *pCell = NULL;
+
+    /* 循环使用邮件发送模板的头，其自身没有数据模板的第1列 */
+    QString strName;
+    for (int i = 0; i < pWorkSheetWrite->dimension().lastColumn(); ++i) {
+        pCell = pWorkSheetRead->cellAt(index + g_nStartRow, i + 2); /* i + 2是因为过滤掉数据模板的第1列序号列数据 */
+        if (i == g_nIndexName) {
+            strName = pCell->value().toString();
+        }
+        //qDebug() << "Cell value: " << pCell->value().toString();
+        if (!pWorkSheetWrite->write(index + 2, i + 1, pCell->value(), format)) {
+            bWrite = false;
+            break;
+        }
+    }
+    if (bWrite) {
+        qDebug() << "Write data success!";
+        strOutFilePath = "工资单_" + strName + ".xlsx";
+        if (QFile::exists(strOutFilePath)) {
+            QFile::remove(strOutFilePath);
+        }
+        doc.saveAs(strOutFilePath);
+    }
+
+    return bWrite;
+}
+
+/* 根据导入的数据模板，提取邮件发送的excel头部信息。也可以直接使用邮件发送模板，就不需要这样提取了。 */
+void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet)
+{
+    QString strSaveFileName = g_strSalarySendTemplate;
     Document *pDoc = new Document;
     pDoc->addSheet(tr("工资明细"));
 
@@ -276,10 +377,11 @@ void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet, const int nStartRow)
     format.setHorizontalAlignment(Format::AlignHCenter);
     format.setBorderStyle(Format::BorderThin); // 边框为实线
 
-    for (int i = 0; i < pWorksheet->dimension().lastColumn(); ++i) {
-        Cell *pCell = pWorksheet->cellAt(nStartRow - 1, i + 1);
+    /* i从1开始，是因为要过滤掉第1列的序号 */
+    for (int i = 1; i < pWorksheet->dimension().lastColumn(); ++i) {
+        Cell *pCell = pWorksheet->cellAt(g_nStartRow - 1, i + 1);
         if (!pCell->value().isNull()) {
-            pDoc->write(1, i + 1, pCell->value(), format);
+            pDoc->write(1, i/* + 1*/, pCell->value(), format);
         }
     }
     if (QFile::exists(strSaveFileName)) {
@@ -296,6 +398,7 @@ bool CureSalary::sendEmail(const QString strTitle, const QString strAttachFile)
     email.setUser("xxxxxx@xxxx.com");
     email.setPassword("xxxxxx");
 
+    /* 杨利伟  您好！附件为您2018年3月的工资条，请注意查收！若有疑问请在此邮件发送后的5天内咨询HR冯丽萍进行处理，否则视为无疑问，谢谢！ */
     MimeMessage message;
     message.setSender(new EmailAddress("yangliwei@95051.com", "yangliwei"));
     message.addRecipient(new EmailAddress("yanglw115@foxmail.com", "xingyu"));
@@ -304,6 +407,10 @@ bool CureSalary::sendEmail(const QString strTitle, const QString strAttachFile)
     MimeAttachment attachMent(new QFile("Salary_201808.xlsx"));
     attachMent.setContentType("excel");
     message.addPart(&attachMent);
+
+    MimeText text;
+    text.setText(QString::asprintf("%s 您好！附件为您%s的工资条，请注意查收！若有疑问请在此邮件发送后的5天内咨询HR%s进行处理，否则视为无疑问，谢谢！ "));
+    message.addPart(&text);
 
     if (email.connectToHost()) {
         if (email.login()) {

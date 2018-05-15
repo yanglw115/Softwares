@@ -52,6 +52,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     Worksheet *sheet() const;
+    QVector<int> getCheckStateVector() const;
 public slots:
     void checkStateChanged();
     void slotCheckStateChanged(int state);
@@ -65,7 +66,7 @@ private:
     SheetModelPrivate * const d_ptr;
     int m_nStartRow;
     bool m_bEmitCheckStateChange;
-    QVector<bool> m_vecotrSelect;
+    QVector<int> m_vecotrSelect;
 };
 
 QT_END_NAMESPACE_XLSX

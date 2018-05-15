@@ -26,7 +26,7 @@ TableHeaderView::TableHeaderView(Qt::Orientation orientation, QWidget *parent)
 // 槽函数，用于更新复选框状态
 void TableHeaderView::slotCheckStateChanged(int state)
 {
-    qDebug() << "Header view get new state: " << state;
+//    qDebug() << "Header view get new state: " << state;
     if (state == Qt::PartiallyChecked) {
         if (!m_bTristate) {
             m_bTristate = true;
