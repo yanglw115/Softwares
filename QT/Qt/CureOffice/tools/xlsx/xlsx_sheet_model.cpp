@@ -62,7 +62,7 @@ SheetModel::SheetModel(Worksheet *sheet, QObject *parent, const int nStartRow)
     m_nStartRow = nStartRow;
     m_bEmitCheckStateChange = true;
     m_vecotrSelect.resize(this->rowCount());
-    m_vecotrSelect.fill(SALARY_CHECKED);
+    m_vecotrSelect.fill(SALARY_CHECKED | SALARY_SEND_OK);
 
     // connect(this, SIGNAL(sigDataChanged(QModelIndex)), this, SLOT(slotDataChanged(QModelIndex)));
 }
@@ -180,8 +180,16 @@ QVariant SheetModel::data(const QModelIndex &index, int role) const
             return QBrush(cell->format().fontColor());
         break;
     case Qt::BackgroundRole:
+#if 0
         if (cell->format().patternBackgroundColor().isValid())
             return QBrush(cell->format().patternBackgroundColor());
+#else
+        if (m_vecotrSelect[index.row()] & SALARY_SEND_OK) {
+            return QBrush(Qt::white);
+        } else {
+            return QBrush(Qt::yellow);
+        }
+#endif
         break;
 #if 0
     case Qt::CheckStateRole:
@@ -300,7 +308,7 @@ Worksheet *SheetModel::sheet() const
     return d->sheet;
 }
 
-QVector<int> SheetModel::getCheckStateVector() const
+QVector<int> & SheetModel::getCheckStateVector()
 {
     return m_vecotrSelect;
 }

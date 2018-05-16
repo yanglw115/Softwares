@@ -41,8 +41,8 @@ void CureEmailDialog::initDialog()
     m_pLabelFailed = new QLabel(tr("发送失败："), this);
     m_pLabelValueTotal = new QLabel(this);
     m_pLabelValueChecked = new QLabel(this);
-    m_pLabelValueSuccess = new QLabel(this);
-    m_pLabelValueFailed = new QLabel(this);
+    m_pLabelValueSuccess = new QLabel(tr("0"), this);
+    m_pLabelValueFailed = new QLabel(tr("0"), this);
 
     m_pProgressBar = new QProgressBar(this);
     m_pButtonStart = new QPushButton(g_strControlStrings[TYPE_SEND], this);
@@ -90,8 +90,8 @@ void CureEmailDialog::initDialog()
     m_pMainLayout->addWidget(m_pProgressBar);
     m_pMainLayout->addLayout(pHLayoutButton);
 
-    /* 等触发邮件发送的时候再显示出来 */
-    setSendStaticsVisible(false);
+    /* 等触发邮件发送的时候再显示出来(但经常刷新不及时,还是直接显示算了) */
+//    setSendStaticsVisible(false);
     /* 未发送前禁止取消 */
     m_pButtonCancel->setEnabled(false);
 
@@ -147,9 +147,7 @@ void CureEmailDialog::slotHandleSendButton()
     if (TYPE_SEND == m_nSendButtonState) {
         m_pButtonStart->setEnabled(false);
         m_pButtonCancel->setEnabled(true);
-        m_pLabelValueSuccess->setText("0");
-        m_pLabelValueFailed->setText("0");
-        setSendStaticsVisible(true);
+        //setSendStaticsVisible(true);
         emit sigStartSend();
     } else if (TYPE_CLOSE == m_nSendButtonState || TYPE_FINISH == m_nSendButtonState) {
         this->close();

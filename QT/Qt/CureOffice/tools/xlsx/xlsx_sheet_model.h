@@ -52,7 +52,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     Worksheet *sheet() const;
-    QVector<int> getCheckStateVector() const;
+    QVector<int>& getCheckStateVector();
 public slots:
     void checkStateChanged();
     void slotCheckStateChanged(int state);

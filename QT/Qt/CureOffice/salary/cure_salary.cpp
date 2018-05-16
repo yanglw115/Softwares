@@ -193,11 +193,14 @@ void CureSalary::slotSendEmail()
                 ++nChecked;
             }
         }
-        /* 自定义邮件发送Dialog,展示发送进度及发送结果 */
-        initProgressDialog(nChecked);
-        m_pProgressDialog->setTotalValue(vectorCheckState.size());
-        m_pProgressDialog->setCheckedValue(nChecked);
-//        makeAndSendEmailData();
+        if (nChecked > 0) {
+            /* 自定义邮件发送Dialog,展示发送进度及发送结果 */
+            initProgressDialog(nChecked);
+            m_pProgressDialog->setTotalValue(vectorCheckState.size());
+            m_pProgressDialog->setCheckedValue(nChecked);
+        } else {
+            QMessageBox::warning(this, tr("工资条发送"), tr("没有选择需要发送的记录!"));
+        }
     } else {
         QMessageBox::warning(this, tr("工资条发送"), tr("工资信息列表为空,不可发送!"));
     }
@@ -406,7 +409,8 @@ void CureSalary::makeAndSendEmailData()
     /* send email */
     qDebug() << "Start to send salary email......";
     SheetModel *pModel = dynamic_cast<SheetModel*>(m_pTableExcel->model());
-    QVector<int> vectorCheckState = pModel->getCheckStateVector();
+    /* 注意这里使用的是引用,可以直接修改QVector的实际值 */
+    QVector<int>& vectorCheckState = pModel->getCheckStateVector();
     Format format = getEmailDataFormat();
     int nValue = 0;
     int nSuccessCount = 0;
@@ -416,7 +420,9 @@ void CureSalary::makeAndSendEmailData()
             qDebug() << "User canceled email send, break.";
             return;
         }
-        vectorCheckState[i] &= (~SALARY_SEND_OK);
+
+        /* 先全部置为发送成功,因为最后要展示发送失败的记录 */
+        vectorCheckState[i] |= SALARY_SEND_OK;
         if (vectorCheckState[i] & SALARY_CHECKED) {
             /* real send ... */
             QString strFilePath;
@@ -429,8 +435,9 @@ void CureSalary::makeAndSendEmailData()
                 m_pProgressDialog->setFailedValue(++nFailedCount);
             }
 
-            if (bSendOk) {
-                vectorCheckState[i] |= SALARY_SEND_OK;
+            if (!bSendOk) {
+                /* 发送失败的记录,简单地使用黄色背景进行标记 */
+                vectorCheckState[i] &= (~SALARY_SEND_OK);
             }
             m_pProgressDialog->setProgressValue(++nValue);
         }
