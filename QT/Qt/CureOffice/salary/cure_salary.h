@@ -7,10 +7,12 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QLayout>
-#include <QtXlsx/QtXlsx>
 #include <QGroupBox>
+//#include <QProgressDialog>
+#include <QtXlsx/QtXlsx>
 
 #include "xlsx/xlsx_sheet_model.h"
+#include "cure_email_dialog.h"
 
 QTXLSX_USE_NAMESPACE
 
@@ -23,6 +25,7 @@ public:
         State_Check_Failed = 1,
         State_Check_Success
     };
+
     explicit CureSalary(QWidget *parent = 0);
     virtual ~CureSalary();
 
@@ -34,12 +37,16 @@ private slots:
     void slotCheckEmailSenderValid();
     void slotEmailSenderDataChanged(const QString &strText);
     void slotSendEmail();
+    void slotDialogSendStart();
+    void slotDialogSendCancel();
 public slots:
 private:
     void initWidgets();
     void freeXlsxDocument();
+    void initProgressDialog(const int nMaxValue);
     bool writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName);
     void saveSalaryExcelHead(Worksheet *pWorksheet);
+    void makeAndSendEmailData();
     Format getEmailDataFormat();
     bool sendEmail(const QString &strReceiver, const QString &strReceiverName, const QString &strAttachFile);
 private:
@@ -75,8 +82,10 @@ private:
 
     QVBoxLayout *m_pVLayoutMain;
     QHBoxLayout *m_pHLayoutOpenExcel;
+    CureEmailDialog *m_pProgressDialog;
     bool m_bStateOpenExcel;
-    enumStateSenderCheck m_nStateSenderCheck;
+    enumStateSenderCheck m_nStateSenderCheck; /* 发件箱有效确认 */
+    bool m_bEmailCanceled;
 
 };
 
