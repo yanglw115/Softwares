@@ -89,13 +89,16 @@ void CureSalary::slotOpenExcel()
                     m_bStateOpenExcel = true;
                     m_pEditFilter->clear();
                     saveSalaryExcelHead(pWorksheet);
-                    qDebug() << "Table row count: " << m_pTableExcel->model()->rowCount() << ", colum count: " << m_pTableExcel->model()->columnCount();
+                    qDebug() << "Open excel: " << strFilePath << "success!";
+                    //qDebug() << "Table row count: " << m_pTableExcel->model()->rowCount() << ", colum count: " << m_pTableExcel->model()->columnCount();
                 }
             } else {
-                qCritical() << "New xlsx document failed!";
+                qCritical() << "Open salary xlsx document to table view failed!";
+                QMessageBox::critical(this, tr("Excel文件读取"), tr("打开并读取.xlsx文件失败，请确保选择的文件是.xlsx格式！"));
             }
         }
     } else {
+        qDebug() << "Close excel.";
         freeXlsxDocument();
         m_bStateOpenExcel = false;
     }
@@ -136,7 +139,6 @@ void CureSalary::slotDoTableViewFilter(const QString &strText)
                 bShow = true;
                 break;
             }
-            //qDebug() << "Hanz to pinyin: " << strPinyin;
         }
         if (bShow) {
             m_pTableExcel->showRow(i);
@@ -150,7 +152,8 @@ void CureSalary::slotCheckEmailSenderValid()
 {
     m_pGroupSender->setEnabled(false);
 
-    SmtpClient email(m_pEditSMTPServer->text(), m_pEditSMTPPort->text().toInt(), SmtpClient::SslConnection); // ssl端口是465，非SSL是25
+    // ssl端口是465，非SSL是25
+    SmtpClient email(m_pEditSMTPServer->text(), m_pEditSMTPPort->text().toInt(), SmtpClient::SslConnection);
     email.setUser(m_pEditSenderAddress->text());
     email.setPassword(m_pEditSenderPasswd->text());
 
@@ -160,12 +163,12 @@ void CureSalary::slotCheckEmailSenderValid()
             m_nStateSenderCheck = State_Check_Success;
             m_pLabelSenderValid->setText(g_strSenderCheckState[m_nStateSenderCheck]);
         } else {
-            qWarning() << "Email login failed!";
+            qWarning() << "Email login failed: " << m_pEditSenderAddress->text();
             m_nStateSenderCheck = State_Check_Failed;
             m_pLabelSenderValid->setText(g_strSenderCheckState[m_nStateSenderCheck]);
         }
     } else {
-        qWarning() << "Email connect failed!";
+        qWarning() << "Email connect failed: " << m_pEditSMTPServer->text() << "-" << m_pEditSMTPPort->text().toInt();
         m_nStateSenderCheck = State_Check_Failed;
         m_pLabelSenderValid->setText(g_strSenderCheckState[State_Check_Failed]);
     }
@@ -183,13 +186,14 @@ void CureSalary::slotEmailSenderDataChanged(const QString &strText)
 void CureSalary::slotSendEmail()
 {
     if (m_nStateSenderCheck != State_Check_Success) {
+        qWarning() << "发件箱不可用或者未检测其可用性.";
         QMessageBox::warning(this, tr("工资条发送"), tr("发件箱不可用或者未检测其可用性,请确认!"));
         return;
     }
 
     if (!QFile::exists(g_strSalarySendTemplate) || !QFile::exists(g_strSalaryEmailExcel)) {
         QString strInfo = tr("工资数据发送模板不存在或员工邮箱excel表未找到,请确认!");
-        qDebug() << strInfo;
+        qWarning() << strInfo;
         QMessageBox::critical(this, tr("工资条发送"), strInfo);
     }
 
@@ -211,7 +215,9 @@ void CureSalary::slotSendEmail()
             QMessageBox::warning(this, tr("工资条发送"), tr("没有选择需要发送的记录!"));
         }
     } else {
-        QMessageBox::warning(this, tr("工资条发送"), tr("工资信息列表为空,不可发送!"));
+        QString strInfo = tr("工资信息列表为空,不可发送!");
+        qWarning() << strInfo;
+        QMessageBox::warning(this, tr("工资条发送"), strInfo);
     }
 }
 
@@ -379,11 +385,17 @@ bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QStrin
     if (bWrite) {
         //qDebug() << "Write data success!";
         QDate date = QDate::currentDate();
-        strOutFilePath = QString("%1年%2月工资单_%3.xlsx").arg(date.year()).arg(date.month()).arg(strName);
+        int nYear = date.year();
+        int nMonth = date.month();
+        nMonth = (nMonth == 1? 12: (nMonth - 1));
+        strOutFilePath = QString("%1年%2月工资单_%3.xlsx").arg(nYear).arg(nMonth).arg(strName);
         if (QFile::exists(strOutFilePath)) {
             QFile::remove(strOutFilePath);
         }
-        doc.saveAs(strOutFilePath);
+        bWrite = doc.saveAs(strOutFilePath);
+        if (bWrite) {
+            qDebug() << "Make salary email attachment file success: " << strOutFilePath;
+        }
     }
 
     return bWrite;
@@ -392,6 +404,8 @@ bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QStrin
 /* 根据导入的数据模板，提取邮件发送的excel头部信息。也可以直接使用邮件发送模板，就不需要这样提取了。 */
 void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet)
 {
+    qDebug() << "Make salary attchment template: " << g_strSalarySendTemplate;
+
     QString strSaveFileName = g_strSalarySendTemplate;
     Document *pDoc = new Document;
     pDoc->addSheet(tr("工资明细"));
@@ -414,6 +428,7 @@ void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet)
     if (QFile::exists(strSaveFileName)) {
         QFile::remove(strSaveFileName);
     }
+
     pDoc->saveAs(strSaveFileName);
     delete pDoc;
     pDoc = NULL;
@@ -429,7 +444,7 @@ bool CureSalary::findEmailAddressFromExcel(const Worksheet* pWorksheet, const in
             if (pWorksheet->cellAt(i + 2, 2)->value().toString().trimmed() == strName.trimmed()) {
                 /* 第2列是员工姓名,第3列是邮箱地址 */
                 strAddress = pWorksheet->cellAt(i + 2, 3)->value().toString().trimmed();
-                qDebug() << "Find " << strName << "'s email address: " << strAddress;
+                qDebug() << "Find email address of" << strName << "success: " << strAddress;
                 return true;
             }
         }
@@ -478,7 +493,7 @@ void CureSalary::makeAndSendEmailData()
                 if (findEmailAddressFromExcel(pWorkSheetEmailAddresses, nIndexNumber, strName, strEmailAddress)) {
                     bSendOk = sendEmail(strEmailAddress, strName, strFilePath);
                 } else {
-                    qWarning() << "Cannot find " << strName << "'s email address from excel!";
+                    qWarning() << "Cannot find email address of" << strName << "from excel!";
                 }
                 /* 邮件发送完成之后删除所有附件 */
                 QFile::remove(strFilePath);
@@ -515,10 +530,13 @@ bool CureSalary::sendEmail(const QString &strReceiverEmail, const QString &strRe
     email.setPassword(m_pEditSenderPasswd->text());
 
     QDate date = QDate::currentDate();
+    int nYear = date.year();
+    int nMonth = date.month();
+    nMonth = (nMonth == 1? 12: (nMonth - 1));
     MimeMessage message;
     message.setSender(new EmailAddress(m_pEditSenderAddress->text()));
     message.addRecipient(new EmailAddress(strReceiverEmail));
-    message.setSubject(QString("%1年%2月工资条").arg(date.year()).arg(date.month()));
+    message.setSubject(QString("%1年%2月工资条").arg(nYear).arg(nMonth));
 
     MimeAttachment attachMent(new QFile(strAttachFile));
     attachMent.setContentType("excel");
@@ -526,7 +544,7 @@ bool CureSalary::sendEmail(const QString &strReceiverEmail, const QString &strRe
 
     MimeText text;
     QString strText = QString("%1 您好！附件为您%2年%3月的工资条，请注意查收！若有疑问请在此邮件发送后的5天内咨询HR%4进行处理，否则视为无疑问，谢谢！ ")
-            .arg(strReceiverName).arg(date.year()).arg(date.month()).arg(m_pEditHRName->text());
+            .arg(strReceiverName).arg(nYear).arg(nMonth).arg(m_pEditHRName->text());
     text.setText(strText);
     message.addPart(&text);
 
