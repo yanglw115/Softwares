@@ -1,6 +1,4 @@
 ﻿#include <QFileDialog>
-#include <memory>
-#include <iostream>
 #include <QtDebug>
 #include <QMessageBox>
 #include <QHeaderView>
@@ -43,8 +41,10 @@ CureSalary::CureSalary(QWidget *parent)
     , m_pXlsxDoc(NULL)
     , m_pVLayoutMain(NULL)
     , m_pHLayoutOpenExcel(NULL)
+    , m_pProgressDialog(NULL)
     , m_bStateOpenExcel(false)
     , m_nStateSenderCheck(State_UnChecked)
+    , m_bEmailCanceled(false)
 {
     initWidgets();
 
@@ -194,37 +194,25 @@ void CureSalary::slotSendEmail()
             }
         }
         /* 自定义邮件发送Dialog,展示发送进度及发送结果 */
-        QString strInfo = QString::asprintf("准备发送工资详情, 总记录数为: %d条, 已选择: %d条.", vectorCheckState.size(), nChecked);
-        QMessageBox::StandardButton standardButton = QMessageBox::information(this, tr("工资条发送"), strInfo, QMessageBox::Ok, QMessageBox::Cancel);
-        if (QMessageBox::Ok == standardButton) {
-            /* send email */
-            qDebug() << "Start to send salary email......";
-            Format format = getEmailDataFormat();
-            for (int i = 0; i < vectorCheckState.size(); ++i) {
-                vectorCheckState[i] &= (~SALARY_SEND_OK);
-                if (vectorCheckState[i] & SALARY_CHECKED) {
-                    /* real send ... */
-                    QString strFilePath;
-                    QString strName;
-                    bool bSendOk = false;
-                    if (writePersonalInfoToFile(i, format, strFilePath, strName)) {
-                        bSendOk = sendEmail("Cplusplus2017@163.com", strName, strFilePath);
-                    }
-
-                    if (bSendOk) {
-                        vectorCheckState[i] |= SALARY_SEND_OK;
-                    }
-//                    emit signal to dialog;
-                }
-            }
-        } else {
-            qDebug() << "Cancel to send salary email.";
-        }
-
+        initProgressDialog(nChecked);
+        m_pProgressDialog->setTotalValue(vectorCheckState.size());
+        m_pProgressDialog->setCheckedValue(nChecked);
+//        makeAndSendEmailData();
     } else {
         QMessageBox::warning(this, tr("工资条发送"), tr("工资信息列表为空,不可发送!"));
     }
 }
+
+void CureSalary::slotDialogSendStart()
+{
+    makeAndSendEmailData();
+}
+
+void CureSalary::slotDialogSendCancel()
+{
+    m_bEmailCanceled = true;
+}
+
 
 void CureSalary::initWidgets()
 {
@@ -332,6 +320,22 @@ void CureSalary::freeXlsxDocument()
     }
 }
 
+void CureSalary::initProgressDialog(const int nMaxValue)
+{
+    if (m_pProgressDialog) {
+        m_pProgressDialog->close();
+        delete m_pProgressDialog;
+        m_pProgressDialog = NULL;
+    }
+    m_pProgressDialog = new CureEmailDialog(this);
+    m_pProgressDialog->setProgressRange(0, (uint)nMaxValue);
+    m_pProgressDialog->setWindowModality(Qt::WindowModal);
+    m_pProgressDialog->show();
+
+    connect(m_pProgressDialog, SIGNAL(sigStartSend()), this, SLOT(slotDialogSendStart()));
+    connect(m_pProgressDialog, SIGNAL(sigCancelSend()), this, SLOT(slotDialogSendCancel()));
+}
+
 bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName)
 {
     Document doc(g_strSalarySendTemplate);
@@ -395,6 +399,42 @@ void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet)
     pDoc->saveAs(strSaveFileName);
     delete pDoc;
     pDoc = NULL;
+}
+
+void CureSalary::makeAndSendEmailData()
+{
+    /* send email */
+    qDebug() << "Start to send salary email......";
+    SheetModel *pModel = dynamic_cast<SheetModel*>(m_pTableExcel->model());
+    QVector<int> vectorCheckState = pModel->getCheckStateVector();
+    Format format = getEmailDataFormat();
+    int nValue = 0;
+    int nSuccessCount = 0;
+    int nFailedCount = 0;
+    for (int i = 0; i < vectorCheckState.size(); ++i) {
+        if (m_bEmailCanceled) {
+            qDebug() << "User canceled email send, break.";
+            return;
+        }
+        vectorCheckState[i] &= (~SALARY_SEND_OK);
+        if (vectorCheckState[i] & SALARY_CHECKED) {
+            /* real send ... */
+            QString strFilePath;
+            QString strName;
+            bool bSendOk = false;
+            if (writePersonalInfoToFile(i, format, strFilePath, strName)) {
+                bSendOk = sendEmail("Cplusplus2017@163.com", strName, strFilePath);
+                m_pProgressDialog->setSuccessValue(++nSuccessCount);
+            } else {
+                m_pProgressDialog->setFailedValue(++nFailedCount);
+            }
+
+            if (bSendOk) {
+                vectorCheckState[i] |= SALARY_SEND_OK;
+            }
+            m_pProgressDialog->setProgressValue(++nValue);
+        }
+    }
 }
 
 Format CureSalary::getEmailDataFormat()

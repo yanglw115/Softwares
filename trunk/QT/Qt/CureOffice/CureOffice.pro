@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     tools/smtpClient/mimetext.cpp \
     tools/smtpClient/quotedprintable.cpp \
     tools/smtpClient/smtpclient.cpp \
-    tools/xlsx/xlsx_sheet_model.cpp
+    tools/xlsx/xlsx_sheet_model.cpp \
+    salary/cure_email_dialog.cpp
 
 HEADERS  += mainwindow.h \
     msvs_charset.h \
@@ -59,7 +60,8 @@ HEADERS  += mainwindow.h \
     tools/smtpClient/smtpexports.h \
     tools/smtpClient/SmtpMime.h \
     tools/xlsx/xlsx_sheet_model.h \
-    tools/xlsx/xlsx_sheet_model_p.h
+    tools/xlsx/xlsx_sheet_model_p.h \
+    salary/cure_email_dialog.h
 
 RESOURCES += \
     resources/imgresource.qrc
