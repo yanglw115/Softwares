@@ -29,6 +29,7 @@ public:
     void setFailedValue(const uint nValue);
     void setProgressValue(const uint nValue);
     void setProgressRange(const uint nStart, const uint nEnd);
+    int getProgressRange() const;
 signals:
     void sigStartSend();
     void sigCancelSend();

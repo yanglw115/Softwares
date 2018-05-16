@@ -44,8 +44,9 @@ private:
     void initWidgets();
     void freeXlsxDocument();
     void initProgressDialog(const int nMaxValue);
-    bool writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName);
+    bool writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName, int &nIndexNumber);
     void saveSalaryExcelHead(Worksheet *pWorksheet);
+    bool findEmailAddressFromExcel(const Worksheet* pWorksheet, const int &nIndexNumber, const QString &strName, QString &strAddress);
     void makeAndSendEmailData();
     Format getEmailDataFormat();
     bool sendEmail(const QString &strReceiver, const QString &strReceiverName, const QString &strAttachFile);

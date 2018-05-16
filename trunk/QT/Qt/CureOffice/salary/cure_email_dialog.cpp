@@ -81,7 +81,7 @@ void CureEmailDialog::initDialog()
     pHLayoutButton->addStretch();
 
     m_pMainLayout = new QVBoxLayout(this);
-    m_pMainLayout->addSpacing(30);
+    m_pMainLayout->addSpacing(20);
     m_pMainLayout->addLayout(pHLayoutTotal);
     m_pMainLayout->addLayout(pHLayoutChecked);
     m_pMainLayout->addLayout(pHLayoutSucess);
@@ -101,6 +101,11 @@ void CureEmailDialog::initDialog()
 void CureEmailDialog::setProgressRange(const uint nStart, const uint nEnd)
 {
     m_pProgressBar->setRange((int)nStart, (int)nEnd);
+}
+
+int CureEmailDialog::getProgressRange() const
+{
+    return m_pProgressBar->maximum();
 }
 
 void CureEmailDialog::setTotalValue(const uint nValue)
