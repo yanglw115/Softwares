@@ -349,6 +349,7 @@ void CureSalary::initProgressDialog(const int nMaxValue)
     m_pProgressDialog->setProgressRange(0, (uint)nMaxValue);
     m_pProgressDialog->setWindowModality(Qt::WindowModal);
     m_pProgressDialog->setWindowTitle(tr("员工工资条邮件发送"));
+    m_pProgressDialog->setHRName(m_pEditHRName->text());
     m_pProgressDialog->show();
 
     connect(m_pProgressDialog, SIGNAL(sigStartSend()), this, SLOT(slotDialogSendStart()));

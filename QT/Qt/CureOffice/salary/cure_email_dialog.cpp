@@ -1,4 +1,6 @@
-﻿#include "cure_email_dialog.h"
+﻿#include <QDate>
+
+#include "cure_email_dialog.h"
 #include "msvs_charset.h"
 
 static const QString g_strControlStrings[] = {
@@ -35,10 +37,19 @@ CureEmailDialog::~CureEmailDialog()
 
 void CureEmailDialog::initDialog()
 {
+    m_pLabelSalaryDate = new QLabel(tr("工资年月："), this);
+    m_pLabelHR = new QLabel(tr("HR："), this);
     m_pLabelTotal = new QLabel(tr("总记录："), this);
     m_pLabelChecked = new QLabel(tr("已选择："), this);
     m_pLabelSuccess = new QLabel(tr("成功发送："), this);
     m_pLabelFailed = new QLabel(tr("发送失败："), this);
+
+    m_pLabelValueDate = new QLabel(this);
+    QDate date = QDate::currentDate();
+    int nMonth = date.month();
+    nMonth = (nMonth == 1? 12: (nMonth - 1));
+    m_pLabelValueDate->setText(QString("%1年%2月").arg(date.year()).arg(nMonth));
+    m_pLabelValueHR = new QLabel(this);
     m_pLabelValueTotal = new QLabel(this);
     m_pLabelValueChecked = new QLabel(this);
     m_pLabelValueSuccess = new QLabel(tr("0"), this);
@@ -49,6 +60,18 @@ void CureEmailDialog::initDialog()
     m_pButtonCancel = new QPushButton(g_strControlStrings[TYPE_CANCEL], this);
     connect(m_pButtonStart, SIGNAL(clicked(bool)), this, SLOT(slotHandleSendButton()));
     connect(m_pButtonCancel, SIGNAL(clicked(bool)), this, SLOT(slotHandleCancelButton()));
+
+    QHBoxLayout *pHLayoutDate = new QHBoxLayout;
+    pHLayoutDate->addSpacing(40);
+    pHLayoutDate->addWidget(m_pLabelSalaryDate);
+    pHLayoutDate->addWidget(m_pLabelValueDate);
+    pHLayoutDate->addStretch();
+
+    QHBoxLayout *pHLayoutHR = new QHBoxLayout;
+    pHLayoutHR->addSpacing(40);
+    pHLayoutHR->addWidget(m_pLabelHR);
+    pHLayoutHR->addWidget(m_pLabelValueHR);
+    pHLayoutHR->addStretch();
 
     QHBoxLayout *pHLayoutTotal = new QHBoxLayout;
     pHLayoutTotal->addSpacing(40);
@@ -81,7 +104,9 @@ void CureEmailDialog::initDialog()
     pHLayoutButton->addStretch();
 
     m_pMainLayout = new QVBoxLayout(this);
-    m_pMainLayout->addSpacing(20);
+    m_pMainLayout->addSpacing(10);
+    m_pMainLayout->addLayout(pHLayoutDate);
+    m_pMainLayout->addLayout(pHLayoutHR);
     m_pMainLayout->addLayout(pHLayoutTotal);
     m_pMainLayout->addLayout(pHLayoutChecked);
     m_pMainLayout->addLayout(pHLayoutSucess);
@@ -95,7 +120,12 @@ void CureEmailDialog::initDialog()
     /* 未发送前禁止取消 */
     m_pButtonCancel->setEnabled(false);
 
-    this->setFixedSize(400, 180);
+    this->setFixedSize(400, 200);
+}
+
+void CureEmailDialog::setHRName(const QString &strName)
+{
+    m_pLabelValueHR->setText(strName);
 }
 
 void CureEmailDialog::setProgressRange(const uint nStart, const uint nEnd)
