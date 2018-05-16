@@ -23,6 +23,7 @@ public:
     virtual ~CureEmailDialog();
 
     void initDialog();
+    void setHRName(const QString &strName);
     void setTotalValue(const uint nValue);
     void setCheckedValue(const uint nValue);
     void setSuccessValue(const uint nValue);
@@ -39,10 +40,15 @@ private slots:
     void slotHandleSendButton();
     void slotHandleCancelButton();
 private:
+    QLabel *m_pLabelSalaryDate;
+    QLabel *m_pLabelHR;
     QLabel *m_pLabelTotal;
     QLabel *m_pLabelChecked;
     QLabel *m_pLabelSuccess;
     QLabel *m_pLabelFailed;
+
+    QLabel *m_pLabelValueDate;
+    QLabel *m_pLabelValueHR;
     QLabel *m_pLabelValueTotal;
     QLabel *m_pLabelValueChecked;
     QLabel *m_pLabelValueSuccess;
