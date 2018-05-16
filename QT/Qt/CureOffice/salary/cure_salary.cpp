@@ -21,10 +21,12 @@ static const QString g_strDefaultSMTPServer("smtp.ym.163.com");
 static const QString g_strDefautlSMTPPort("465");
 
 static const QString g_strSalarySendTemplate = "SalaryEmailTemplate.xlsx";
+static const QString g_strSalaryEmailExcel = "SalaryEmailAddresses.xlsx";
 /* 数据模板真正员工数据的起始行 */
 static const int g_nStartRow = 5;
 /* 姓名所在邮件发送模块中的索引 */
 static const int g_nIndexName = 2; // from 0
+static const int g_nIndexNumber = 3; // from 0 工号
 
 static const QString g_strSenderCheckState[] = {
     "未检测",
@@ -184,6 +186,13 @@ void CureSalary::slotSendEmail()
         QMessageBox::warning(this, tr("工资条发送"), tr("发件箱不可用或者未检测其可用性,请确认!"));
         return;
     }
+
+    if (!QFile::exists(g_strSalarySendTemplate) || !QFile::exists(g_strSalaryEmailExcel)) {
+        QString strInfo = tr("工资数据发送模板不存在或员工邮箱excel表未找到,请确认!");
+        qDebug() << strInfo;
+        QMessageBox::critical(this, tr("工资条发送"), strInfo);
+    }
+
     if (m_pTableExcel->model() && m_pTableExcel->model()->rowCount() > 0) {
         SheetModel *pModel = dynamic_cast<SheetModel*>(m_pTableExcel->model());
         QVector<int> vectorCheckState = pModel->getCheckStateVector();
@@ -333,14 +342,16 @@ void CureSalary::initProgressDialog(const int nMaxValue)
     m_pProgressDialog = new CureEmailDialog(this);
     m_pProgressDialog->setProgressRange(0, (uint)nMaxValue);
     m_pProgressDialog->setWindowModality(Qt::WindowModal);
+    m_pProgressDialog->setWindowTitle(tr("员工工资条邮件发送"));
     m_pProgressDialog->show();
 
     connect(m_pProgressDialog, SIGNAL(sigStartSend()), this, SLOT(slotDialogSendStart()));
     connect(m_pProgressDialog, SIGNAL(sigCancelSend()), this, SLOT(slotDialogSendCancel()));
 }
 
-bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName)
+bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName, int &nIndexNumber)
 {
+
     Document doc(g_strSalarySendTemplate);
     Worksheet *pWorkSheetWrite = dynamic_cast<Worksheet *>(doc.sheet(doc.sheetNames()[0]));
     SheetModel *pModel = dynamic_cast<SheetModel *>(m_pTableExcel->model());
@@ -352,8 +363,12 @@ bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QStrin
     /* 循环使用邮件发送模板的头，其自身没有数据模板的第1列 */
     for (int i = 0; i < pWorkSheetWrite->dimension().lastColumn(); ++i) {
         pCell = pWorkSheetRead->cellAt(index + g_nStartRow, i + 2); /* i + 2是因为过滤掉数据模板的第1列序号列数据 */
-        if (i == g_nIndexName) {
+        if (g_nIndexName == i) {
+            /* 返回员工姓名 */
             strName = pCell->value().toString();
+        } else if (g_nIndexNumber == i) {
+            /* 返回员工编号 */
+            nIndexNumber = pCell->value().toInt();
         }
         //qDebug() << "Cell value: " << pCell->value().toString();
         if (!pWorkSheetWrite->write(index + 2, i + 1, pCell->value(), format)) {
@@ -362,7 +377,7 @@ bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QStrin
         }
     }
     if (bWrite) {
-        qDebug() << "Write data success!";
+        //qDebug() << "Write data success!";
         QDate date = QDate::currentDate();
         strOutFilePath = QString("%1年%2月工资单_%3.xlsx").arg(date.year()).arg(date.month()).arg(strName);
         if (QFile::exists(strOutFilePath)) {
@@ -404,17 +419,46 @@ void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet)
     pDoc = NULL;
 }
 
+bool CureSalary::findEmailAddressFromExcel(const Worksheet* pWorksheet, const int &nIndexNumber, const QString &strName, QString &strAddress)
+{
+    /* 第一行是标题,数据从第二行起 */
+    for (int i = 0; i < pWorksheet->dimension().rowCount() - 1; ++i) {
+        /* excel的worksheet数据起始索引为1,包括列 */
+        if (pWorksheet->cellAt(i + 2, 4)->value().toInt() == nIndexNumber) {
+            /* 第4列是工号 */
+            if (pWorksheet->cellAt(i + 2, 2)->value().toString().trimmed() == strName.trimmed()) {
+                /* 第2列是员工姓名,第3列是邮箱地址 */
+                strAddress = pWorksheet->cellAt(i + 2, 3)->value().toString().trimmed();
+                qDebug() << "Find " << strName << "'s email address: " << strAddress;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void CureSalary::makeAndSendEmailData()
 {
-    /* send email */
     qDebug() << "Start to send salary email......";
+
+    int nValue = 0;
+    int nSuccessCount = 0;
+    int nFailedCount = 0;
     SheetModel *pModel = dynamic_cast<SheetModel*>(m_pTableExcel->model());
     /* 注意这里使用的是引用,可以直接修改QVector的实际值 */
     QVector<int>& vectorCheckState = pModel->getCheckStateVector();
     Format format = getEmailDataFormat();
-    int nValue = 0;
-    int nSuccessCount = 0;
-    int nFailedCount = 0;
+    Document doc(g_strSalaryEmailExcel);
+    Worksheet *pWorkSheetEmailAddresses = dynamic_cast<Worksheet *>(doc.sheet(doc.sheetNames()[0]));
+    if (!pWorkSheetEmailAddresses) {
+        qCritical() << "Cannot find any worksheet from email excel.";
+        QMessageBox::critical(m_pProgressDialog, tr("邮件发送失败"), tr("员工邮箱excel文件是空文件!"));
+        int nMaxValue = m_pProgressDialog->getProgressRange();
+        m_pProgressDialog->setFailedValue(nMaxValue);
+        m_pProgressDialog->setProgressValue(nMaxValue);
+        return;
+    }
+
     for (int i = 0; i < vectorCheckState.size(); ++i) {
         if (m_bEmailCanceled) {
             qDebug() << "User canceled email send, break.";
@@ -427,16 +471,25 @@ void CureSalary::makeAndSendEmailData()
             /* real send ... */
             QString strFilePath;
             QString strName;
+            int nIndexNumber;
             bool bSendOk = false;
-            if (writePersonalInfoToFile(i, format, strFilePath, strName)) {
-                bSendOk = sendEmail("Cplusplus2017@163.com", strName, strFilePath);
+            if (writePersonalInfoToFile(i, format, strFilePath, strName, nIndexNumber)) {
+                QString strEmailAddress;
+                if (findEmailAddressFromExcel(pWorkSheetEmailAddresses, nIndexNumber, strName, strEmailAddress)) {
+                    bSendOk = sendEmail(strEmailAddress, strName, strFilePath);
+                } else {
+                    qWarning() << "Cannot find " << strName << "'s email address from excel!";
+                }
+                /* 邮件发送完成之后删除所有附件 */
+                QFile::remove(strFilePath);
+            } else {
+                qWarning() << "Write salary email data to excel failed of " << strName;
+            }
+            if (bSendOk) {
                 m_pProgressDialog->setSuccessValue(++nSuccessCount);
             } else {
-                m_pProgressDialog->setFailedValue(++nFailedCount);
-            }
-
-            if (!bSendOk) {
                 /* 发送失败的记录,简单地使用黄色背景进行标记 */
+                m_pProgressDialog->setFailedValue(++nFailedCount);
                 vectorCheckState[i] &= (~SALARY_SEND_OK);
             }
             m_pProgressDialog->setProgressValue(++nValue);
@@ -477,6 +530,7 @@ bool CureSalary::sendEmail(const QString &strReceiverEmail, const QString &strRe
     text.setText(strText);
     message.addPart(&text);
 
+    qDebug() << "Start to send email to: " << strReceiverEmail << ".\nContent: " << strText;
     if (email.connectToHost()) {
         if (email.login()) {
             if (email.sendMail(message)) {
