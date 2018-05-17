@@ -1,4 +1,4 @@
-#ifndef CURESALARY_H
+﻿#ifndef CURESALARY_H
 #define CURESALARY_H
 
 #include <QWidget>

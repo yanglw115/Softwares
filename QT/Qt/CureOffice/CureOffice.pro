@@ -13,7 +13,7 @@ TEMPLATE = app
 RC_FILE = logo.rc
 DEFINES += SMTP_BUILD
 
-INCLUDEPATH += tools salary
+INCLUDEPATH += tools salary log
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -33,7 +33,9 @@ SOURCES += main.cpp\
     tools/smtpClient/quotedprintable.cpp \
     tools/smtpClient/smtpclient.cpp \
     tools/xlsx/xlsx_sheet_model.cpp \
-    salary/cure_email_dialog.cpp
+    salary/cure_email_dialog.cpp \
+    log/cure_log.cpp \
+    cure_utils.cpp
 
 HEADERS  += mainwindow.h \
     msvs_charset.h \
@@ -61,7 +63,9 @@ HEADERS  += mainwindow.h \
     tools/smtpClient/SmtpMime.h \
     tools/xlsx/xlsx_sheet_model.h \
     tools/xlsx/xlsx_sheet_model_p.h \
-    salary/cure_email_dialog.h
+    salary/cure_email_dialog.h \
+    log/cure_log.h \
+    cure_utils.h
 
 RESOURCES += \
     resources/imgresource.qrc

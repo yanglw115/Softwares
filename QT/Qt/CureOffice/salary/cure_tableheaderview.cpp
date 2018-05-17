@@ -1,4 +1,4 @@
-#include "cure_tableheaderview.h"
+﻿#include "cure_tableheaderview.h"
 
 #include <QApplication>
 #include <QDebug>
