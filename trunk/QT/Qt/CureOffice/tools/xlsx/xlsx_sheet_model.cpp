@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 ** Copyright (c) 2013-2014 Debao Zhang <hello@debao.me>
 ** All right reserved.
 **
@@ -283,8 +283,12 @@ bool SheetModel::setData(const QModelIndex &index, const QVariant &value, int ro
         break;
     case Qt::UserRole:
         /* 直接在数据列的checkbox上面进行操作，使用的是UserRole */
-        if (nColumn == CHECK_BOX_COLUMN) {            
-            m_vecotrSelect[index.row()] = value.toInt();
+        if (nColumn == CHECK_BOX_COLUMN) {
+            if (value.toBool()) {
+                m_vecotrSelect[index.row()] |= SALARY_CHECKED;
+            } else {
+                m_vecotrSelect[index.row()] &= (~SALARY_CHECKED);
+            }
             slotDataChanged(index);
             if (m_bEmitCheckStateChange) {
                 checkStateChanged();
