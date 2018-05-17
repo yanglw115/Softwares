@@ -12,7 +12,7 @@ TableHeaderView::~TableHeaderView()
 TableHeaderView::TableHeaderView(Qt::Orientation orientation, QWidget *parent)
     : QHeaderView(orientation, parent),
       m_bPressed(false),
-      m_bChecked(true),
+      m_bChecked(false),
       m_bTristate(false)
 {
     // setStretchLastSection(true);

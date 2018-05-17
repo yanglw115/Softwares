@@ -62,7 +62,8 @@ SheetModel::SheetModel(Worksheet *sheet, QObject *parent, const int nStartRow)
     m_nStartRow = nStartRow;
     m_bEmitCheckStateChange = true;
     m_vecotrSelect.resize(this->rowCount());
-    m_vecotrSelect.fill(SALARY_CHECKED | SALARY_SEND_OK);
+//    m_vecotrSelect.fill(SALARY_CHECKED | SALARY_SEND_OK);
+    m_vecotrSelect.fill(SALARY_SEND_OK);
 
     // connect(this, SIGNAL(sigDataChanged(QModelIndex)), this, SLOT(slotDataChanged(QModelIndex)));
 }

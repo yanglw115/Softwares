@@ -198,6 +198,7 @@ void CureSalary::slotSendEmail()
         QString strInfo = tr("工资数据发送模板不存在或员工邮箱excel表未找到,请确认!");
         qWarning() << strInfo;
         QMessageBox::critical(this, tr("工资条发送"), strInfo);
+        return;
     }
 
     if (m_pTableExcel->model() && m_pTableExcel->model()->rowCount() > 0) {
@@ -381,7 +382,8 @@ bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QStrin
             nIndexNumber = pCell->value().toInt();
         }
         //qDebug() << "Cell value: " << pCell->value().toString();
-        if (!pWorkSheetWrite->write(index + 2, i + 1, pCell->value(), format)) {
+        /* 写入第二行，第一行是标题 */
+        if (!pWorkSheetWrite->write(2, i + 1, pCell->value(), format)) {
             bWrite = false;
             break;
         }
