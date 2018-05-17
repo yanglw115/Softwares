@@ -12,6 +12,7 @@
 #include "smtpClient/SmtpMime.h"
 #include "cure_tableheaderview.h"
 #include "cure_global.h"
+#include "cure_utils.h"
 
 using namespace std;
 
@@ -20,8 +21,9 @@ static const QString g_strCloseExcel("关闭");
 static const QString g_strDefaultSMTPServer("smtp.ym.163.com");
 static const QString g_strDefautlSMTPPort("465");
 
-static const QString g_strSalarySendTemplate = "SalaryEmailTemplate.xlsx";
-static const QString g_strSalaryEmailExcel = "SalaryEmailAddresses.xlsx";
+static const QString g_strDataDir = "data";
+static const QString g_strSalarySendTemplate = g_strDataDir + "/SalaryEmailTemplate.xlsx";
+static const QString g_strSalaryEmailExcel = g_strDataDir + "/SalaryEmailAddresses.xlsx";
 /* 数据模板真正员工数据的起始行 */
 static const int g_nStartRow = 5;
 /* 姓名所在邮件发送模块中的索引 */
@@ -72,7 +74,7 @@ CureSalary::~CureSalary()
 void CureSalary::slotOpenExcel()
 {
     if (!m_bStateOpenExcel) {
-        QString strFilePath = QFileDialog::getOpenFileName(this, tr("Excel文件选择"), "Desktop", "*.xlsx");
+        QString strFilePath = QFileDialog::getOpenFileName(this, tr("Excel文件选择"), CUtils::getFileFullPath(g_strDataDir), "*.xlsx");
         if (!strFilePath.isEmpty()) {
             m_pEditOpenedExcel->setText(strFilePath);
             freeXlsxDocument();
@@ -191,7 +193,8 @@ void CureSalary::slotSendEmail()
         return;
     }
 
-    if (!QFile::exists(g_strSalarySendTemplate) || !QFile::exists(g_strSalaryEmailExcel)) {
+    if (!QFile::exists(CUtils::getFileFullPath(g_strSalarySendTemplate)) ||
+            !QFile::exists(CUtils::getFileFullPath(g_strSalaryEmailExcel))) {
         QString strInfo = tr("工资数据发送模板不存在或员工邮箱excel表未找到,请确认!");
         qWarning() << strInfo;
         QMessageBox::critical(this, tr("工资条发送"), strInfo);
@@ -359,7 +362,7 @@ void CureSalary::initProgressDialog(const int nMaxValue)
 bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QString &strOutFilePath, QString &strName, int &nIndexNumber)
 {
 
-    Document doc(g_strSalarySendTemplate);
+    Document doc(CUtils::getFileFullPath(g_strSalarySendTemplate));
     Worksheet *pWorkSheetWrite = dynamic_cast<Worksheet *>(doc.sheet(doc.sheetNames()[0]));
     SheetModel *pModel = dynamic_cast<SheetModel *>(m_pTableExcel->model());
     Worksheet *pWorkSheetRead = pModel->sheet();
@@ -405,9 +408,9 @@ bool CureSalary::writePersonalInfoToFile(const int index, Format &format, QStrin
 /* 根据导入的数据模板，提取邮件发送的excel头部信息。也可以直接使用邮件发送模板，就不需要这样提取了。 */
 void CureSalary::saveSalaryExcelHead(Worksheet *pWorksheet)
 {
-    qDebug() << "Make salary attchment template: " << g_strSalarySendTemplate;
+    qDebug() << "Make salary attchment template: " << CUtils::getFileFullPath(g_strSalarySendTemplate);
 
-    QString strSaveFileName = g_strSalarySendTemplate;
+    QString strSaveFileName = CUtils::getFileFullPath(g_strSalarySendTemplate);
     Document *pDoc = new Document;
     pDoc->addSheet(tr("工资明细"));
 
@@ -464,7 +467,7 @@ void CureSalary::makeAndSendEmailData()
     /* 注意这里使用的是引用,可以直接修改QVector的实际值 */
     QVector<int>& vectorCheckState = pModel->getCheckStateVector();
     Format format = getEmailDataFormat();
-    Document doc(g_strSalaryEmailExcel);
+    Document doc(CUtils::getFileFullPath(g_strSalaryEmailExcel));
     Worksheet *pWorkSheetEmailAddresses = dynamic_cast<Worksheet *>(doc.sheet(doc.sheetNames()[0]));
     if (!pWorkSheetEmailAddresses) {
         qCritical() << "Cannot find any worksheet from email excel.";

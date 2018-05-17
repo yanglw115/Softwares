@@ -51,6 +51,10 @@ void CMyLog::initLog()
     } else {
         qDebug() << "Log file is not exist!";
     }
+    qDebug() << "";
+    qDebug() << "*************************************************";
+    qDebug() << QDateTime::currentDateTime().toString();
+    qDebug() << "*************************************************";
 }
 
 void CMyLog::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
