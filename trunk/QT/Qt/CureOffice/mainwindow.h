@@ -8,6 +8,7 @@
 #include <QResizeEvent>
 
 #include "cure_salary.h"
+#include "cure_structure.h"
 
 class MainWindow : public QMainWindow
 {
@@ -18,6 +19,7 @@ public:
     ~MainWindow();
 private:
     void initMainWindow();
+    void initDatabase();
 protected:
     virtual void resizeEvent(QResizeEvent * event);
 
@@ -28,6 +30,7 @@ private:
     QStackedWidget *m_pStackedOffice;
     QHBoxLayout *m_pHLayoutOffice;
     CureSalary *m_pWidgetSalary;
+    CureStructure *m_pWidgetStructure;
 };
 
 #endif // MAINWINDOW_H

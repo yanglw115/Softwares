@@ -56,7 +56,8 @@ SheetModelPrivate::SheetModelPrivate(SheetModel *p)
  */
 /* 增加excel数据读取的起始行，必须要大于等于1(起始行从1计起) */
 SheetModel::SheetModel(Worksheet *sheet, QObject *parent, const int nStartRow)
-    :QAbstractTableModel(parent), d_ptr(new SheetModelPrivate(this))
+    :QAbstractTableModel(parent)
+    , d_ptr(new SheetModelPrivate(this))
 {
     d_ptr->sheet = sheet;
     m_nStartRow = nStartRow;

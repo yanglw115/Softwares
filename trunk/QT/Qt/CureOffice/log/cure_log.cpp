@@ -33,7 +33,7 @@ CMyLog::~CMyLog()
 
 void CMyLog::initLog()
 {
-    qInstallMessageHandler(CMyLog::messageHandler);
+//      qInstallMessageHandler(CMyLog::messageHandler);
 
     QString strFilePath = CUtils::getFileFullPath(g_logFileDir + "/" + g_logFileName);
     QString strFileDir = CUtils::getFileFullPath(g_logFileDir);
