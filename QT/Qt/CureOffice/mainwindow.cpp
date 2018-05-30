@@ -1,10 +1,17 @@
 ﻿#include "mainwindow.h"
 #include "msvs_charset.h"
+#include "cure_global.h"
+#include "cure_utils.h"
 
 #include <QListWidgetItem>
+#include <QSqlDatabase>
+#include <QSqlError>
 
 static QString g_strTitle = "CureOffice V1.0";
 static int LIST_ICON_SIZE_RATIO = 25;
+
+const QString g_strDataDir = "data";
+const QString g_strDatabaseFile = "CureOffice.db";
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -13,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMinimumSize(800, 600);
 
     initMainWindow();
+    initDatabase();
     this->showMaximized();
 }
 
@@ -33,11 +41,12 @@ void MainWindow::initMainWindow()
     //m_pListOffice->setResizeMode(QListView::Adjust);
 
     m_pWidgetSalary = new CureSalary(this);
+    m_pWidgetStructure = new CureStructure(this);
 
     m_pStackedOffice = new QStackedWidget(this);
 
     m_pStackedOffice->addWidget(m_pWidgetSalary);
-    m_pStackedOffice->addWidget(new QWidget(this));
+    m_pStackedOffice->addWidget(m_pWidgetStructure);
     m_pStackedOffice->addWidget(new QWidget(this));
     m_pStackedOffice->addWidget(new QWidget(this));
     m_pStackedOffice->addWidget(new QWidget(this));
@@ -100,6 +109,46 @@ void MainWindow::initMainWindow()
     m_pHLayoutOffice->addWidget(m_pStackedOffice, 4);
     m_pWidgetOffice->setLayout(m_pHLayoutOffice);
     this->setCentralWidget(m_pWidgetOffice);
+}
+
+void MainWindow::initDatabase()
+{
+    /* 目前没有找到能够打开我们实现的加密的sqlite数据库,后续还需要自己实现一个. */
+//    QSqlDatabase db = QSqlDatabase::addDatabase("SQLITECIPHER");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QString strDBFilePath = CUtils::getFileFullPath(g_strDataDir + "/" + g_strDatabaseFile);
+    /** FixMe: 这里需要增加判断，如果数据库文件不存在的话，则需要创建一个数据库文件，并且提示用户输入用户名与密码 **/
+    db.setDatabaseName(strDBFilePath);
+    bool bOK = false;
+    if (QFile::exists(strDBFilePath)) {
+        bOK = db.open("root", "admin");
+//        db.setPassword("admin");
+//        db.setConnectOptions("QSQLITE_CREATE_KEY");
+//        bOK = db.open();
+    } else {
+        db.setUserName("root");
+        db.setPassword("admin");
+//        db.setConnectOptions("QSQLITE_CREATE_KEY");
+        bOK = db.open();
+    }
+
+    if (bOK) {
+        qDebug() << "Open database success!";
+        /** do something others. */
+        CureStructure::checkStructureDBTable(db);
+
+        db.close();
+    } else {
+        qWarning() << "Open database failed: " << db.lastError().driverText();
+    }
+
+    /* Avoid run warning "connection is still inuse" */
+    QString name;
+    {
+        name = QSqlDatabase::database().connectionName();
+    }
+    /* QSqlDatabase::database() will be deleted */
+    QSqlDatabase::removeDatabase(name);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)

@@ -21,7 +21,6 @@ static const QString g_strCloseExcel("关闭");
 static const QString g_strDefaultSMTPServer("smtp.ym.163.com");
 static const QString g_strDefautlSMTPPort("465");
 
-static const QString g_strDataDir = "data";
 static const QString g_strSalarySendTemplate = g_strDataDir + "/SalaryEmailTemplate.xlsx";
 static const QString g_strSalaryEmailExcel = g_strDataDir + "/SalaryEmailAddresses.xlsx";
 /* 数据模板真正员工数据的起始行 */

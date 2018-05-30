@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xlsx network
+QT       += core gui xlsx network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,7 +13,7 @@ TEMPLATE = app
 RC_FILE = logo.rc
 DEFINES += SMTP_BUILD
 
-INCLUDEPATH += tools salary log
+INCLUDEPATH += tools salary log structure
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -35,7 +35,10 @@ SOURCES += main.cpp\
     tools/xlsx/xlsx_sheet_model.cpp \
     salary/cure_email_dialog.cpp \
     log/cure_log.cpp \
-    cure_utils.cpp
+    cure_utils.cpp \
+    structure/cure_structure.cpp \
+    structure/cure_structure_model.cpp \
+    structure/cure_tree_item.cpp
 
 HEADERS  += mainwindow.h \
     msvs_charset.h \
@@ -65,7 +68,10 @@ HEADERS  += mainwindow.h \
     tools/xlsx/xlsx_sheet_model_p.h \
     salary/cure_email_dialog.h \
     log/cure_log.h \
-    cure_utils.h
+    cure_utils.h \
+    structure/cure_structure.h \
+    structure/cure_structure_model.h \
+    structure/cure_tree_item.h
 
 RESOURCES += \
     resources/imgresource.qrc
