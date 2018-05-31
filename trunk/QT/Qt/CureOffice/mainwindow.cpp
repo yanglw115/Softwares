@@ -4,8 +4,11 @@
 #include "cure_utils.h"
 
 #include <QListWidgetItem>
-#include <QSqlDatabase>
-#include <QSqlError>
+#include <QThread>
+#include <QMessageBox>
+
+//QSqlDatabase g_db = QSqlDatabase::addDatabase("SQLITECIPHER");
+QSqlDatabase g_db = QSqlDatabase::addDatabase("QSQLITE");
 
 static QString g_strTitle = "CureOffice V1.0";
 static int LIST_ICON_SIZE_RATIO = 25;
@@ -19,14 +22,25 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle(g_strTitle);
     this->setMinimumSize(800, 600);
 
-    initMainWindow();
     initDatabase();
+    initMainWindow();
     this->showMaximized();
 }
 
 MainWindow::~MainWindow()
 {
+    if (g_db.isOpen()) {
+        g_db.close();
+    }
 
+    QThread::msleep(300);
+    /* Avoid run warning "connection is still inuse" */
+    QString name;
+    {
+        name = QSqlDatabase::database().connectionName();
+    }
+    /* QSqlDatabase::database() will be deleted */
+    QSqlDatabase::removeDatabase(name);
 }
 
 void MainWindow::initMainWindow()
@@ -114,41 +128,27 @@ void MainWindow::initMainWindow()
 void MainWindow::initDatabase()
 {
     /* 目前没有找到能够打开我们实现的加密的sqlite数据库,后续还需要自己实现一个. */
-//    QSqlDatabase db = QSqlDatabase::addDatabase("SQLITECIPHER");
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     QString strDBFilePath = CUtils::getFileFullPath(g_strDataDir + "/" + g_strDatabaseFile);
     /** FixMe: 这里需要增加判断，如果数据库文件不存在的话，则需要创建一个数据库文件，并且提示用户输入用户名与密码 **/
-    db.setDatabaseName(strDBFilePath);
+    g_db.setDatabaseName(strDBFilePath);
     bool bOK = false;
     if (QFile::exists(strDBFilePath)) {
-        bOK = db.open("root", "admin");
-//        db.setPassword("admin");
-//        db.setConnectOptions("QSQLITE_CREATE_KEY");
-//        bOK = db.open();
+        bOK = g_db.open("root", "admin");
     } else {
-        db.setUserName("root");
-        db.setPassword("admin");
-//        db.setConnectOptions("QSQLITE_CREATE_KEY");
-        bOK = db.open();
+        g_db.setUserName("root");
+        g_db.setPassword("admin");
+//        g_db.setConnectOptions("QSQLITE_CREATE_KEY");
+        bOK = g_db.open();
     }
 
     if (bOK) {
         qDebug() << "Open database success!";
         /** do something others. */
-        CureStructure::checkStructureDBTable(db);
-
-        db.close();
+        CureStructure::checkStructureDBTable(g_db);
     } else {
-        qWarning() << "Open database failed: " << db.lastError().driverText();
+        qWarning() << "Open database failed: " << g_db.lastError().text();
+        QMessageBox::critical(this, tr("本地数据库操作"), tr("本地数据库打开失败,将影响后续所有数据的正常展示,建议先修复此问题!"));
     }
-
-    /* Avoid run warning "connection is still inuse" */
-    QString name;
-    {
-        name = QSqlDatabase::database().connectionName();
-    }
-    /* QSqlDatabase::database() will be deleted */
-    QSqlDatabase::removeDatabase(name);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)

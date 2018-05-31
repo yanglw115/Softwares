@@ -11,6 +11,7 @@ CureTreeItem::CureTreeItem(const QList<QVariant> &data, CureTreeItem *parentItem
 
 CureTreeItem::~CureTreeItem()
 {
+    /* FixMe: 这里需要确保所有子结点的子结点...子结点都被回收 */
     qDeleteAll(m_listChild);
 }
 

@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-#include <QtXlsx/QtXlsx>
 #include "cure_log.h"
 
 int main(int argc, char *argv[])

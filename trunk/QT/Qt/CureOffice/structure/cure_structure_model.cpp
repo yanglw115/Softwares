@@ -1,12 +1,14 @@
+﻿#include <QtDebug>
+
 #include "cure_structure_model.h"
 #include "msvs_charset.h"
-
+#include "cure_global.h"
 
 CureStructureModel::CureStructureModel(const QString &data, QObject *parent)
     : QAbstractItemModel(parent)
 {
     QList<QVariant> rootData;
-    rootData << "partment" << "leader";
+    rootData << "部门" << "人数" << "负责人";
     rootItem = new CureTreeItem(rootData);
     setupModelData(data.split(QString("\n")), rootItem);
 }
@@ -103,8 +105,11 @@ int CureStructureModel::columnCount(const QModelIndex &parent) const
 void CureStructureModel::setupModelData(const QStringList &lines, CureTreeItem *parent)
 {
     QList<CureTreeItem*> parents;
-    QList<int> indentations;
     parents << parent;
+
+#if 0
+    QList<int> indentations;
+
     indentations << 0;
 
     int number = 0;
@@ -149,4 +154,60 @@ void CureStructureModel::setupModelData(const QStringList &lines, CureTreeItem *
 
         ++number;
     }
+#else
+    Q_UNUSED(lines)
+    if (g_db.isOpen()) {
+        QStringList strTables = g_db.tables();
+        if (strTables.contains(g_strTableNameStructure)) {
+            if (getChildDataFromDB(1, "", parent)) {
+                qDebug() << "Read structure data from database success!";
+                return;
+            }
+            /* 查询失败 */
+            /* 因为失败,所以要回收根结点以外的所有数据,因为数据不完整了 */
+            for (int i = 0; i < parents[0]->childCount(); ++i) {
+                delete parents[0]->child(i);
+            }
+
+//            QMessageBox::warning(this, tr("数据库操作"), tr("从数据库中读取公司结构表数据失败!"));
+            qWarning() << "Run sql query failed when read data from table: " << g_strTableNameStructure;
+            qWarning() << "" << g_db.lastError().text();
+        } else {
+            qWarning() << "Read structure table from database failed, cannot find the table!";
+//            QMessageBox::critical(this, tr("数据库操作"), tr("未在本地数据库中找到公司结构表!"));
+        }
+    }
+#endif
+}
+
+bool CureStructureModel::getChildDataFromDB(const int nGrade, const QString &strParent, CureTreeItem *pParent)
+{
+    QSqlQuery query(g_db);
+    QList<QVariant> columnData;
+
+    QString strExec = QString("select * from %1 where grade=%2 and parentName='%3'").arg(g_strTableNameStructure).arg(nGrade).arg(strParent);
+    if (query.exec(strExec)) {
+        bool bHasResult = false;
+        while (query.next()) {
+            bHasResult = true;
+            int nGrade = query.value("grade").toInt();
+            QString strName = query.value("name").toString();
+            QString strParentName = query.value("parentName").toString();
+            QString strLeader = query.value("leader").toString();
+            QString strJob = query.value("job").toString();
+            int numbers = query.value("numbers").toInt();
+
+            columnData.clear();
+            columnData << strName << numbers << strLeader;
+            CureTreeItem *pChild = new CureTreeItem(columnData, pParent);
+            if (getChildDataFromDB(nGrade + 1, strName, pChild)) {
+                pParent->appendChild(pChild);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    qWarning() << "Read data from database failed: " << g_db.lastError().text();
+    return false;
 }

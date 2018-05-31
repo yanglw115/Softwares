@@ -1,8 +1,8 @@
 ﻿#include "cure_structure.h"
 #include "msvs_charset.h"
+#include "cure_global.h"
 
 #include <QtDebug>
-#include <QSqlDriver>
 
 const QString g_strTableNameStructure = "structure";
 
@@ -11,7 +11,7 @@ CureStructure::CureStructure(QWidget *parent)
     , m_pTreeView(NULL)
 {
     m_pTreeView = new QTreeView(this);
-    CureStructureModel *pModel = new CureStructureModel("pa rt1\tli wei\tpar t11\tpart111\npart2\tfanshi", this);
+    CureStructureModel *pModel = new CureStructureModel("", this);
     m_pTreeView->setModel(pModel);
     m_pVLayoutMain = new QVBoxLayout;
     m_pVLayoutMain->addWidget(m_pTreeView);

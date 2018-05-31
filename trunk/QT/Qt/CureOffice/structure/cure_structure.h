@@ -6,10 +6,7 @@
 #include <QTreeView>
 #include <QLayout>
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-
+#include "cure_global.h"
 #include "cure_structure_model.h"
 #include "cure_tree_item.h"
 

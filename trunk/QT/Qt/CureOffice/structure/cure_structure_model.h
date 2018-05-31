@@ -27,6 +27,7 @@ public:
 
 private:
     void setupModelData(const QStringList &lines, CureTreeItem *parent);
+    bool getChildDataFromDB(const int nGrade, const QString &strParent, CureTreeItem *pParent);
 
     CureTreeItem *rootItem;
 };
