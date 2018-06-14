@@ -55,12 +55,13 @@ void MainWindow::initMainWindow()
     //m_pListOffice->setResizeMode(QListView::Adjust);
 
     m_pWidgetSalary = new CureSalary(this);
-    m_pWidgetStructure = new CureStructure(this);
+    //m_pWidgetStructure = new CureStructure(this);
 
     m_pStackedOffice = new QStackedWidget(this);
 
     m_pStackedOffice->addWidget(m_pWidgetSalary);
-    m_pStackedOffice->addWidget(m_pWidgetStructure);
+    //m_pStackedOffice->addWidget(m_pWidgetStructure);
+    m_pStackedOffice->addWidget(new QWidget(this));
     m_pStackedOffice->addWidget(new QWidget(this));
     m_pStackedOffice->addWidget(new QWidget(this));
     m_pStackedOffice->addWidget(new QWidget(this));
