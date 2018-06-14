@@ -200,6 +200,7 @@ bool CureStructureModel::getChildDataFromDB(const int nGrade, const QString &str
             columnData.clear();
             columnData << strName << numbers << strLeader;
             CureTreeItem *pChild = new CureTreeItem(columnData, pParent);
+            /* 这里使用递归操作可以很好地解决子结点的遍历问题 */
             if (getChildDataFromDB(nGrade + 1, strName, pChild)) {
                 pParent->appendChild(pChild);
             } else {
